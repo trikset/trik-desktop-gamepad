@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov to make it comply with the requirements of trikRuntime
+ * This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #pragma once
 
 #include <QtWidgets/QWidget>
 #include <QtNetwork/QTcpSocket>
+#include <QtCore/QTimer>
+
 #include "connectForm.h"
-#include <qobject.h>
-#include <QTimer>
 
 namespace Ui {
 class GamepadForm;
@@ -34,14 +34,19 @@ class GamepadForm : public QWidget
 
 public:
 	/// Constructor.
-    GamepadForm();
+	GamepadForm();
 	~GamepadForm() override;
 
 public slots:
-    //void joystickMove();
-    void openConnectDialog();
-    void exit();
-    void about();
+
+	/// Slot for opening connect dialog
+	void openConnectDialog();
+
+	/// Slot for exit menu item
+	void exit();
+
+	/// Slot for about menu item
+	void about();
 
 private slots:
 
@@ -54,12 +59,23 @@ private slots:
 	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is released.
 	void onPadReleased(int padId);
 
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-    void checkConnection();
-    void createMenu();
-    void createTimer();
-    void createConnection();
+	/// Slot for key press event
+	void keyPressEvent(QKeyEvent *event);
+
+	/// Slot for key release event
+	void keyReleaseEvent(QKeyEvent *event);
+
+	/// Slot for checking connection
+	void checkConnection();
+
+	/// Slot for creating menu bar
+	void createMenu();
+
+	/// Slot for creating timer for checking internet connection
+	void createTimer();
+
+	/// Slot for creating connections between buttons and events
+	void createConnection();
 
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
@@ -69,11 +85,13 @@ private:
 	QScopedPointer<Ui::GamepadForm> mUi;
 
 	/// TCP Socket object that handles network communication with TRIK.
-    QTcpSocket *mSocket;
+	QTcpSocket *mSocket;
 
-    ConnectForm *mMyNewConnect;
+	/// For opening dialog from gamepadForm
+	ConnectForm *mMyNewConnectForm;
 
-    QAction *connectAction;
-    QAction *exitAction;
-    QAction *aboutAction;
+	/// Menu actions
+	QAction *mConnectAction;
+	QAction *mExitAction;
+	QAction *mAboutAction;
 };
