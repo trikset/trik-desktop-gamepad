@@ -32,8 +32,8 @@ GamepadForm::GamepadForm()
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);    
-    // Tried to implement camera support. Currently not woking
-    //QMediaPlayer *mp = new QMediaPlayer(0, 0);
+//    Tried to implement camera support. Currently not woking
+//    QMediaPlayer *mp = new QMediaPlayer(0, 0);
 //    std::shared_ptr<QMediaPlayer> mp(new QMediaPlayer(0, 0));
 //    QMediaContent *mc = new QMediaContent(QUrl("http://127.0.0.1:8080/vlc"));
 //    mp->setMedia(*mc);
@@ -48,22 +48,31 @@ GamepadForm::GamepadForm()
     mSocket = new QTcpSocket;
     createMenu();
     createTimer();
+    createConnection();
+}
 
-	// Declaring lambda-function that calls "button pressed" handler with correct button id.
-	const auto buttonClickedMapper = [this](int buttonId) {
-		return [this, buttonId]() { onButtonPressed(buttonId); };
-	};
+GamepadForm::~GamepadForm()
+{
+	// Gracefully disconnecting from host.
+    mSocket->disconnectFromHost();
+	// Here we do not care for success or failure of operation since we will close anyway.
+    mSocket->waitForDisconnected(3000);
+}
 
-    connect(mSocket, SIGNAL(readyRead()), this, SLOT(mDataReceive()));
+void GamepadForm::createConnection() {
 
-	// Connecting buttons to handler using this function.
+    const auto buttonClickedMapper = [this](int buttonId) {
+        return [this, buttonId]() { onButtonPressed(buttonId); };
+    };
+
+    // Connecting buttons to handler using this function.
     connect(mUi->button1, &QPushButton::pressed, buttonClickedMapper(1));
     connect(mUi->button2, &QPushButton::pressed, buttonClickedMapper(2));
     connect(mUi->button3, &QPushButton::pressed, buttonClickedMapper(3));
     connect(mUi->button4, &QPushButton::pressed, buttonClickedMapper(4));
     connect(mUi->button5, &QPushButton::pressed, buttonClickedMapper(5));
 
-	// Declaring lambda-function that calls "pad pressed" handler with correct command.
+    // Declaring lambda-function that calls "pad pressed" handler with correct command.
     const auto padsPressedMapper = [this](const QString &command) {
         return [this, command]() { onPadPressed(command); };
     };
@@ -80,29 +89,21 @@ GamepadForm::GamepadForm()
     connect(mUi->ButtonPad2Right, &QPushButton::pressed, padsPressedMapper("pad 2 100 0"));
 
 
-	// Declaring lambda-function that calls "pad released" handler with correct pad id.
-	const auto padsReleasedMapper = [this](int padId) {
-		return [this, padId]() { onPadReleased(padId); };
-	};
+    // Declaring lambda-function that calls "pad released" handler with correct pad id.
+    const auto padsReleasedMapper = [this](int padId) {
+        return [this, padId]() { onPadReleased(padId); };
+    };
 
-	// Connecting pads to "pad released" handler.
-	connect(mUi->buttonPad1Up, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->buttonPad1Down, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->buttonPad1Left, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->ButtonPad1Right, &QPushButton::released, padsReleasedMapper(1));
+    // Connecting pads to "pad released" handler.
+    connect(mUi->buttonPad1Up, &QPushButton::released, padsReleasedMapper(1));
+    connect(mUi->buttonPad1Down, &QPushButton::released, padsReleasedMapper(1));
+    connect(mUi->buttonPad1Left, &QPushButton::released, padsReleasedMapper(1));
+    connect(mUi->ButtonPad1Right, &QPushButton::released, padsReleasedMapper(1));
 
-	connect(mUi->buttonPad2Up, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->buttonPad2Down, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->buttonPad2Left, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->ButtonPad2Right, &QPushButton::released, padsReleasedMapper(2));
-}
-
-GamepadForm::~GamepadForm()
-{
-	// Gracefully disconnecting from host.
-    mSocket->disconnectFromHost();
-	// Here we do not care for success or failure of operation since we will close anyway.
-    mSocket->waitForDisconnected(3000);
+    connect(mUi->buttonPad2Up, &QPushButton::released, padsReleasedMapper(2));
+    connect(mUi->buttonPad2Down, &QPushButton::released, padsReleasedMapper(2));
+    connect(mUi->buttonPad2Left, &QPushButton::released, padsReleasedMapper(2));
+    connect(mUi->ButtonPad2Right, &QPushButton::released, padsReleasedMapper(2));
 }
 
 void GamepadForm::createMenu()
@@ -111,8 +112,9 @@ void GamepadForm::createMenu()
     QMenu *fileMenu = new QMenu("&Connection");
     menuBar->addMenu(fileMenu);
     connectAct = new QAction(tr("&Connect"), this);
+    // Set to QKeySequence for Ctrl+N shortcut
     connectAct->setShortcuts(QKeySequence::New);
-    connect(connectAct, &QAction::triggered, this, &GamepadForm::openNewWindow);
+    connect(connectAct, &QAction::triggered, this, &GamepadForm::openConnectDialog);
     exitAction = new QAction(tr("&Exit"), this);
     exitAction->setShortcuts(QKeySequence::Quit);
     connect(exitAction, &QAction::triggered, this, &GamepadForm::exit);
@@ -132,6 +134,7 @@ void GamepadForm::createTimer()
 
 }
 
+// Function for checking connection
 void GamepadForm::checkConnection()
 {
     QString successfulConnection = "Connected.\nButtons enabled.";
@@ -152,12 +155,7 @@ void GamepadForm::checkConnection()
     }
 }
 
-void GamepadForm::mDataReceive()
-{
-    QByteArray data = QByteArray::fromHex(mSocket->readAll());
-    qDebug() << data;
-}
-
+// Function for buttons enabled
 void GamepadForm::setButtonsEnabled(bool enabled)
 {
 	// Here we enable or disable pads and "magic buttons" depending on given parameter.
@@ -178,6 +176,7 @@ void GamepadForm::setButtonsEnabled(bool enabled)
 	mUi->buttonPad2Down->setEnabled(enabled);
 }
 
+// Function for keyPressEvent handling
 void GamepadForm::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
@@ -224,6 +223,7 @@ void GamepadForm::keyPressEvent(QKeyEvent *event)
     }
 }
 
+// Function for keyRelease event
 void GamepadForm::keyReleaseEvent(QKeyEvent *event)
 {
     switch (event->key())
@@ -255,6 +255,7 @@ void GamepadForm::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+// Button pressed event
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
@@ -267,6 +268,7 @@ void GamepadForm::onButtonPressed(int buttonId)
         setButtonsEnabled(false);
 }
 
+// Pad pressed event
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
@@ -277,6 +279,7 @@ void GamepadForm::onPadPressed(const QString &action)
 		setButtonsEnabled(false);	
 }
 
+// Pad released event
 void GamepadForm::onPadReleased(int padId)
 {
 	// Here we send "pad <padId> up" command.
@@ -287,7 +290,8 @@ void GamepadForm::onPadReleased(int padId)
         setButtonsEnabled(false);
 }
 
-void GamepadForm::openNewWindow()
+// Function for opening connection dialog
+void GamepadForm::openConnectDialog()
 {
     mMyNewConnect = new ConnectForm(mSocket);
     mMyNewConnect->show();

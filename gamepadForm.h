@@ -39,7 +39,7 @@ public:
 
 public slots:
     //void joystickMove();
-    void openNewWindow();
+    void openConnectDialog();
     void exit();
     void about();
 
@@ -56,10 +56,10 @@ private slots:
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void mDataReceive();
     void checkConnection();
     void createMenu();
     void createTimer();
+    void createConnection();
 
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
