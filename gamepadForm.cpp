@@ -111,16 +111,16 @@ void GamepadForm::createMenu()
     QMenuBar* menuBar = new QMenuBar();
     QMenu *fileMenu = new QMenu("&Connection");
     menuBar->addMenu(fileMenu);
-    connectAct = new QAction(tr("&Connect"), this);
+    connectAction = new QAction(tr("&Connect"), this);
     // Set to QKeySequence for Ctrl+N shortcut
-    connectAct->setShortcuts(QKeySequence::New);
-    connect(connectAct, &QAction::triggered, this, &GamepadForm::openConnectDialog);
+    connectAction->setShortcuts(QKeySequence::New);
+    connect(connectAction, &QAction::triggered, this, &GamepadForm::openConnectDialog);
     exitAction = new QAction(tr("&Exit"), this);
     exitAction->setShortcuts(QKeySequence::Quit);
     connect(exitAction, &QAction::triggered, this, &GamepadForm::exit);
     aboutAction = new QAction(tr("&About"), this);
     connect(aboutAction, &QAction::triggered, this, &GamepadForm::about);
-    fileMenu->addAction(connectAct);
+    fileMenu->addAction(connectAction);
     fileMenu->addAction(exitAction);
     menuBar->addAction(aboutAction);
     this->layout()->setMenuBar(menuBar);
@@ -203,7 +203,7 @@ void GamepadForm::keyPressEvent(QKeyEvent *event)
             (mUi->ButtonPad2Right)->pressed();
             break;
         case Qt::Key_Up:
-            (mUi->ButtonPad2Right)->pressed();
+            (mUi->buttonPad2Up)->pressed();
             break;
         case Qt::Key_1:
             (mUi->button1)->pressed();

@@ -73,7 +73,7 @@ private:
 
     ConnectForm *mMyNewConnect;
 
-    QAction *connectAct;
+    QAction *connectAction;
     QAction *exitAction;
     QAction *aboutAction;
 };
