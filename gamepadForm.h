@@ -19,7 +19,9 @@
 
 #include <QtWidgets/QWidget>
 #include <QtNetwork/QTcpSocket>
-#include <QtCore/QScopedPointer>
+#include "connectForm.h"
+#include <qobject.h>
+#include <QTimer>
 
 namespace Ui {
 class GamepadForm;
@@ -32,13 +34,16 @@ class GamepadForm : public QWidget
 
 public:
 	/// Constructor.
-	GamepadForm();
-
+    GamepadForm();
 	~GamepadForm() override;
 
+public slots:
+    //void joystickMove();
+    void openNewWindow();
+    void exit();
+    void about();
+
 private slots:
-	/// Slot for "Connect" button.
-	void onConnectButtonClicked();
 
 	/// Slot for gamepad "magic" buttons.
 	void onButtonPressed(int buttonId);
@@ -49,6 +54,13 @@ private slots:
 	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is released.
 	void onPadReleased(int padId);
 
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void mDataReceive();
+    void checkConnection();
+    void createMenu();
+    void createTimer();
+
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
@@ -57,5 +69,11 @@ private:
 	QScopedPointer<Ui::GamepadForm> mUi;
 
 	/// TCP Socket object that handles network communication with TRIK.
-	QTcpSocket mSocket;
+    QTcpSocket *mSocket;
+
+    ConnectForm *mMyNewConnect;
+
+    QAction *connectAct;
+    QAction *exitAction;
+    QAction *aboutAction;
 };
