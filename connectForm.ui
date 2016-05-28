@@ -21,7 +21,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="robotIP">
            <property name="text">
             <string>Robot IP:</string>
            </property>
@@ -30,7 +30,7 @@
          <item>
           <widget class="QLineEdit" name="robotIpLineEdit">
            <property name="text">
-            <string>127.0.0.1</string>
+            <string>192.168.77.1</string>
            </property>
           </widget>
          </item>

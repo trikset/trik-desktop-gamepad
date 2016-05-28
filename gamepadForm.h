@@ -18,8 +18,11 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QMenuBar>
 #include <QtNetwork/QTcpSocket>
 #include <QtCore/QTimer>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QTranslator>
 
 #include "connectForm.h"
 
@@ -77,6 +80,13 @@ private slots:
 	/// Slot for creating connections between buttons and events
 	void createConnection();
 
+	/// Slot for changing languages, triggered when click on needed language
+	void changeLanguage(const QString &language);
+
+	/// Helper method for setting up gamepadForm
+	void setUpGamepadForm();
+
+
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
@@ -85,13 +95,39 @@ private:
 	QScopedPointer<Ui::GamepadForm> mUi;
 
 	/// TCP Socket object that handles network communication with TRIK.
-	QTcpSocket *mSocket;
+	QTcpSocket mSocket;
 
 	/// For opening dialog from gamepadForm
-	ConnectForm *mMyNewConnectForm;
+	QSharedPointer<ConnectForm> mMyNewConnectForm;
+
+	/// For creating menu bar
+	QSharedPointer<QMenuBar> mMenuBar;
+
+	/// For creating connection menu
+	QSharedPointer<QMenu> mConnectionMenu;
+	QSharedPointer<QMenu> mLanguageMenu;
+
+	/// Timer for checking connection
+	QSharedPointer<QTimer> mTimer;
 
 	/// Menu actions
-	QAction *mConnectAction;
-	QAction *mExitAction;
-	QAction *mAboutAction;
+	QSharedPointer<QAction> mConnectAction;
+	QSharedPointer<QAction> mExitAction;
+	QSharedPointer<QAction> mAboutAction;
+
+	/// Languages actions
+	QSharedPointer<QAction> mRussianLanguageAction;
+	QSharedPointer<QAction> mEnglishLanguageAction;
+	QSharedPointer<QAction> mFrenchLanguageAction;
+	QSharedPointer<QAction> mGermanLanguageAction;
+
+	/// For setting up translator in app
+	QSharedPointer<QTranslator> mTranslator;
+
+	/// For changing language whem another language was chosen
+	void retranslate();
+
+	/// For catching up event when language was changed
+	void changeEvent(QEvent *event);
+
 };

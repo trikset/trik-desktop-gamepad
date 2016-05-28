@@ -1,4 +1,4 @@
-/* Copyright 2015-2016 CyberTech Labs Ltd.
+/* Copyright 2016 Mikhail Wall.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,49 +20,53 @@
 
 #include <QtWidgets/QMessageBox>
 
-/// Form for connect dialog
-ConnectForm::ConnectForm(QTcpSocket *mSocket, QWidget *parent) :
-	QDialog(parent),
-	mSocket_(mSocket),
-	mUi(new Ui::ConnectForm)
+ConnectForm::ConnectForm(QTcpSocket *socket
+			 , QWidget *parent)
+	: QDialog(parent)
+	, mUi(new Ui::ConnectForm)
+	, mSocket(socket)
+
 {
 	mUi->setupUi(this);
+
+	// These constants was added for translations purposes
+	const QString buttonCancel = tr("Cancel");
+	const QString buttonOK = tr("Ok");
+	const QString connectButton = tr("Connect");
+
 	mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+	mUi->buttonBox->button(QDialogButtonBox::Ok)->setText(buttonOK);
+	mUi->buttonBox->button(QDialogButtonBox::Cancel)->setText(buttonCancel);
+	mUi->connectButton->setText(connectButton);
+
+	// Connecting buttons with methods
+	connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
 }
 
 ConnectForm::~ConnectForm()
 {
-	delete mUi;
+
 }
 
-///  Connect button click event
-void ConnectForm::on_connectButton_clicked()
+/// Function for creating connection when connect button was pressed
+void ConnectForm::onConnectButtonClicked()
 {
 	const auto ip = mUi->robotIpLineEdit->text();
 
-	// Disable "connect" button and address input field to indicate that we are trying to connect.
+	// Disable "Ok" button and address input field to indicate that we are trying to connect.
 	// Allow form to redraw disabled buttons.
 	QApplication::processEvents();
 
 	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-	mSocket_->connectToHost(ip, 4444);
+	mSocket->connectToHost(ip, 4444);
 	// Waiting for opened connection and checking that connection is actually established.
-	if (!mSocket_->waitForConnected(3000)) {
+	if (!mSocket->waitForConnected(3000)) {
 		// If not, warn user.
 		QMessageBox::warning(this, "Connection failed", "Failed to connect to robot");
 	} else {
 		mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 	}
-}
-
-/// Ok button click event
-void ConnectForm::on_buttonBox_accepted()
-{
-	this->accept();
-}
-
-/// Cancel button click event
-void ConnectForm::on_buttonBox_rejected()
-{
-	this->reject();
 }
