@@ -83,9 +83,11 @@ private slots:
 	/// Slot for changing languages, triggered when click on needed language
 	void changeLanguage(const QString &language);
 
+	/// Slot for changing checkmark when language was changed
+	void changeCheckmark(const int &languageId);
+
 	/// Helper method for setting up gamepadForm
 	void setUpGamepadForm();
-
 
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
