@@ -33,6 +33,7 @@
  * */
 
 #include <QtWidgets/QApplication>
+
 #include "gamepadForm.h"
 
 int main(int argc, char *argv[])

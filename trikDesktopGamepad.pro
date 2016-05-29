@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
+# project. See git revision history for detailed changes.
 
 QT += core gui network widgets
 
@@ -23,10 +26,10 @@ SOURCES += main.cpp \
         gamepadForm.cpp \
         connectForm.cpp
 
-TRANSLATIONS += trikDesktopGamepad_ru.ts \
-                trikDesktopGamepad_en.ts \
-                trikDesktopGamepad_fr.ts \
-                trikDesktopGamepad_de.ts
+TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
+                languages/trikDesktopGamepad_en.ts \
+                languages/trikDesktopGamepad_fr.ts \
+                languages/trikDesktopGamepad_de.ts
 
 target.path =
 HEADERS += \
@@ -38,5 +41,5 @@ FORMS += \
         connectForm.ui
 
 RESOURCES += \
-    images.qrc
+        images.qrc
 

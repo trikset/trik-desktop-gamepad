@@ -23,9 +23,9 @@
 #include <QtGui/QKeyEvent>
 
 GamepadForm::GamepadForm()
-	: QWidget()
-	, mUi(new Ui::GamepadForm())
-	, mSocket(new QTcpSocket)
+		: QWidget()
+		, mUi(new Ui::GamepadForm())
+		, mSocket(new QTcpSocket)
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
@@ -46,7 +46,6 @@ void GamepadForm::setUpGamepadForm()
 	retranslate();
 }
 
-/// Function for creating connection between buttons and events
 void GamepadForm::createConnection()
 {
 
@@ -95,16 +94,21 @@ void GamepadForm::createConnection()
 	connect(mUi->ButtonPad2Right, &QPushButton::released, padsReleasedMapper(2));
 }
 
-/// Function for creating menuBar
 void GamepadForm::createMenu()
 {
 	// Path to your local directory. Set up if you don't put .qm files into your debug folder.
-	const QString pathToDir = "";
+	const QString pathToDir = "trikDesktopGamepad";
 
-	const QString russian = pathToDir + "trikDesktopGamepad_ru";
-	const QString english = pathToDir + "trikDesktopGamepad_en";
-	const QString french = pathToDir + "trikDesktopGamepad_fr";
-	const QString german = pathToDir + "trikDesktopGamepad_de";
+	const QString russian = pathToDir + "_ru";
+	const QString english = pathToDir + "_en";
+	const QString french = pathToDir + "_fr";
+	const QString german = pathToDir + "_de";
+
+	// Constants for checkmark setting
+	const int russianId = 0;
+	const int englishId = 1;
+	const int frenchId = 2;
+	const int germanId = 3;
 
 	mMenuBar = QSharedPointer<QMenuBar>(new QMenuBar);
 
@@ -128,10 +132,29 @@ void GamepadForm::createMenu()
 	mFrenchLanguageAction = QSharedPointer<QAction>(new QAction(this));
 	mGermanLanguageAction = QSharedPointer<QAction>(new QAction(this));
 
+	// Set up language actions checkable
+	mEnglishLanguageAction->setCheckable(true);
+	mRussianLanguageAction->setCheckable(true);
+	mFrenchLanguageAction->setCheckable(true);
+	mGermanLanguageAction->setCheckable(true);
+	mEnglishLanguageAction->setChecked(true);
+
+
 	// Declaring lambda-function that calls language handler with correct language.
 	const auto languageHandler = [this](const QString &language) {
 		return [this, language] { changeLanguage(language); };
 	};
+
+	// Declaring lambda-functon that setting up chosen languae
+	const auto checkmarkSetter = [this](const int &id) {
+		return [this, id] { changeCheckmark(id); };
+	};
+
+	connect(mRussianLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(russianId));
+	connect(mEnglishLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(englishId));
+	connect(mFrenchLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(frenchId));
+	connect(mGermanLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(germanId));
+
 
 	// Connecting languages languages to menu items
 	connect(mRussianLanguageAction.data(), &QAction::triggered, this, languageHandler(russian));
@@ -155,7 +178,6 @@ void GamepadForm::createMenu()
 	this->layout()->setMenuBar(mMenuBar.data());
 }
 
-/// Function for creating timer for checking internet connection
 void GamepadForm::createTimer()
 {
 	mTimer = QSharedPointer<QTimer>(new QTimer(this));
@@ -164,7 +186,6 @@ void GamepadForm::createTimer()
 
 }
 
-/// Function for checking connection
 void GamepadForm::checkConnection()
 {
 	const QString successfulConnection = tr("Connected.\nButtons enabled.");
@@ -173,17 +194,16 @@ void GamepadForm::checkConnection()
 	const QString colorGreen = "QLabel {color : green; }";
 
 	if (mSocket.state() != QTcpSocket::ConnectedState) {
-		(mUi->connection)->setText(unsuccessfulConnection);
-		(mUi->connection)->setStyleSheet(colorRed);
+		mUi->connection->setText(unsuccessfulConnection);
+		mUi->connection->setStyleSheet(colorRed);
 		setButtonsEnabled(false);
 	} else {
-		(mUi->connection)->setText(successfulConnection);
-		(mUi->connection)->setStyleSheet(colorGreen);
+		mUi->connection->setText(successfulConnection);
+		mUi->connection->setStyleSheet(colorGreen);
 		setButtonsEnabled(true);
 	}
 }
 
-/// Function for buttons enabled
 void GamepadForm::setButtonsEnabled(bool enabled)
 {
 	// Here we enable or disable pads and "magic buttons" depending on given parameter.
@@ -204,86 +224,83 @@ void GamepadForm::setButtonsEnabled(bool enabled)
 	mUi->buttonPad2Down->setEnabled(enabled);
 }
 
-/// Function for keyPressEvent handling
 void GamepadForm::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
-		case Qt::Key_A:
-			(mUi->buttonPad1Left)->pressed();
-			break;
-		case Qt::Key_S:
-			(mUi->buttonPad1Down)->pressed();
-			break;
-		case Qt::Key_D:
-			(mUi->ButtonPad1Right)->pressed();
-			break;
-		case Qt::Key_W:
-			(mUi->buttonPad1Up)->pressed();
-			break;
-		case Qt::Key_Left:
-			(mUi->buttonPad2Left)->pressed();
-			break;
-		case Qt::Key_Down:
-			(mUi->buttonPad2Down)->pressed();
-			break;
-		case Qt::Key_Right:
-			(mUi->ButtonPad2Right)->pressed();
-			break;
-		case Qt::Key_Up:
-			(mUi->buttonPad2Up)->pressed();
-			break;
-		case Qt::Key_1:
-			(mUi->button1)->pressed();
-			break;
-		case Qt::Key_2:
-			(mUi->button2)->pressed();
-			break;
-		case Qt::Key_3:
-			(mUi->button3)->pressed();
-			break;
-		case Qt::Key_4:
-			(mUi->button4)->pressed();
-			break;
-		case Qt::Key_5:
-			(mUi->button5)->pressed();
-			break;
+	case Qt::Key_A:
+		mUi->buttonPad1Left->pressed();
+		break;
+	case Qt::Key_S:
+		mUi->buttonPad1Down->pressed();
+		break;
+	case Qt::Key_D:
+		mUi->ButtonPad1Right->pressed();
+		break;
+	case Qt::Key_W:
+		mUi->buttonPad1Up->pressed();
+		break;
+	case Qt::Key_Left:
+		mUi->buttonPad2Left->pressed();
+		break;
+	case Qt::Key_Down:
+		mUi->buttonPad2Down->pressed();
+		break;
+	case Qt::Key_Right:
+		mUi->ButtonPad2Right->pressed();
+		break;
+	case Qt::Key_Up:
+		mUi->buttonPad2Up->pressed();
+		break;
+	case Qt::Key_1:
+		mUi->button1->pressed();
+		break;
+	case Qt::Key_2:
+		mUi->button2->pressed();
+		break;
+	case Qt::Key_3:
+		mUi->button3->pressed();
+		break;
+	case Qt::Key_4:
+		mUi->button4->pressed();
+		break;
+	case Qt::Key_5:
+		mUi->button5->pressed();
+		break;
     }
 }
 
-/// Function for handling keyRelease event
 void GamepadForm::keyReleaseEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
-		case Qt::Key_A:
-			(mUi->buttonPad1Left)->released();
-			break;
-		case Qt::Key_S:
-			(mUi->buttonPad1Down)->released();
-			break;
-		case Qt::Key_D:
-			(mUi->ButtonPad1Right)->released();
-			break;
-		case Qt::Key_W:
-			(mUi->buttonPad1Up)->released();
-			break;
-		case Qt::Key_Left:
-			(mUi->buttonPad2Left)->released();
-			break;
-		case Qt::Key_Down:
-			(mUi->buttonPad2Down)->released();
-			break;
-		case Qt::Key_Right:
-			(mUi->ButtonPad2Right)->released();
-			break;
-		case Qt::Key_Up:
-			(mUi->buttonPad2Up)->released();
-			break;
+	case Qt::Key_A:
+		mUi->buttonPad1Left->released();
+		break;
+	case Qt::Key_S:
+		mUi->buttonPad1Down->released();
+		break;
+	case Qt::Key_D:
+		mUi->ButtonPad1Right->released();
+		break;
+	case Qt::Key_W:
+		mUi->buttonPad1Up->released();
+		break;
+	case Qt::Key_Left:
+		mUi->buttonPad2Left->released();
+		break;
+	case Qt::Key_Down:
+		mUi->buttonPad2Down->released();
+		break;
+	case Qt::Key_Right:
+		mUi->ButtonPad2Right->released();
+		break;
+	case Qt::Key_Up:
+		mUi->buttonPad2Up->released();
+		break;
 	}
 }
 
-/// Button pressed event
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
@@ -298,7 +315,6 @@ void GamepadForm::onButtonPressed(int buttonId)
 	}
 }
 
-/// Pad pressed event
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
@@ -311,7 +327,6 @@ void GamepadForm::onPadPressed(const QString &action)
 	}
 }
 
-/// Pad released event
 void GamepadForm::onPadReleased(int padId)
 {
 	// Here we send "pad <padId> up" command.
@@ -324,14 +339,12 @@ void GamepadForm::onPadReleased(int padId)
 	}
 }
 
-/// Function for opening connection dialog
 void GamepadForm::openConnectDialog()
 {
 	mMyNewConnectForm = QSharedPointer<ConnectForm>(new ConnectForm(&mSocket));
 	mMyNewConnectForm.data()->show();
 }
 
-/// Function for exit menu item
 void GamepadForm::exit()
 {
 	qApp->exit();
@@ -374,11 +387,48 @@ void GamepadForm::changeLanguage(const QString &language)
 	mUi->retranslateUi(this);
 }
 
-/// Function for about menu item
+void GamepadForm::changeCheckmark(const int &languageId)
+{
+	switch (languageId) {
+
+	// Russian language
+	case 0:
+		mRussianLanguageAction->setChecked(true);
+		mEnglishLanguageAction->setChecked(false);
+		mFrenchLanguageAction->setChecked(false);
+		mGermanLanguageAction->setChecked(false);
+		break;
+
+	// English language
+	case 1:
+		mRussianLanguageAction->setChecked(false);
+		mEnglishLanguageAction->setChecked(true);
+		mFrenchLanguageAction->setChecked(false);
+		mGermanLanguageAction->setChecked(false);
+		break;
+
+	// French language
+	case 2:
+		mRussianLanguageAction->setChecked(false);
+		mEnglishLanguageAction->setChecked(false);
+		mFrenchLanguageAction->setChecked(true);
+		mGermanLanguageAction->setChecked(false);
+		break;
+
+	// German language
+	case 3:
+		mRussianLanguageAction->setChecked(false);
+		mEnglishLanguageAction->setChecked(false);
+		mFrenchLanguageAction->setChecked(false);
+		mGermanLanguageAction->setChecked(true);
+		break;
+	}
+}
+
 void GamepadForm::about()
 {
 	const QString title = tr("About TRIK Gamepad");
-	const QString about =  tr("TRIK 1.1.0\n\nThis is desktop gamepad for TRIK robots.");
+	const QString about =  tr("TRIK Gamepad 1.1.2\n\nThis is desktop gamepad for TRIK robots.");
 	QMessageBox::about(this, title, about);
 }
 
