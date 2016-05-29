@@ -76,7 +76,6 @@ void GamepadForm::createConnection()
 	connect(mUi->buttonPad2Left, &QPushButton::pressed, padsPressedMapper("pad 2 -100 0"));
 	connect(mUi->ButtonPad2Right, &QPushButton::pressed, padsPressedMapper("pad 2 100 0"));
 
-
 	// Declaring lambda-function that calls "pad released" handler with correct pad id.
 	const auto padsReleasedMapper = [this](int padId) {
 		return [this, padId]() { onPadReleased(padId); };
@@ -145,30 +144,18 @@ void GamepadForm::createMenu()
 		return [this, language] { changeLanguage(language); };
 	};
 
-<<<<<<< HEAD
 	// Declaring lambda-functon that setting up chosen language
-=======
-	// Declaring lambda-functon that setting up chosen languae
->>>>>>> 1e0846e948d707bd488d652e36834c7a34a6f682
 	const auto checkmarkSetter = [this](const int &id) {
 		return [this, id] { changeCheckmark(id); };
 	};
 
-<<<<<<< HEAD
 	// Connecting languages to checkmark
-=======
->>>>>>> 1e0846e948d707bd488d652e36834c7a34a6f682
 	connect(mRussianLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(russianId));
 	connect(mEnglishLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(englishId));
 	connect(mFrenchLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(frenchId));
 	connect(mGermanLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(germanId));
 
-
-<<<<<<< HEAD
 	// Connecting languages to menu items
-=======
-	// Connecting languages languages to menu items
->>>>>>> 1e0846e948d707bd488d652e36834c7a34a6f682
 	connect(mRussianLanguageAction.data(), &QAction::triggered, this, languageHandler(russian));
 	connect(mEnglishLanguageAction.data(), &QAction::triggered, this, languageHandler(english));
 	connect(mFrenchLanguageAction.data(), &QAction::triggered, this, languageHandler(french));
@@ -331,11 +318,11 @@ void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
 	if (mSocket.state() != QTcpSocket::ConnectedState) {
-		return;	
+		return;
 	}
 
 	if (mSocket.write((action + "\n").toLatin1()) == -1) {
-		setButtonsEnabled(false);	
+		setButtonsEnabled(false);
 	}
 }
 
