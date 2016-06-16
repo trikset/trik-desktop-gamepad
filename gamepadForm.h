@@ -62,11 +62,8 @@ private slots:
 	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is released.
 	void onPadReleased(int padId);
 
-	/// Slot for key press event
-	void keyPressEvent(QKeyEvent *event);
-
-	/// Slot for key release event
-	void keyReleaseEvent(QKeyEvent *event);
+	/// Slot for handle key pressing and releasing events
+	bool eventFilter(QObject *obj, QEvent *event);
 
 	/// Slot for checking connection
 	void checkConnection();
@@ -125,6 +122,9 @@ private:
 
 	/// For setting up translator in app
 	QSharedPointer<QTranslator> mTranslator;
+
+	/// Set for saving pressed keys
+	QSet<int> pressedKeys;
 
 	/// For changing language whem another language was chosen
 	void retranslate();

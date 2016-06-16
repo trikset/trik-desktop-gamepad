@@ -29,6 +29,7 @@ GamepadForm::GamepadForm()
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
+	this->installEventFilter(this);
 	setUpGamepadForm();
 }
 
@@ -223,81 +224,131 @@ void GamepadForm::setButtonsEnabled(bool enabled)
 	mUi->buttonPad2Down->setEnabled(enabled);
 }
 
-void GamepadForm::keyPressEvent(QKeyEvent *event)
+bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 {
-	switch (event->key())
-	{
-	case Qt::Key_A:
-		mUi->buttonPad1Left->pressed();
-		break;
-	case Qt::Key_S:
-		mUi->buttonPad1Down->pressed();
-		break;
-	case Qt::Key_D:
-		mUi->ButtonPad1Right->pressed();
-		break;
-	case Qt::Key_W:
-		mUi->buttonPad1Up->pressed();
-		break;
-	case Qt::Key_Left:
-		mUi->buttonPad2Left->pressed();
-		break;
-	case Qt::Key_Down:
-		mUi->buttonPad2Down->pressed();
-		break;
-	case Qt::Key_Right:
-		mUi->ButtonPad2Right->pressed();
-		break;
-	case Qt::Key_Up:
-		mUi->buttonPad2Up->pressed();
-		break;
-	case Qt::Key_1:
-		mUi->button1->pressed();
-		break;
-	case Qt::Key_2:
-		mUi->button2->pressed();
-		break;
-	case Qt::Key_3:
-		mUi->button3->pressed();
-		break;
-	case Qt::Key_4:
-		mUi->button4->pressed();
-		break;
-	case Qt::Key_5:
-		mUi->button5->pressed();
-		break;
-    }
-}
+	// Handle key press event
+	if(event->type()==QEvent::KeyPress) {
 
-void GamepadForm::keyReleaseEvent(QKeyEvent *event)
-{
-	switch (event->key())
-	{
-	case Qt::Key_A:
-		mUi->buttonPad1Left->released();
-		break;
-	case Qt::Key_S:
-		mUi->buttonPad1Down->released();
-		break;
-	case Qt::Key_D:
-		mUi->ButtonPad1Right->released();
-		break;
-	case Qt::Key_W:
-		mUi->buttonPad1Up->released();
-		break;
-	case Qt::Key_Left:
-		mUi->buttonPad2Left->released();
-		break;
-	case Qt::Key_Down:
-		mUi->buttonPad2Down->released();
-		break;
-	case Qt::Key_Right:
-		mUi->ButtonPad2Right->released();
-		break;
-	case Qt::Key_Up:
-		mUi->buttonPad2Up->released();
-		break;
+		pressedKeys += ((QKeyEvent*)event)->key();
+
+		// Handle W A S D buttons
+		if (pressedKeys.contains(Qt::Key_W) && pressedKeys.contains(Qt::Key_A))
+		{
+			onPadPressed("pad 1 -100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_W) && pressedKeys.contains(Qt::Key_D))
+		{
+			onPadPressed("pad 1 100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_A))
+		{
+			onPadPressed("pad 1 -100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_D))
+		{
+			onPadPressed("pad 1 100 -100");
+		}
+		else if ((pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_W)) ||
+			  (pressedKeys.contains(Qt::Key_A) && pressedKeys.contains(Qt::Key_D)))
+		{
+			onPadPressed("pad 1 0 0");
+		}
+		else if (pressedKeys.contains(Qt::Key_A))
+		{
+			mUi->buttonPad1Left->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_S))
+		{
+			mUi->buttonPad1Down->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_D))
+		{
+			mUi->ButtonPad1Right->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_W))
+		{
+			mUi->buttonPad1Up->pressed();
+		}
+
+		// Handle arrow buttons
+		else if (pressedKeys.contains(Qt::Key_Up) && pressedKeys.contains(Qt::Key_Left))
+		{
+			onPadPressed("pad 2 -100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_Up) && pressedKeys.contains(Qt::Key_Right))
+		{
+			onPadPressed("pad 2 100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Left))
+		{
+			onPadPressed("pad 2 -100 100");
+		}
+		else if (pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Right))
+		{
+			onPadPressed("pad 2 100 -100");
+		}
+		else if ((pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Up)) ||
+			 (pressedKeys.contains(Qt::Key_Left) && pressedKeys.contains(Qt::Key_Right)))
+		{
+			onPadPressed("pad 2 0 0");
+		}
+		else if (pressedKeys.contains(Qt::Key_Left))
+		{
+			mUi->buttonPad2Left->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_Down))
+		{
+			mUi->buttonPad2Down->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_Right))
+		{
+			mUi->ButtonPad2Right->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_Up))
+		{
+			mUi->buttonPad2Up->pressed();
+		}
+
+		// Handle 1 2 3 4 5 buttons
+		else if (pressedKeys.contains(Qt::Key_1))
+		{
+			mUi->button1->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_2))
+		{
+			mUi->button2->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_3))
+		{
+			mUi->button3->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_4))
+		{
+			mUi->button4->pressed();
+		}
+		else if (pressedKeys.contains(Qt::Key_5))
+		{
+			mUi->button5->pressed();
+		}
 	}
+
+	// Handle key release event
+	else if(event->type()==QEvent::KeyRelease)
+	{
+		if(pressedKeys.contains(Qt::Key_W) || pressedKeys.contains(Qt::Key_A)
+			|| pressedKeys.contains(Qt::Key_S) || pressedKeys.contains(Qt::Key_D))
+		{
+			onPadReleased(1);
+		}
+		else if (pressedKeys.contains(Qt::Key_Up) || pressedKeys.contains(Qt::Key_Left)
+			 || pressedKeys.contains(Qt::Key_Down) || pressedKeys.contains(Qt::Key_Right))
+		{
+			onPadReleased(2);
+		}
+		pressedKeys -= ((QKeyEvent*)event)->key();
+	}
+
+	return false;
 }
 
 void GamepadForm::onButtonPressed(int buttonId)
