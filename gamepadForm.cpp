@@ -226,123 +226,110 @@ void GamepadForm::setButtonsEnabled(bool enabled)
 
 bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 {
+	int resultingPowerX1 = 0;
+	int resultingPowerY1 = 0;
+	int resultingPowerX2 = 0;
+	int resultingPowerY2 = 0;
+
 	// Handle key press event
 	if(event->type()==QEvent::KeyPress) {
 
 		pressedKeys += ((QKeyEvent*)event)->key();
 
 		// Handle W A S D buttons
-		if (pressedKeys.contains(Qt::Key_W) && pressedKeys.contains(Qt::Key_A))
-		{
-			onPadPressed("pad 1 -100 100");
+		if (pressedKeys.contains(Qt::Key_A)) {
+			resultingPowerX1 += -100;
 		}
-		else if (pressedKeys.contains(Qt::Key_W) && pressedKeys.contains(Qt::Key_D))
-		{
-			onPadPressed("pad 1 100 100");
+		if (pressedKeys.contains(Qt::Key_S)) {
+			resultingPowerY1 += -100;
 		}
-		else if (pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_A))
-		{
-			onPadPressed("pad 1 -100 100");
+		if (pressedKeys.contains(Qt::Key_D)) {
+			resultingPowerX1 += 100;
 		}
-		else if (pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_D))
-		{
-			onPadPressed("pad 1 100 -100");
-		}
-		else if ((pressedKeys.contains(Qt::Key_S) && pressedKeys.contains(Qt::Key_W)) ||
-			  (pressedKeys.contains(Qt::Key_A) && pressedKeys.contains(Qt::Key_D)))
-		{
-			onPadPressed("pad 1 0 0");
-		}
-		else if (pressedKeys.contains(Qt::Key_A))
-		{
-			mUi->buttonPad1Left->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_S))
-		{
-			mUi->buttonPad1Down->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_D))
-		{
-			mUi->ButtonPad1Right->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_W))
-		{
-			mUi->buttonPad1Up->pressed();
+		if (pressedKeys.contains(Qt::Key_W)) {
+			resultingPowerY1 += 100;
 		}
 
 		// Handle arrow buttons
-		else if (pressedKeys.contains(Qt::Key_Up) && pressedKeys.contains(Qt::Key_Left))
-		{
-			onPadPressed("pad 2 -100 100");
+		if (pressedKeys.contains(Qt::Key_Left)) {
+			resultingPowerX2 += -100;
 		}
-		else if (pressedKeys.contains(Qt::Key_Up) && pressedKeys.contains(Qt::Key_Right))
-		{
-			onPadPressed("pad 2 100 100");
+		if (pressedKeys.contains(Qt::Key_Down)) {
+			resultingPowerY2 += -100;
 		}
-		else if (pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Left))
-		{
-			onPadPressed("pad 2 -100 100");
+		if (pressedKeys.contains(Qt::Key_Right)) {
+			resultingPowerX2 += 100;
 		}
-		else if (pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Right))
-		{
-			onPadPressed("pad 2 100 -100");
-		}
-		else if ((pressedKeys.contains(Qt::Key_Down) && pressedKeys.contains(Qt::Key_Up)) ||
-			 (pressedKeys.contains(Qt::Key_Left) && pressedKeys.contains(Qt::Key_Right)))
-		{
-			onPadPressed("pad 2 0 0");
-		}
-		else if (pressedKeys.contains(Qt::Key_Left))
-		{
-			mUi->buttonPad2Left->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_Down))
-		{
-			mUi->buttonPad2Down->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_Right))
-		{
-			mUi->ButtonPad2Right->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_Up))
-		{
-			mUi->buttonPad2Up->pressed();
+		if (pressedKeys.contains(Qt::Key_Up)) {
+			resultingPowerY2 += 100;
 		}
 
 		// Handle 1 2 3 4 5 buttons
-		else if (pressedKeys.contains(Qt::Key_1))
-		{
+		if (pressedKeys.contains(Qt::Key_1)) {
 			mUi->button1->pressed();
 		}
-		else if (pressedKeys.contains(Qt::Key_2))
-		{
+		else if (pressedKeys.contains(Qt::Key_2)) {
 			mUi->button2->pressed();
 		}
-		else if (pressedKeys.contains(Qt::Key_3))
-		{
+		else if (pressedKeys.contains(Qt::Key_3)) {
 			mUi->button3->pressed();
 		}
-		else if (pressedKeys.contains(Qt::Key_4))
-		{
+		else if (pressedKeys.contains(Qt::Key_4)) {
 			mUi->button4->pressed();
 		}
-		else if (pressedKeys.contains(Qt::Key_5))
-		{
+		else if (pressedKeys.contains(Qt::Key_5)) {
 			mUi->button5->pressed();
+		}
+
+		std::string s;
+		if ((resultingPowerX1 == 0 || resultingPowerY1 == 0) && (resultingPowerX2 != 0 || resultingPowerY2 != 0)) {
+			s += "pad 2 ";
+			s += std::to_string(resultingPowerX2) + " " + std::to_string(resultingPowerY2);
+			QString qstr = QString::fromStdString(s);
+			onPadPressed(qstr);
+
+		}
+		else if ((resultingPowerX1 != 0 || resultingPowerY1 != 0) && (resultingPowerX2 == 0 || resultingPowerY2 == 0)) {
+			s += "pad 1 ";
+			s += std::to_string(resultingPowerX1) + " " + std::to_string(resultingPowerY1);
+			QString qstr = QString::fromStdString(s);
+			onPadPressed(qstr);
 		}
 	}
 
 	// Handle key release event
-	else if(event->type()==QEvent::KeyRelease)
-	{
+	else if(event->type()==QEvent::KeyRelease) {
+		if (pressedKeys.contains(Qt::Key_A)) {
+			resultingPowerX1 += 100;
+		}
+		if (pressedKeys.contains(Qt::Key_W)) {
+			resultingPowerY1 += -100;
+		}
+		if (pressedKeys.contains(Qt::Key_D)) {
+			resultingPowerX1 += -100;
+		}
+		if (pressedKeys.contains(Qt::Key_S)) {
+			resultingPowerY1 += 100;
+		}
+		if (pressedKeys.contains(Qt::Key_Left)) {
+			resultingPowerX2 += 100;
+		}
+		if (pressedKeys.contains(Qt::Key_Up)) {
+			resultingPowerY2 += -100;
+		}
+		if (pressedKeys.contains(Qt::Key_Right)) {
+			resultingPowerX2 += -100;
+		}
+		if (pressedKeys.contains(Qt::Key_Down)) {
+			resultingPowerY2 += 100;
+		}
+
 		if(pressedKeys.contains(Qt::Key_W) || pressedKeys.contains(Qt::Key_A)
-			|| pressedKeys.contains(Qt::Key_S) || pressedKeys.contains(Qt::Key_D))
-		{
+			|| pressedKeys.contains(Qt::Key_S) || pressedKeys.contains(Qt::Key_D)) {
 			onPadReleased(1);
 		}
 		else if (pressedKeys.contains(Qt::Key_Up) || pressedKeys.contains(Qt::Key_Left)
-			 || pressedKeys.contains(Qt::Key_Down) || pressedKeys.contains(Qt::Key_Right))
-		{
+			 || pressedKeys.contains(Qt::Key_Down) || pressedKeys.contains(Qt::Key_Right)) {
 			onPadReleased(2);
 		}
 		pressedKeys -= ((QKeyEvent*)event)->key();

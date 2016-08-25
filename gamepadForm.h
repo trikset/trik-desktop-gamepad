@@ -23,7 +23,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QTranslator>
-
+#include <QtWidgets/QShortcut>
 #include "connectForm.h"
 
 namespace Ui {
@@ -126,6 +126,7 @@ private:
 	/// Set for saving pressed keys
 	QSet<int> pressedKeys;
 
+	QSharedPointer<QShortcut> shortcut;
 	/// For changing language whem another language was chosen
 	void retranslate();
 
