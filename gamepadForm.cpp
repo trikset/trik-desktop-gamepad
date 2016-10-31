@@ -214,9 +214,14 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 	// Handle key press event
 	if(event->type() == QEvent::KeyPress) {
 
+		mPressedKeys += ((QKeyEvent*) event)->key();
 
 		// Handle W A S D buttons
+		resultingPowerX1 = (mPressedKeys.contains(Qt::Key_D) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_A) ? -100 : 0);
+		resultingPowerY1 = (mPressedKeys.contains(Qt::Key_S) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_W) ? 100 : 0);
 		// Handle arrow buttons
+		resultingPowerX2 = (mPressedKeys.contains(Qt::Key_Right) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_Left) ? -100 : 0);
+		resultingPowerY2 = (mPressedKeys.contains(Qt::Key_Down) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
 
 		if (resultingPowerX1 != 0 || resultingPowerY1 != 0) {
 			onPadPressed(QString("pad 1 %1 %2").arg(resultingPowerX1).arg(resultingPowerY1));
@@ -227,9 +232,14 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 		// Handle 1 2 3 4 5 buttons
 		QMap<int, QPushButton *> digits = {
 				{Qt::Key_1, mUi->button1}
+				, {Qt::Key_2, mUi->button2}
+				, {Qt::Key_3, mUi->button3}
+				, {Qt::Key_4, mUi->button4}
+				, {Qt::Key_5, mUi->button5}
 		};
 
 		for (auto key : digits.keys()) {
+			if (mPressedKeys.contains(key)) {
 				digits[key]->pressed();
 			}
 		}
@@ -240,6 +250,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
 
 		auto releasedKey = ((QKeyEvent*) event)->key();
+		mPressedKeys -= releasedKey;
 
 		if (pad1.contains(releasedKey)) {
 			onPadReleased(1);
