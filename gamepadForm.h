@@ -53,14 +53,17 @@ public slots:
 
 private slots:
 
-	/// Slot for gamepad "magic" buttons.
+	/// Slots for gamepad "magic" buttons.
 	void onButtonPressed(int buttonId);
+	void handleDigitPress(QWidget*);
 
-	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is pressed.
+	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is pressed.
 	void onPadPressed(const QString &action);
+	void handlePadPress(QWidget*);
 
-	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is released.
+	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is released.
 	void onPadReleased(int padId);
+	void handlePadRelease(QWidget*);
 
 	/// Slot for handle key pressing and releasing events
 	bool eventFilter(QObject *obj, QEvent *event);
@@ -138,8 +141,4 @@ private:
 	QSignalMapper *mMapperPadReleased;
 	QSignalMapper *mMapperDigitPressed;
 
-	private slots:
-		void handlePadRelease(QWidget*);
-		void handlePadPress(QWidget*);
-		void handleDigitPress(QWidget*);
 };
