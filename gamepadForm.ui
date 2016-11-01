@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
+    <width>441</width>
     <height>404</height>
    </rect>
   </property>
@@ -40,6 +40,12 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>412</width>
+       <height>146</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">border-image:url(:/images/logo-eng.png);</string>
      </property>
@@ -48,12 +54,12 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="QWidget" name="widget_5" native="true">
      <property name="maximumSize">
       <size>
        <width>800</width>
-       <height>100</height>
+       <height>80</height>
       </size>
      </property>
      <property name="layoutDirection">
@@ -62,10 +68,16 @@
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="1">
        <widget class="QPushButton" name="button1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>40</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
         <property name="focusPolicy">
@@ -75,7 +87,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/23-1.png);</string>
+         <string notr="true">border-image: url(:/images/button1.png);</string>
         </property>
         <property name="text">
          <string/>
@@ -84,17 +96,23 @@
       </item>
       <item row="1" column="2">
        <widget class="QPushButton" name="button2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>40</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/23-2.png);</string>
+         <string notr="true">border-image: url(:/images/button2.png);</string>
         </property>
         <property name="text">
          <string/>
@@ -103,17 +121,23 @@
       </item>
       <item row="1" column="5">
        <widget class="QPushButton" name="button5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>40</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/23-5.png);</string>
+         <string notr="true">border-image: url(:/images/button5.png);</string>
         </property>
         <property name="text">
          <string/>
@@ -122,17 +146,23 @@
       </item>
       <item row="1" column="3">
        <widget class="QPushButton" name="button3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>40</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/23-3.png);</string>
+         <string notr="true">border-image: url(:/images/button3.png);</string>
         </property>
         <property name="text">
          <string/>
@@ -141,17 +171,23 @@
       </item>
       <item row="1" column="4">
        <widget class="QPushButton" name="button4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>40</height>
+          <width>50</width>
+          <height>50</height>
          </size>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/23-4.png);</string>
+         <string notr="true">border-image: url(:/images/button4.png);</string>
         </property>
         <property name="text">
          <string/>
@@ -178,35 +214,74 @@ Buttons disabled.</string>
      <zorder>connection</zorder>
     </widget>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="QSplitter" name="splitter">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>423</width>
+       <height>148</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>423</width>
+       <height>148</height>
+      </size>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>209</width>
+        <height>148</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>200</width>
-        <height>200</height>
+        <width>209</width>
+        <height>148</height>
        </size>
       </property>
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
        <item row="0" column="1">
         <widget class="QPushButton" name="buttonPad1Up">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_up.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowUp.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -216,16 +291,22 @@ Buttons disabled.</string>
        <item row="1" column="0">
         <widget class="QPushButton" name="buttonPad1Left">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_left.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowLeft.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -235,16 +316,22 @@ Buttons disabled.</string>
        <item row="1" column="1">
         <widget class="QPushButton" name="buttonPad1Down">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_down.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowDown.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -257,16 +344,22 @@ Buttons disabled.</string>
           <bool>true</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_right.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowRight.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -277,15 +370,21 @@ Buttons disabled.</string>
      </widget>
      <widget class="QWidget" name="widget_2" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>209</width>
+        <height>148</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>200</width>
-        <height>200</height>
+        <width>209</width>
+        <height>148</height>
        </size>
       </property>
       <property name="accessibleDescription">
@@ -298,16 +397,22 @@ Buttons disabled.</string>
        <item row="1" column="0">
         <widget class="QPushButton" name="buttonPad2Left">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_left.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowLeft.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -317,16 +422,22 @@ Buttons disabled.</string>
        <item row="0" column="1">
         <widget class="QPushButton" name="buttonPad2Up">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_up.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowUp.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -336,16 +447,22 @@ Buttons disabled.</string>
        <item row="1" column="1">
         <widget class="QPushButton" name="buttonPad2Down">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_down.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowDown.png);</string>
          </property>
          <property name="text">
           <string/>
@@ -355,16 +472,22 @@ Buttons disabled.</string>
        <item row="1" column="2">
         <widget class="QPushButton" name="buttonPad2Right">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/arrow_right.jpg);</string>
+          <string notr="true">border-image: url(:/images/arrowRight.png);</string>
          </property>
          <property name="text">
           <string/>

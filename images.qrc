@@ -1,14 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/23-1.png</file>
-        <file>images/23-2.png</file>
-        <file>images/23-3.png</file>
-        <file>images/23-4.png</file>
-        <file>images/23-5.png</file>
-        <file>images/arrow_down.jpg</file>
-        <file>images/arrow_left.jpg</file>
-        <file>images/arrow_right.jpg</file>
-        <file>images/arrow_up.jpg</file>
         <file>images/logo-eng.png</file>
+        <file>images/arrowDown.png</file>
+        <file>images/arrowLeft.png</file>
+        <file>images/arrowRight.png</file>
+        <file>images/arrowUp.png</file>
+        <file>images/button1.png</file>
+        <file>images/button2.png</file>
+        <file>images/button3.png</file>
+        <file>images/button4.png</file>
+        <file>images/button5.png</file>
     </qresource>
 </RCC>
