@@ -12,14 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov to make it comply with the requirements of trikRuntime
+ * This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #pragma once
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QMenuBar>
 #include <QtNetwork/QTcpSocket>
-#include <QtCore/QScopedPointer>
+#include <QtCore/QTimer>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QTranslator>
+#include <QtWidgets/QShortcut>
+#include "connectForm.h"
 
 namespace Ui {
 class GamepadForm;
@@ -33,12 +38,20 @@ class GamepadForm : public QWidget
 public:
 	/// Constructor.
 	GamepadForm();
-
 	~GamepadForm() override;
 
+public slots:
+
+	/// Slot for opening connect dialog
+	void openConnectDialog();
+
+	/// Slot for exit menu item
+	void exit();
+
+	/// Slot for about menu item
+	void about();
+
 private slots:
-	/// Slot for "Connect" button.
-	void onConnectButtonClicked();
 
 	/// Slot for gamepad "magic" buttons.
 	void onButtonPressed(int buttonId);
@@ -49,6 +62,30 @@ private slots:
 	/// Slot for pad buttons (Up, Down, Left, Right), triggered when button is released.
 	void onPadReleased(int padId);
 
+	/// Slot for handle key pressing and releasing events
+	bool eventFilter(QObject *obj, QEvent *event);
+
+	/// Slot for checking connection
+	void checkConnection();
+
+	/// Slot for creating menu bar
+	void createMenu();
+
+	/// Slot for creating timer for checking internet connection
+	void createTimer();
+
+	/// Slot for creating connections between buttons and events
+	void createConnection();
+
+	/// Slot for changing languages, triggered when click on needed language
+	void changeLanguage(const QString &language);
+
+	/// Slot for changing checkmark when language was changed
+	void changeCheckmark(const int &languageId);
+
+	/// Helper method for setting up gamepadForm
+	void setUpGamepadForm();
+
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
@@ -58,4 +95,42 @@ private:
 
 	/// TCP Socket object that handles network communication with TRIK.
 	QTcpSocket mSocket;
+
+	/// For opening dialog from gamepadForm
+	QSharedPointer<ConnectForm> mMyNewConnectForm;
+
+	/// For creating menu bar
+	QSharedPointer<QMenuBar> mMenuBar;
+
+	/// For creating connection menu
+	QSharedPointer<QMenu> mConnectionMenu;
+	QSharedPointer<QMenu> mLanguageMenu;
+
+	/// Timer for checking connection
+	QSharedPointer<QTimer> mTimer;
+
+	/// Menu actions
+	QSharedPointer<QAction> mConnectAction;
+	QSharedPointer<QAction> mExitAction;
+	QSharedPointer<QAction> mAboutAction;
+
+	/// Languages actions
+	QSharedPointer<QAction> mRussianLanguageAction;
+	QSharedPointer<QAction> mEnglishLanguageAction;
+	QSharedPointer<QAction> mFrenchLanguageAction;
+	QSharedPointer<QAction> mGermanLanguageAction;
+
+	/// For setting up translator in app
+	QSharedPointer<QTranslator> mTranslator;
+
+	/// Set for saving pressed keys
+	QSet<int> pressedKeys;
+
+	QSharedPointer<QShortcut> shortcut;
+	/// For changing language whem another language was chosen
+	void retranslate();
+
+	/// For catching up event when language was changed
+	void changeEvent(QEvent *event);
+
 };

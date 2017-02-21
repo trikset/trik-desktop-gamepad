@@ -1,4 +1,4 @@
-/* Copyright 2015-2016 CyberTech Labs Ltd.
+/* Copyright 2015-2016 Mikhail Wall.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,5 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	GamepadForm w;
 	w.show();
-
 	return a.exec();
 }
