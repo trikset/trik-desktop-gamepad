@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
+ * This file was modified by Yurii Litvinov, Aleksei Alekseev and Mikhail Wall to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #include "gamepadForm.h"
@@ -25,7 +25,6 @@
 GamepadForm::GamepadForm()
 		: QWidget()
 		, mUi(new Ui::GamepadForm())
-		, mSocket(new QTcpSocket)
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
@@ -49,88 +48,86 @@ void GamepadForm::setUpGamepadForm()
 
 void GamepadForm::createConnection()
 {
+	mMapperPadPressed = new QSignalMapper(this);
+	mMapperPadReleased = new QSignalMapper(this);
+	mMapperDigitPressed = new QSignalMapper(this);
 
-	const auto buttonClickedMapper = [this](int buttonId) {
-		return [this, buttonId]() { onButtonPressed(buttonId); };
+	mPadHashtable = {
+			{mUi->buttonPad1Up, {1, 0, 100}}
+			, {mUi->buttonPad1Down, {1, 0, -100}}
+			, {mUi->buttonPad1Right, {1, 100, 0}}
+			, {mUi->buttonPad1Left, {1, -100, 0}}
+			, {mUi->buttonPad2Up, {2, 0, 100}}
+			, {mUi->buttonPad2Down, {2, 0, -100}}
+			, {mUi->buttonPad2Right, {2, 100 ,0}}
+			, {mUi->buttonPad2Left, {2, -100, 0}}
 	};
 
-	// Connecting buttons to handler using this function.
-	connect(mUi->button1, &QPushButton::pressed, buttonClickedMapper(1));
-	connect(mUi->button2, &QPushButton::pressed, buttonClickedMapper(2));
-	connect(mUi->button3, &QPushButton::pressed, buttonClickedMapper(3));
-	connect(mUi->button4, &QPushButton::pressed, buttonClickedMapper(4));
-	connect(mUi->button5, &QPushButton::pressed, buttonClickedMapper(5));
+	for (auto button : mPadHashtable.keys()) {
+		connect(button, SIGNAL(pressed()), mMapperPadPressed, SLOT(map()));
+		mMapperPadPressed->setMapping(button, button);
+		connect(button, SIGNAL(released()), mMapperPadReleased, SLOT(map()));
+		mMapperPadReleased->setMapping(button, button);
+	}
 
-	// Declaring lambda-function that calls "pad pressed" handler with correct command.
-	const auto padsPressedMapper = [this](const QString &command) {
-		return [this, command]() { onPadPressed(command); };
+	connect(mMapperPadPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handlePadPress(QWidget*)));
+	connect(mMapperPadReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handlePadRelease(QWidget*)));
+
+	mDigitHashtable = {
+			{mUi->button1, 1}
+			, {mUi->button2, 2}
+			, {mUi->button3, 3}
+			, {mUi->button4, 4}
+			, {mUi->button5, 5}
 	};
 
-	// Connecting pads to "pad pressed" handler.
-	connect(mUi->buttonPad1Up, &QPushButton::pressed, padsPressedMapper("pad 1 0 100"));
-	connect(mUi->buttonPad1Down, &QPushButton::pressed, padsPressedMapper("pad 1 0 -100"));
-	connect(mUi->buttonPad1Left, &QPushButton::pressed, padsPressedMapper("pad 1 -100 0"));
-	connect(mUi->ButtonPad1Right, &QPushButton::pressed, padsPressedMapper("pad 1 100 0"));
+	for (auto button : mDigitHashtable.keys()) {
+		connect(button, SIGNAL(pressed()), mMapperDigitPressed, SLOT(map()));
+		mMapperDigitPressed->setMapping(button, button);
+	}
 
-	connect(mUi->buttonPad2Up, &QPushButton::pressed, padsPressedMapper("pad 2 0 100"));
-	connect(mUi->buttonPad2Down, &QPushButton::pressed, padsPressedMapper("pad 2 0 -100"));
-	connect(mUi->buttonPad2Left, &QPushButton::pressed, padsPressedMapper("pad 2 -100 0"));
-	connect(mUi->ButtonPad2Right, &QPushButton::pressed, padsPressedMapper("pad 2 100 0"));
+	connect(mMapperDigitPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitPress(QWidget*)));
 
-	// Declaring lambda-function that calls "pad released" handler with correct pad id.
-	const auto padsReleasedMapper = [this](int padId) {
-		return [this, padId]() { onPadReleased(padId); };
-	};
-
-	// Connecting pads to "pad released" handler.
-	connect(mUi->buttonPad1Up, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->buttonPad1Down, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->buttonPad1Left, &QPushButton::released, padsReleasedMapper(1));
-	connect(mUi->ButtonPad1Right, &QPushButton::released, padsReleasedMapper(1));
-
-	connect(mUi->buttonPad2Up, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->buttonPad2Down, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->buttonPad2Left, &QPushButton::released, padsReleasedMapper(2));
-	connect(mUi->ButtonPad2Right, &QPushButton::released, padsReleasedMapper(2));
 }
 
 void GamepadForm::createMenu()
 {
 	// Path to your local directory. Set up if you don't put .qm files into your debug folder.
-	const QString pathToDir = "trikDesktopGamepad";
+	const QString pathToDir = "languages/trikDesktopGamepad";
 
 	const QString russian = pathToDir + "_ru";
 	const QString english = pathToDir + "_en";
 	const QString french = pathToDir + "_fr";
 	const QString german = pathToDir + "_de";
 
-	// Constants for checkmark setting
-	const int russianId = 0;
-	const int englishId = 1;
-	const int frenchId = 2;
-	const int germanId = 3;
+	mMenuBar = new QMenuBar(this);
 
-	mMenuBar = QSharedPointer<QMenuBar>(new QMenuBar);
+	mConnectionMenu = new QMenu(this);
+	mMenuBar->addMenu(mConnectionMenu);
 
-	mConnectionMenu = QSharedPointer<QMenu>(new QMenu);
-	mMenuBar.data()->addMenu(mConnectionMenu.data());
+	mLanguageMenu=  new QMenu(this);
+	mMenuBar->addMenu(mLanguageMenu);
 
-	mLanguageMenu = QSharedPointer<QMenu>(new QMenu);
-	mMenuBar.data()->addMenu(mLanguageMenu.data());
-
-	mConnectAction = QSharedPointer<QAction>(new QAction(this));
+	mConnectAction = new QAction(this);
 	// Set to QKeySequence for Ctrl+N shortcut
 	mConnectAction->setShortcuts(QKeySequence::New);
-	connect(mConnectAction.data(), &QAction::triggered, this, &GamepadForm::openConnectDialog);
+	connect(mConnectAction, &QAction::triggered, this, &GamepadForm::openConnectDialog);
 
-	mExitAction = QSharedPointer<QAction>(new QAction(this));
+	mExitAction = new QAction(this);
 	mExitAction->setShortcuts(QKeySequence::Quit);
-	connect(mExitAction.data(), &QAction::triggered, this, &GamepadForm::exit);
+	connect(mExitAction, &QAction::triggered, this, &GamepadForm::exit);
 
-	mRussianLanguageAction = QSharedPointer<QAction>(new QAction(this));
-	mEnglishLanguageAction = QSharedPointer<QAction>(new QAction(this));
-	mFrenchLanguageAction = QSharedPointer<QAction>(new QAction(this));
-	mGermanLanguageAction = QSharedPointer<QAction>(new QAction(this));
+	mRussianLanguageAction = new QAction(this);
+	mEnglishLanguageAction = new QAction(this);
+	mFrenchLanguageAction = new QAction(this);
+	mGermanLanguageAction = new QAction(this);
+
+	mLanguages = new QActionGroup(this);
+	mLanguages->addAction(mRussianLanguageAction);
+	mLanguages->addAction(mEnglishLanguageAction);
+	mLanguages->addAction(mFrenchLanguageAction);
+	mLanguages->addAction(mGermanLanguageAction);
+	mLanguages->setExclusive(true);
 
 	// Set up language actions checkable
 	mEnglishLanguageAction->setCheckable(true);
@@ -139,51 +136,32 @@ void GamepadForm::createMenu()
 	mGermanLanguageAction->setCheckable(true);
 	mEnglishLanguageAction->setChecked(true);
 
-
-	// Declaring lambda-function that calls language handler with correct language.
-	const auto languageHandler = [this](const QString &language) {
-		return [this, language] { changeLanguage(language); };
-	};
-
-	// Declaring lambda-functon that setting up chosen language
-	const auto checkmarkSetter = [this](const int &id) {
-		return [this, id] { changeCheckmark(id); };
-	};
-
-	// Connecting languages to checkmark
-	connect(mRussianLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(russianId));
-	connect(mEnglishLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(englishId));
-	connect(mFrenchLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(frenchId));
-	connect(mGermanLanguageAction.data(), &QAction::triggered, this, checkmarkSetter(germanId));
-
 	// Connecting languages to menu items
-	connect(mRussianLanguageAction.data(), &QAction::triggered, this, languageHandler(russian));
-	connect(mEnglishLanguageAction.data(), &QAction::triggered, this, languageHandler(english));
-	connect(mFrenchLanguageAction.data(), &QAction::triggered, this, languageHandler(french));
-	connect(mGermanLanguageAction.data(), &QAction::triggered, this, languageHandler(german));
+	connect(mRussianLanguageAction, &QAction::triggered, this, [this, russian](){changeLanguage(russian);});
+	connect(mEnglishLanguageAction, &QAction::triggered, this, [this, english](){changeLanguage(english);});
+	connect(mFrenchLanguageAction, &QAction::triggered, this, [this, french](){changeLanguage(french);});
+	connect(mGermanLanguageAction, &QAction::triggered, this, [this, german](){changeLanguage(german);});
 
-	mAboutAction = QSharedPointer<QAction>(new QAction(this));
-	connect(mAboutAction.data(), &QAction::triggered, this, &GamepadForm::about);
+	mAboutAction = new QAction(this);
+	connect(mAboutAction, &QAction::triggered, this, &GamepadForm::about);
 
-	mConnectionMenu->addAction(mConnectAction.data());
-	mConnectionMenu->addAction(mExitAction.data());
+	mConnectionMenu->addAction(mConnectAction);
+	mConnectionMenu->addAction(mExitAction);
 
-	mLanguageMenu->addAction(mRussianLanguageAction.data());
-	mLanguageMenu->addAction(mEnglishLanguageAction.data());
-	mLanguageMenu->addAction(mFrenchLanguageAction.data());
-	mLanguageMenu->addAction(mGermanLanguageAction.data());
+	mLanguageMenu->addAction(mRussianLanguageAction);
+	mLanguageMenu->addAction(mEnglishLanguageAction);
+	mLanguageMenu->addAction(mFrenchLanguageAction);
+	mLanguageMenu->addAction(mGermanLanguageAction);
 
-	mMenuBar->addAction(mAboutAction.data());
+	mMenuBar->addAction(mAboutAction);
 
-	this->layout()->setMenuBar(mMenuBar.data());
+	this->layout()->setMenuBar(mMenuBar);
 }
 
 void GamepadForm::createTimer()
 {
-	mTimer = QSharedPointer<QTimer>(new QTimer(this));
-	connect(mTimer.data(), &QTimer::timeout, this, &GamepadForm::checkConnection);
-	mTimer.data()->start(1000);
-
+	connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkConnection);
+	mTimer.start(1000);
 }
 
 void GamepadForm::checkConnection()
@@ -214,125 +192,71 @@ void GamepadForm::setButtonsEnabled(bool enabled)
 	mUi->button5->setEnabled(enabled);
 
 	mUi->buttonPad1Left->setEnabled(enabled);
-	mUi->ButtonPad1Right->setEnabled(enabled);
+	mUi->buttonPad1Right->setEnabled(enabled);
 	mUi->buttonPad1Up->setEnabled(enabled);
 	mUi->buttonPad1Down->setEnabled(enabled);
 
 	mUi->buttonPad2Left->setEnabled(enabled);
-	mUi->ButtonPad2Right->setEnabled(enabled);
+	mUi->buttonPad2Right->setEnabled(enabled);
 	mUi->buttonPad2Up->setEnabled(enabled);
 	mUi->buttonPad2Down->setEnabled(enabled);
 }
 
 bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 {
+	Q_UNUSED(obj)
+
 	int resultingPowerX1 = 0;
 	int resultingPowerY1 = 0;
 	int resultingPowerX2 = 0;
 	int resultingPowerY2 = 0;
 
 	// Handle key press event
-	if(event->type()==QEvent::KeyPress) {
+	if(event->type() == QEvent::KeyPress) {
 
-		pressedKeys += ((QKeyEvent*)event)->key();
+		mPressedKeys += ((QKeyEvent*) event)->key();
 
 		// Handle W A S D buttons
-		if (pressedKeys.contains(Qt::Key_A)) {
-			resultingPowerX1 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_S)) {
-			resultingPowerY1 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_D)) {
-			resultingPowerX1 += 100;
-		}
-		if (pressedKeys.contains(Qt::Key_W)) {
-			resultingPowerY1 += 100;
-		}
-
+		resultingPowerX1 = (mPressedKeys.contains(Qt::Key_D) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_A) ? -100 : 0);
+		resultingPowerY1 = (mPressedKeys.contains(Qt::Key_S) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_W) ? 100 : 0);
 		// Handle arrow buttons
-		if (pressedKeys.contains(Qt::Key_Left)) {
-			resultingPowerX2 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_Down)) {
-			resultingPowerY2 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_Right)) {
-			resultingPowerX2 += 100;
-		}
-		if (pressedKeys.contains(Qt::Key_Up)) {
-			resultingPowerY2 += 100;
+		resultingPowerX2 = (mPressedKeys.contains(Qt::Key_Right) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_Left) ? -100 : 0);
+		resultingPowerY2 = (mPressedKeys.contains(Qt::Key_Down) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
+
+		if (resultingPowerX1 != 0 || resultingPowerY1 != 0) {
+			onPadPressed(QString("pad 1 %1 %2").arg(resultingPowerX1).arg(resultingPowerY1));
+		} else if (resultingPowerX2 != 0 || resultingPowerY2 != 0) {
+			onPadPressed(QString("pad 2 %1 %2").arg(resultingPowerX2).arg(resultingPowerY2));
 		}
 
 		// Handle 1 2 3 4 5 buttons
-		if (pressedKeys.contains(Qt::Key_1)) {
-			mUi->button1->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_2)) {
-			mUi->button2->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_3)) {
-			mUi->button3->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_4)) {
-			mUi->button4->pressed();
-		}
-		else if (pressedKeys.contains(Qt::Key_5)) {
-			mUi->button5->pressed();
-		}
+		QMap<int, QPushButton *> digits = {
+				{Qt::Key_1, mUi->button1}
+				, {Qt::Key_2, mUi->button2}
+				, {Qt::Key_3, mUi->button3}
+				, {Qt::Key_4, mUi->button4}
+				, {Qt::Key_5, mUi->button5}
+		};
 
-		std::string s;
-		if ((resultingPowerX1 == 0 || resultingPowerY1 == 0) && (resultingPowerX2 != 0 || resultingPowerY2 != 0)) {
-			s += "pad 2 ";
-			s += std::to_string(resultingPowerX2) + " " + std::to_string(resultingPowerY2);
-			QString qstr = QString::fromStdString(s);
-			onPadPressed(qstr);
+		for (auto key : digits.keys()) {
+			if (mPressedKeys.contains(key)) {
+				digits[key]->pressed();
+			}
+		}
+	} else if(event->type() == QEvent::KeyRelease) {
 
-		}
-		else if ((resultingPowerX1 != 0 || resultingPowerY1 != 0) && (resultingPowerX2 == 0 || resultingPowerY2 == 0)) {
-			s += "pad 1 ";
-			s += std::to_string(resultingPowerX1) + " " + std::to_string(resultingPowerY1);
-			QString qstr = QString::fromStdString(s);
-			onPadPressed(qstr);
-		}
-	}
+		// Handle key release event
+		QSet<int> pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
+		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
 
-	// Handle key release event
-	else if(event->type()==QEvent::KeyRelease) {
-		if (pressedKeys.contains(Qt::Key_A)) {
-			resultingPowerX1 += 100;
-		}
-		if (pressedKeys.contains(Qt::Key_W)) {
-			resultingPowerY1 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_D)) {
-			resultingPowerX1 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_S)) {
-			resultingPowerY1 += 100;
-		}
-		if (pressedKeys.contains(Qt::Key_Left)) {
-			resultingPowerX2 += 100;
-		}
-		if (pressedKeys.contains(Qt::Key_Up)) {
-			resultingPowerY2 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_Right)) {
-			resultingPowerX2 += -100;
-		}
-		if (pressedKeys.contains(Qt::Key_Down)) {
-			resultingPowerY2 += 100;
-		}
+		auto releasedKey = ((QKeyEvent*) event)->key();
+		mPressedKeys -= releasedKey;
 
-		if(pressedKeys.contains(Qt::Key_W) || pressedKeys.contains(Qt::Key_A)
-			|| pressedKeys.contains(Qt::Key_S) || pressedKeys.contains(Qt::Key_D)) {
+		if (pad1.contains(releasedKey)) {
 			onPadReleased(1);
-		}
-		else if (pressedKeys.contains(Qt::Key_Up) || pressedKeys.contains(Qt::Key_Left)
-			 || pressedKeys.contains(Qt::Key_Down) || pressedKeys.contains(Qt::Key_Right)) {
+		} else if (pad2.contains(releasedKey)){
 			onPadReleased(2);
 		}
-		pressedKeys -= ((QKeyEvent*)event)->key();
 	}
 
 	return false;
@@ -378,8 +302,8 @@ void GamepadForm::onPadReleased(int padId)
 
 void GamepadForm::openConnectDialog()
 {
-	mMyNewConnectForm = QSharedPointer<ConnectForm>(new ConnectForm(&mSocket));
-	mMyNewConnectForm.data()->show();
+	mMyNewConnectForm = new ConnectForm(&mSocket);
+	mMyNewConnectForm->show();
 }
 
 void GamepadForm::exit()
@@ -397,6 +321,22 @@ void GamepadForm::changeEvent(QEvent *event)
 	}
 
 	QWidget::changeEvent(event);
+}
+
+void GamepadForm::handlePadRelease(QWidget *w)
+{
+	onPadReleased(mPadHashtable[w][0]);
+}
+
+void GamepadForm::handlePadPress(QWidget *w)
+{
+	auto vec = mPadHashtable[w];
+	onPadPressed(QString("pad %1 %2 %3").arg(vec[0]).arg(vec[1]).arg(vec[2]));
+}
+
+void GamepadForm::handleDigitPress(QWidget *w)
+{
+	onButtonPressed(mDigitHashtable[w]);
 }
 
 void GamepadForm::retranslate()
@@ -417,49 +357,11 @@ void GamepadForm::retranslate()
 
 void GamepadForm::changeLanguage(const QString &language)
 {
-	mTranslator = QSharedPointer<QTranslator>(new QTranslator);
-	mTranslator.data()->load(language);
-	qApp->installTranslator(mTranslator.data());
+	mTranslator = new QTranslator(this);
+	mTranslator->load(language);
+	qApp->installTranslator(mTranslator);
 
 	mUi->retranslateUi(this);
-}
-
-void GamepadForm::changeCheckmark(const int &languageId)
-{
-	switch (languageId) {
-
-	// Russian language
-	case 0:
-		mRussianLanguageAction->setChecked(true);
-		mEnglishLanguageAction->setChecked(false);
-		mFrenchLanguageAction->setChecked(false);
-		mGermanLanguageAction->setChecked(false);
-		break;
-
-	// English language
-	case 1:
-		mRussianLanguageAction->setChecked(false);
-		mEnglishLanguageAction->setChecked(true);
-		mFrenchLanguageAction->setChecked(false);
-		mGermanLanguageAction->setChecked(false);
-		break;
-
-	// French language
-	case 2:
-		mRussianLanguageAction->setChecked(false);
-		mEnglishLanguageAction->setChecked(false);
-		mFrenchLanguageAction->setChecked(true);
-		mGermanLanguageAction->setChecked(false);
-		break;
-
-	// German language
-	case 3:
-		mRussianLanguageAction->setChecked(false);
-		mEnglishLanguageAction->setChecked(false);
-		mFrenchLanguageAction->setChecked(false);
-		mGermanLanguageAction->setChecked(true);
-		break;
-	}
 }
 
 void GamepadForm::about()
@@ -468,4 +370,3 @@ void GamepadForm::about()
 	const QString about =  tr("TRIK Gamepad 1.1.2\n\nThis is desktop gamepad for TRIK robots.");
 	QMessageBox::about(this, title, about);
 }
-
