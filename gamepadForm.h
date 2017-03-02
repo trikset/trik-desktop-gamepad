@@ -17,6 +17,9 @@
 
 #pragma once
 
+#include <QMediaPlayer>
+#include <QVideoWidget>
+
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QMenuBar>
 #include <QtNetwork/QTcpSocket>
@@ -86,6 +89,14 @@ private slots:
 	/// Helper method for setting up gamepadForm
 	void setUpGamepadForm();
 
+    /// Helper method for setting Video Widget
+    void setVideoController();
+
+
+    //void switchPlayingVideo();
+
+    void checkCamera();
+
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
@@ -141,4 +152,8 @@ private:
 	QSignalMapper *mMapperPadReleased;
 	QSignalMapper *mMapperDigitPressed;
 
+
+    QMediaPlayer *player;
+    QString ip;
+    QVideoWidget *videoWidget;
 };

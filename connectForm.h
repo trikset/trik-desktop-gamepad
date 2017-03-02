@@ -31,8 +31,9 @@ class ConnectForm : public QDialog
 
 public:
 	/// Constructor.
-	explicit ConnectForm(QTcpSocket *socket
-		    , QWidget *parent = 0);
+    ConnectForm(QTcpSocket *socket
+            , QString *ip
+            , QWidget *parent = 0);
 	~ConnectForm();
 
 private slots:
@@ -48,5 +49,8 @@ private:
 	/// QTcpSocket for saving state of internet connection
 	QTcpSocket *mSocket; /// Does not have ownership
 
+
+    /// Ip address for saving entered is used for QMediaPlayer
+    QString *ip;
 };
 

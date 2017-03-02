@@ -22,6 +22,10 @@
 #include <QtWidgets/QMessageBox>
 #include <QtGui/QKeyEvent>
 
+#include <QDebug>
+#include <QNetworkRequest>
+#include <QMediaContent>
+
 GamepadForm::GamepadForm()
 		: QWidget()
 		, mUi(new Ui::GamepadForm())
@@ -43,7 +47,54 @@ void GamepadForm::setUpGamepadForm()
 	createMenu();
 	createTimer();
 	createConnection();
-	retranslate();
+    setVideoController();
+    retranslate();
+}
+
+void GamepadForm::setVideoController()
+{
+    player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
+    ip = "";
+    videoWidget = new QVideoWidget(this);
+    videoWidget->setFixedSize(320, 240);
+    videoWidget->setVisible(false);
+    mUi->verticalLayout->addWidget(videoWidget);
+    mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
+}
+
+void GamepadForm::checkCamera()
+{
+    qDebug() << player->mediaStatus();
+    qDebug() << player->state();
+    qDebug() << ip;
+    const QString colorRed = "QLabel {color : red; }";
+    const QString colorGreen = "QLabel {color : green; }";
+    const QString colorBlue = "QLabel {color : blue; }";
+
+    const QMediaPlayer::MediaStatus status = player->mediaStatus();
+    if ((status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia) && !ip.isEmpty() ) {
+            const QString url = "http://" + ip + ":8080/?action=stream";
+            QNetworkRequest nr = QNetworkRequest(url);
+            nr.setPriority(QNetworkRequest::LowPriority);
+            nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+
+            player->setMedia(QMediaContent(nr));
+            player->setVideoOutput(videoWidget);
+            player->play();
+    } else if (status == QMediaPlayer::StalledMedia) {
+        mUi->cameraStatus->setText(tr("Camera status: Streaming"));
+        mUi->cameraStatus->setStyleSheet(colorGreen);
+        mUi->label->setVisible(false);
+        videoWidget->setVisible(true);
+    } else if (status == QMediaPlayer::LoadingMedia) {
+        mUi->cameraStatus->setText(tr("Camera status: Loading Media..."));
+        mUi->cameraStatus->setStyleSheet(colorBlue);
+    } else {
+        mUi->cameraStatus->setText(tr("Camera status: No Media"));
+        mUi->cameraStatus->setStyleSheet(colorRed);
+        mUi->label->setVisible(true);
+        videoWidget->setVisible(false);
+    }
 }
 
 void GamepadForm::createConnection()
@@ -161,6 +212,7 @@ void GamepadForm::createMenu()
 void GamepadForm::createTimer()
 {
 	connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkConnection);
+    connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkCamera);
 	mTimer.start(1000);
 }
 
@@ -302,7 +354,7 @@ void GamepadForm::onPadReleased(int padId)
 
 void GamepadForm::openConnectDialog()
 {
-	mMyNewConnectForm = new ConnectForm(&mSocket);
+    mMyNewConnectForm = new ConnectForm(&mSocket, &ip);
 	mMyNewConnectForm->show();
 }
 

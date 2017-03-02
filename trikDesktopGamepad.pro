@@ -15,7 +15,8 @@
 # This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
 # project. See git revision history for detailed changes.
 
-QT += core gui network widgets
+QT += core gui network widgets multimedia multimediawidgets
+
 
 CONFIG += c++11
 

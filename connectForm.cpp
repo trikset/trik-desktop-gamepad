@@ -21,10 +21,12 @@
 #include <QtWidgets/QMessageBox>
 
 ConnectForm::ConnectForm(QTcpSocket *socket
-		, QWidget *parent)
+        , QString *ip
+        , QWidget *parent)
 		: QDialog(parent)
 		, mUi(new Ui::ConnectForm)
 		, mSocket(socket)
+        , ip(ip)
 
 {
 	mUi->setupUi(this);
@@ -53,10 +55,10 @@ ConnectForm::~ConnectForm()
 
 void ConnectForm::onConnectButtonClicked()
 {
-	const auto ip = mUi->robotIpLineEdit->text();
+    *ip = mUi->robotIpLineEdit->text();
 
 	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-	mSocket->connectToHost(ip, 4444);
+    mSocket->connectToHost(*ip, 4444);
 	// Waiting for opened connection and checking that connection is actually established.
 	if (!mSocket->waitForConnected(3000)) {
 		// If not, warn user.
