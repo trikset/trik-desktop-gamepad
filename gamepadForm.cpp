@@ -56,7 +56,7 @@ void GamepadForm::setVideoController()
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     ip = "";
     videoWidget = new QVideoWidget(this);
-    videoWidget->setFixedSize(320, 240);
+    videoWidget->setMinimumSize(320, 240);
     videoWidget->setVisible(false);
     mUi->verticalLayout->addWidget(videoWidget);
     mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
