@@ -39,7 +39,7 @@ GamepadForm::GamepadForm()
 GamepadForm::~GamepadForm()
 {
 	// Gracefully disconnecting from host.
-	mSocket.disconnectFromHost();
+    connectionManager.disconnectFromHost();
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -54,7 +54,6 @@ void GamepadForm::setUpGamepadForm()
 void GamepadForm::setVideoController()
 {
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-    ip = "";
     videoWidget = new QVideoWidget(this);
     videoWidget->setMinimumSize(320, 240);
     videoWidget->setVisible(false);
@@ -64,23 +63,21 @@ void GamepadForm::setVideoController()
 
 void GamepadForm::checkCamera()
 {
-    qDebug() << player->mediaStatus();
-    qDebug() << player->state();
-    qDebug() << ip;
     const QString colorRed = "QLabel {color : red; }";
     const QString colorGreen = "QLabel {color : green; }";
     const QString colorBlue = "QLabel {color : blue; }";
 
+    const QString ip = connectionManager.getIp();
+
     const QMediaPlayer::MediaStatus status = player->mediaStatus();
     if ((status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia) && !ip.isEmpty() ) {
-            const QString url = "http://" + ip + ":8080/?action=stream";
-            QNetworkRequest nr = QNetworkRequest(url);
-            nr.setPriority(QNetworkRequest::LowPriority);
-            nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
-
-            player->setMedia(QMediaContent(nr));
-            player->setVideoOutput(videoWidget);
-            player->play();
+        const QString url = "http://" + ip + ":8080/?action=stream";
+        QNetworkRequest nr = QNetworkRequest(url);
+        nr.setPriority(QNetworkRequest::LowPriority);
+        nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+        player->setMedia(QMediaContent(nr));
+        player->setVideoOutput(videoWidget);
+        player->play();
     } else if (status == QMediaPlayer::StalledMedia) {
         mUi->cameraStatus->setText(tr("Camera status: Streaming"));
         mUi->cameraStatus->setStyleSheet(colorGreen);
@@ -223,7 +220,7 @@ void GamepadForm::checkConnection()
 	const QString colorRed = "QLabel {color : red; }";
 	const QString colorGreen = "QLabel {color : green; }";
 
-	if (mSocket.state() != QTcpSocket::ConnectedState) {
+    if (!connectionManager.isConnected()) {
 		mUi->connection->setText(unsuccessfulConnection);
 		mUi->connection->setStyleSheet(colorRed);
 		setButtonsEnabled(false);
@@ -317,12 +314,12 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
-	if (mSocket.state() != QTcpSocket::ConnectedState) {
+    if (!connectionManager.isConnected()) {
 		return;
 	}
 
 	// Sending "btn <buttonId>" command to robot.
-	if (mSocket.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
+    if (connectionManager.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
 		// If sending failed for some reason, we think that we lost connection and disable buttons.
 		setButtonsEnabled(false);
 	}
@@ -331,11 +328,11 @@ void GamepadForm::onButtonPressed(int buttonId)
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
-	if (mSocket.state() != QTcpSocket::ConnectedState) {
+    if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	if (mSocket.write((action + "\n").toLatin1()) == -1) {
+    if (connectionManager.write((action + "\n").toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
 }
@@ -343,18 +340,18 @@ void GamepadForm::onPadPressed(const QString &action)
 void GamepadForm::onPadReleased(int padId)
 {
 	// Here we send "pad <padId> up" command.
-	if (mSocket.state() != QTcpSocket::ConnectedState) {
+    if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	if (mSocket.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
+    if (connectionManager.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
 }
 
 void GamepadForm::openConnectDialog()
 {
-    mMyNewConnectForm = new ConnectForm(&mSocket, &ip);
+    mMyNewConnectForm = new ConnectForm(&connectionManager);
 	mMyNewConnectForm->show();
 }
 
