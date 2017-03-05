@@ -54,6 +54,10 @@ void GamepadForm::setUpGamepadForm()
 void GamepadForm::setVideoController()
 {
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
+    connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
+            this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+    connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
+            this, SLOT(startVideoStream()));
     videoWidget = new QVideoWidget(this);
     videoWidget->setMinimumSize(320, 240);
     videoWidget->setVisible(false);
@@ -61,17 +65,47 @@ void GamepadForm::setVideoController()
     mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
 }
 
-void GamepadForm::checkCamera()
+void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
     const QString colorRed = "QLabel {color : red; }";
     const QString colorGreen = "QLabel {color : green; }";
     const QString colorBlue = "QLabel {color : blue; }";
 
+    qDebug() << status;
+    switch (status) {
+    case QMediaPlayer::StalledMedia:
+        mUi->cameraStatus->setText(tr("Camera status: Streaming"));
+        mUi->cameraStatus->setStyleSheet(colorGreen);
+        mUi->label->setVisible(false);
+        videoWidget->setVisible(true);
+        break;
+
+    case QMediaPlayer::LoadingMedia:
+        mUi->cameraStatus->setText(tr("Camera status: Loading Media..."));
+        mUi->cameraStatus->setStyleSheet(colorBlue);
+        break;
+
+    case QMediaPlayer::InvalidMedia:
+        mUi->cameraStatus->setText(tr("Camera status: Invalid Media!"));
+        mUi->cameraStatus->setStyleSheet(colorRed);
+        break;
+
+    case QMediaPlayer::NoMedia:
+        mUi->cameraStatus->setText(tr("Camera status: No Media"));
+        mUi->cameraStatus->setStyleSheet(colorRed);
+        mUi->label->setVisible(true);
+        videoWidget->setVisible(false);
+    default:
+        break;
+    }
+}
+
+void GamepadForm::startVideoStream()
+{
     const QString ip = connectionManager.getCameraIp();
     const QString port = connectionManager.getCameraPort();
 
-    const QMediaPlayer::MediaStatus status = player->mediaStatus();
-    if ((status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia) && !ip.isEmpty() ) {
+    if (player->mediaStatus() == QMediaPlayer::NoMedia) {
         const QString url = "http://" + ip + ":" + port + "/?action=stream";
         QNetworkRequest nr = QNetworkRequest(url);
         nr.setPriority(QNetworkRequest::LowPriority);
@@ -79,19 +113,6 @@ void GamepadForm::checkCamera()
         player->setMedia(QMediaContent(nr));
         player->setVideoOutput(videoWidget);
         player->play();
-    } else if (status == QMediaPlayer::StalledMedia) {
-        mUi->cameraStatus->setText(tr("Camera status: Streaming"));
-        mUi->cameraStatus->setStyleSheet(colorGreen);
-        mUi->label->setVisible(false);
-        videoWidget->setVisible(true);
-    } else if (status == QMediaPlayer::LoadingMedia) {
-        mUi->cameraStatus->setText(tr("Camera status: Loading Media..."));
-        mUi->cameraStatus->setStyleSheet(colorBlue);
-    } else {
-        mUi->cameraStatus->setText(tr("Camera status: No Media"));
-        mUi->cameraStatus->setStyleSheet(colorRed);
-        mUi->label->setVisible(true);
-        videoWidget->setVisible(false);
     }
 }
 
@@ -210,7 +231,6 @@ void GamepadForm::createMenu()
 void GamepadForm::createTimer()
 {
 	connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkConnection);
-    connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkCamera);
 	mTimer.start(1000);
 }
 

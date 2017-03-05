@@ -3,8 +3,9 @@
 #include <QTcpSocket>
 #include <QIODevice>
 
-class ConnectionManager
+class ConnectionManager : public QObject
 {
+    Q_OBJECT
 
 public:
     ConnectionManager();
@@ -22,6 +23,9 @@ public:
 
     QString getCameraPort() const;
     void setCameraPort(const QString &value);
+
+signals:
+    void onConnectButtonClicked();
 
 private:
     QTcpSocket socket;

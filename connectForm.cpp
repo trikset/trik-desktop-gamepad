@@ -58,8 +58,12 @@ void ConnectForm::onConnectButtonClicked()
     const auto ip = mUi->robotIpLineEdit->text();
     const auto port = mUi->robotPortLineEdit->text().toInt();
 
-    connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
+    if (mUi->cameraIPLineEdit->text().isEmpty())
+        connectionManager->setCameraIp(ip);
+    else
+        connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
     connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
+    emit connectionManager->onConnectButtonClicked();
 
 	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
     connectionManager->connectToHost(ip, port);

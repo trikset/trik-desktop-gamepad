@@ -94,7 +94,9 @@ private slots:
     /// Helper method for setting Video Widget
     void setVideoController();
 
-    void checkCamera();
+    void handleMediaStatusChanged(QMediaPlayer::MediaStatus status);
+
+    void startVideoStream();
 
 private:
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
