@@ -28,6 +28,8 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 {
 	mUi->setupUi(this);
 
+    setVisibilityToAdditionalButtons(false);
+
 	// These constants was added for translations purposes
 	const QString buttonCancel = tr("Cancel");
 	const QString buttonOK = tr("Ok");
@@ -43,6 +45,7 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
+    connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
 }
 
 ConnectForm::~ConnectForm()
@@ -53,11 +56,13 @@ ConnectForm::~ConnectForm()
 void ConnectForm::onConnectButtonClicked()
 {
     const auto ip = mUi->robotIpLineEdit->text();
+    const auto port = mUi->robotPortLineEdit->text().toInt();
 
-    connectionManager->setIp(ip);
+    connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
+    connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
 
 	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-    connectionManager->connectToHost(ip, 4444);
+    connectionManager->connectToHost(ip, port);
 	// Waiting for opened connection and checking that connection is actually established.
     if (!connectionManager->waitForConnected(3000)) {
 		// If not, warn user.
@@ -65,5 +70,21 @@ void ConnectForm::onConnectButtonClicked()
 	} else {
 		mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 		QMessageBox::information(this, tr("Connection succeeded"), tr("Connected to robot"));
-	}
+    }
+}
+
+void ConnectForm::onAdvancedButtonClicked()
+{
+    mUi->advancedButton->setVisible(false);
+    setVisibilityToAdditionalButtons(true);
+}
+
+void ConnectForm::setVisibilityToAdditionalButtons(bool mode)
+{
+    mUi->cameraIPLabel->setVisible(mode);
+    mUi->cameraIPLineEdit->setVisible(mode);
+    mUi->cameraPortLabel->setVisible(mode);
+    mUi->cameraPortLineEdit->setVisible(mode);
+    mUi->robotPortLabel->setVisible(mode);
+    mUi->robotPortLineEdit->setVisible(mode);
 }

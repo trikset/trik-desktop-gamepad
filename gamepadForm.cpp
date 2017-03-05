@@ -67,11 +67,12 @@ void GamepadForm::checkCamera()
     const QString colorGreen = "QLabel {color : green; }";
     const QString colorBlue = "QLabel {color : blue; }";
 
-    const QString ip = connectionManager.getIp();
+    const QString ip = connectionManager.getCameraIp();
+    const QString port = connectionManager.getCameraPort();
 
     const QMediaPlayer::MediaStatus status = player->mediaStatus();
     if ((status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia) && !ip.isEmpty() ) {
-        const QString url = "http://" + ip + ":8080/?action=stream";
+        const QString url = "http://" + ip + ":" + port + "/?action=stream";
         QNetworkRequest nr = QNetworkRequest(url);
         nr.setPriority(QNetworkRequest::LowPriority);
         nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);

@@ -15,9 +15,9 @@ bool ConnectionManager::waitForConnected(int msecs)
     return socket.waitForConnected(msecs);
 }
 
-QString ConnectionManager::getIp() const
+QString ConnectionManager::getCameraIp() const
 {
-    return ip;
+    return cameraIp;
 }
 
 qint64 ConnectionManager::write(const char *data)
@@ -35,8 +35,17 @@ void ConnectionManager::disconnectFromHost()
     socket.disconnectFromHost();
 }
 
-void ConnectionManager::setIp(const QString &value)
+void ConnectionManager::setCameraIp(const QString &value)
 {
-    ip = value;
+    cameraIp = value;
 }
 
+QString ConnectionManager::getCameraPort() const
+{
+    return cameraPort;
+}
+
+void ConnectionManager::setCameraPort(const QString &value)
+{
+    cameraPort = value;
+}
