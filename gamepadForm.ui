@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>441</width>
+    <width>443</width>
     <height>556</height>
    </rect>
   </property>
@@ -47,56 +47,82 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="cameraStatus">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color:rgb(250, 0, 30);</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="text">
-        <string>Camera status: No Media</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::AutoText</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="cameraLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>130</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:rgb(250, 0, 30);</string>
+         </property>
+         <property name="text">
+          <string>Camera status:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="currentCameraStatus">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:rgb(250, 0, 30);</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>No Media</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QLabel" name="label">
@@ -130,6 +156,9 @@
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="2" column="1">
        <widget class="QPushButton" name="button1">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -142,6 +171,13 @@
           <height>50</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>25</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::ClickFocus</enum>
         </property>
@@ -149,10 +185,10 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/button1.png);</string>
+         <string notr="true"/>
         </property>
         <property name="text">
-         <string/>
+         <string>1</string>
         </property>
        </widget>
       </item>
@@ -169,6 +205,9 @@ Buttons disabled.</string>
       </item>
       <item row="2" column="5">
        <widget class="QPushButton" name="button5">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -181,6 +220,11 @@ Buttons disabled.</string>
           <height>50</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>25</pointsize>
+         </font>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::ClickFocus</enum>
         </property>
@@ -188,15 +232,18 @@ Buttons disabled.</string>
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/button5.png);</string>
+         <string notr="true"/>
         </property>
         <property name="text">
-         <string/>
+         <string>5</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
        <widget class="QPushButton" name="button2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -209,6 +256,11 @@ Buttons disabled.</string>
           <height>50</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>25</pointsize>
+         </font>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::ClickFocus</enum>
         </property>
@@ -216,15 +268,18 @@ Buttons disabled.</string>
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/button2.png);</string>
+         <string notr="true"/>
         </property>
         <property name="text">
-         <string/>
+         <string>2</string>
         </property>
        </widget>
       </item>
       <item row="2" column="3">
        <widget class="QPushButton" name="button3">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -237,6 +292,11 @@ Buttons disabled.</string>
           <height>50</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>25</pointsize>
+         </font>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::ClickFocus</enum>
         </property>
@@ -244,15 +304,18 @@ Buttons disabled.</string>
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/button3.png);</string>
+         <string notr="true"/>
         </property>
         <property name="text">
-         <string/>
+         <string>3</string>
         </property>
        </widget>
       </item>
       <item row="2" column="4">
        <widget class="QPushButton" name="button4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -265,6 +328,11 @@ Buttons disabled.</string>
           <height>50</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>25</pointsize>
+         </font>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::ClickFocus</enum>
         </property>
@@ -272,10 +340,10 @@ Buttons disabled.</string>
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-image: url(:/images/button4.png);</string>
+         <string notr="true"/>
         </property>
         <property name="text">
-         <string/>
+         <string>4</string>
         </property>
        </widget>
       </item>
@@ -341,6 +409,9 @@ Buttons disabled.</string>
          </property>
          <item row="1" column="0">
           <widget class="QPushButton" name="buttonPad1Left">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -353,6 +424,13 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -360,17 +438,17 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowLeft.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>←</string>
            </property>
           </widget>
          </item>
          <item row="1" column="3">
           <widget class="QPushButton" name="buttonPad1Right">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -384,6 +462,13 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -391,15 +476,18 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowRight.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>→</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QPushButton" name="buttonPad1Up">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -412,6 +500,13 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -419,15 +514,18 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowUp.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>↑</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QPushButton" name="buttonPad1Down">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -440,6 +538,13 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -447,10 +552,10 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowDown.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>↓</string>
            </property>
           </widget>
          </item>
@@ -484,6 +589,9 @@ Buttons disabled.</string>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="1">
           <widget class="QPushButton" name="buttonPad2Up">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -496,22 +604,35 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+             <underline>false</underline>
+             <kerning>true</kerning>
+            </font>
+           </property>
            <property name="focusPolicy">
-            <enum>Qt::ClickFocus</enum>
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowUp.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>▲</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QPushButton" name="buttonPad2Down">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -524,6 +645,11 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -531,15 +657,18 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowDown.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>▼</string>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
           <widget class="QPushButton" name="buttonPad2Right">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -552,6 +681,11 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -559,15 +693,18 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowRight.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>▶</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
           <widget class="QPushButton" name="buttonPad2Left">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -580,6 +717,11 @@ Buttons disabled.</string>
              <height>60</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>30</pointsize>
+            </font>
+           </property>
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -587,10 +729,10 @@ Buttons disabled.</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/arrowLeft.png);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string/>
+            <string>◀</string>
            </property>
           </widget>
          </item>

@@ -74,25 +74,30 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
     qDebug() << status;
     switch (status) {
     case QMediaPlayer::StalledMedia:
-        mUi->cameraStatus->setText(tr("Camera status: Streaming"));
-        mUi->cameraStatus->setStyleSheet(colorGreen);
+        mUi->currentCameraStatus->setText(tr("Streaming"));
+        mUi->currentCameraStatus->setStyleSheet(colorGreen);
+        mUi->cameraLabel->setStyleSheet(colorGreen);
         mUi->label->setVisible(false);
         videoWidget->setVisible(true);
         break;
 
     case QMediaPlayer::LoadingMedia:
-        mUi->cameraStatus->setText(tr("Camera status: Loading Media..."));
-        mUi->cameraStatus->setStyleSheet(colorBlue);
+        mUi->currentCameraStatus->setText(tr("Loading Media"));
+        mUi->currentCameraStatus->setStyleSheet(colorBlue);
+        mUi->cameraLabel->setStyleSheet(colorBlue);
         break;
 
     case QMediaPlayer::InvalidMedia:
-        mUi->cameraStatus->setText(tr("Camera status: Invalid Media!"));
-        mUi->cameraStatus->setStyleSheet(colorRed);
+        mUi->currentCameraStatus->setText(tr("Invalid Media!"));
+        mUi->currentCameraStatus->setStyleSheet(colorRed);
+        mUi->cameraLabel->setStyleSheet(colorRed);
         break;
 
     case QMediaPlayer::NoMedia:
-        mUi->cameraStatus->setText(tr("Camera status: No Media"));
-        mUi->cameraStatus->setStyleSheet(colorRed);
+    case QMediaPlayer::EndOfMedia:
+        mUi->currentCameraStatus->setText(tr("No Media"));
+        mUi->currentCameraStatus->setStyleSheet(colorRed);
+        mUi->cameraLabel->setStyleSheet(colorRed);
         mUi->label->setVisible(true);
         videoWidget->setVisible(false);
     default:
@@ -104,8 +109,9 @@ void GamepadForm::startVideoStream()
 {
     const QString ip = connectionManager.getCameraIp();
     const QString port = connectionManager.getCameraPort();
+    const auto status = player->mediaStatus();
 
-    if (player->mediaStatus() == QMediaPlayer::NoMedia) {
+    if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
         const QString url = "http://" + ip + ":" + port + "/?action=stream";
         QNetworkRequest nr = QNetworkRequest(url);
         nr.setPriority(QNetworkRequest::LowPriority);
