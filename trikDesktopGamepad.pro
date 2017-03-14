@@ -17,7 +17,6 @@
 
 QT += core gui network widgets multimedia multimediawidgets
 
-
 CONFIG += c++11
 
 TARGET = gamepad
@@ -26,7 +25,7 @@ TEMPLATE = app
 SOURCES += main.cpp \
         gamepadForm.cpp \
         connectForm.cpp \
-    connectionManager.cpp
+        connectionManager.cpp
 
 TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
                 languages/trikDesktopGamepad_en.ts \
@@ -37,7 +36,7 @@ target.path =
 HEADERS += \
         gamepadForm.h \
         connectForm.h \
-    connectionManager.h
+        connectionManager.h
 
 FORMS += \
         gamepadForm.ui \

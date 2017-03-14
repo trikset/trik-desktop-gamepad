@@ -5,31 +5,31 @@
 
 class ConnectionManager : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    ConnectionManager();
+	ConnectionManager();
 
-    bool isConnected() const;
-    bool waitForConnected(int msecs = 30000);
+	bool isConnected() const;
+	bool waitForConnected(int msecs = 30000);
 
-    QString getCameraIp() const;
+	QString getCameraIp() const;
 
-    qint64 write(const char *data);
+	qint64 write(const char *data);
 
-    void connectToHost(const QString & hostName, quint16 port, QIODevice::OpenMode openMode = QIODevice::ReadWrite);
-    void disconnectFromHost();
-    void setCameraIp(const QString &value);
+	void connectToHost(const QString & hostName, quint16 port, QIODevice::OpenMode openMode = QIODevice::ReadWrite);
+	void disconnectFromHost();
+	void setCameraIp(const QString &value);
 
-    QString getCameraPort() const;
-    void setCameraPort(const QString &value);
+	QString getCameraPort() const;
+	void setCameraPort(const QString &value);
 
 signals:
-    void onConnectButtonClicked();
+	void onConnectButtonClicked();
 
 private:
-    QTcpSocket socket;
-    QString cameraIp;
-    QString cameraPort;
+	QTcpSocket socket;
+	QString cameraIp;
+	QString cameraPort;
 };
 

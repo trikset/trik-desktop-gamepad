@@ -21,14 +21,14 @@
 #include <QtWidgets/QMessageBox>
 
 ConnectForm::ConnectForm(ConnectionManager *manager
-        , QWidget *parent)
-		: QDialog(parent)
-		, mUi(new Ui::ConnectForm)
-        , connectionManager(manager)
+						 , QWidget *parent)
+	: QDialog(parent)
+	, mUi(new Ui::ConnectForm)
+	, connectionManager(manager)
 {
 	mUi->setupUi(this);
 
-    setVisibilityToAdditionalButtons(false);
+	setVisibilityToAdditionalButtons(false);
 
 	// These constants was added for translations purposes
 	const QString buttonCancel = tr("Cancel");
@@ -45,7 +45,7 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
-    connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
+	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
 }
 
 ConnectForm::~ConnectForm()
@@ -55,40 +55,40 @@ ConnectForm::~ConnectForm()
 
 void ConnectForm::onConnectButtonClicked()
 {
-    const auto ip = mUi->robotIpLineEdit->text();
-    const auto port = mUi->robotPortLineEdit->text().toInt();
+	const auto ip = mUi->robotIpLineEdit->text();
+	const auto port = mUi->robotPortLineEdit->text().toInt();
 
-    if (mUi->cameraIPLineEdit->text().isEmpty())
-        connectionManager->setCameraIp(ip);
-    else
-        connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
-    connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
-    emit connectionManager->onConnectButtonClicked();
+	if (mUi->cameraIPLineEdit->text().isEmpty())
+		connectionManager->setCameraIp(ip);
+	else
+		connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
+	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
+	emit connectionManager->onConnectButtonClicked();
 
 	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-    connectionManager->connectToHost(ip, port);
+	connectionManager->connectToHost(ip, port);
 	// Waiting for opened connection and checking that connection is actually established.
-    if (!connectionManager->waitForConnected(3000)) {
+	if (!connectionManager->waitForConnected(3000)) {
 		// If not, warn user.
 		QMessageBox::warning(this, tr("Connection failed"), tr("Failed to connect to robot"));
 	} else {
 		mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 		QMessageBox::information(this, tr("Connection succeeded"), tr("Connected to robot"));
-    }
+	}
 }
 
 void ConnectForm::onAdvancedButtonClicked()
 {
-    mUi->advancedButton->setVisible(false);
-    setVisibilityToAdditionalButtons(true);
+	mUi->advancedButton->setVisible(false);
+	setVisibilityToAdditionalButtons(true);
 }
 
 void ConnectForm::setVisibilityToAdditionalButtons(bool mode)
 {
-    mUi->cameraIPLabel->setVisible(mode);
-    mUi->cameraIPLineEdit->setVisible(mode);
-    mUi->cameraPortLabel->setVisible(mode);
-    mUi->cameraPortLineEdit->setVisible(mode);
-    mUi->robotPortLabel->setVisible(mode);
-    mUi->robotPortLineEdit->setVisible(mode);
+	mUi->cameraIPLabel->setVisible(mode);
+	mUi->cameraIPLineEdit->setVisible(mode);
+	mUi->cameraPortLabel->setVisible(mode);
+	mUi->cameraPortLineEdit->setVisible(mode);
+	mUi->robotPortLabel->setVisible(mode);
+	mUi->robotPortLineEdit->setVisible(mode);
 }

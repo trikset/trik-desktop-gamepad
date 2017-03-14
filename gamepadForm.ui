@@ -190,6 +190,9 @@
         <property name="text">
          <string>1</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">
@@ -237,6 +240,9 @@ Buttons disabled.</string>
         <property name="text">
          <string>5</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item row="2" column="2">
@@ -272,6 +278,9 @@ Buttons disabled.</string>
         </property>
         <property name="text">
          <string>2</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -309,6 +318,9 @@ Buttons disabled.</string>
         <property name="text">
          <string>3</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item row="2" column="4">
@@ -344,6 +356,9 @@ Buttons disabled.</string>
         </property>
         <property name="text">
          <string>4</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -443,6 +458,9 @@ Buttons disabled.</string>
            <property name="text">
             <string>←</string>
            </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="3">
@@ -480,6 +498,9 @@ Buttons disabled.</string>
            </property>
            <property name="text">
             <string>→</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -519,6 +540,9 @@ Buttons disabled.</string>
            <property name="text">
             <string>↑</string>
            </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="1">
@@ -556,6 +580,9 @@ Buttons disabled.</string>
            </property>
            <property name="text">
             <string>↓</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -626,6 +653,9 @@ Buttons disabled.</string>
            <property name="text">
             <string>▲</string>
            </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="1">
@@ -661,6 +691,9 @@ Buttons disabled.</string>
            </property>
            <property name="text">
             <string>▼</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -698,6 +731,9 @@ Buttons disabled.</string>
            <property name="text">
             <string>▶</string>
            </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="0">
@@ -733,6 +769,9 @@ Buttons disabled.</string>
            </property>
            <property name="text">
             <string>◀</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
            </property>
           </widget>
          </item>

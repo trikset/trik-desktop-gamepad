@@ -27,8 +27,8 @@
 #include <QMediaContent>
 
 GamepadForm::GamepadForm()
-		: QWidget()
-		, mUi(new Ui::GamepadForm())
+	: QWidget()
+	, mUi(new Ui::GamepadForm())
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
@@ -39,7 +39,7 @@ GamepadForm::GamepadForm()
 GamepadForm::~GamepadForm()
 {
 	// Gracefully disconnecting from host.
-    connectionManager.disconnectFromHost();
+	connectionManager.disconnectFromHost();
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -47,79 +47,85 @@ void GamepadForm::setUpGamepadForm()
 	createMenu();
 	createTimer();
 	createConnection();
-    setVideoController();
-    retranslate();
+	setVideoController();
+	setUpControlButtonsHash();
+	retranslate();
 }
 
 void GamepadForm::setVideoController()
 {
-    player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-    connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
-            this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
-    connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
-            this, SLOT(startVideoStream()));
-    videoWidget = new QVideoWidget(this);
-    videoWidget->setMinimumSize(320, 240);
-    videoWidget->setVisible(false);
-    mUi->verticalLayout->addWidget(videoWidget);
-    mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
+	player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
+	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
+			this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+	connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
+			this, SLOT(startVideoStream()));
+	videoWidget = new QVideoWidget(this);
+	videoWidget->setMinimumSize(320, 240);
+	videoWidget->setVisible(false);
+	mUi->verticalLayout->addWidget(videoWidget);
+	mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
 }
 
 void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
-    const QString colorRed = "QLabel {color : red; }";
-    const QString colorGreen = "QLabel {color : green; }";
-    const QString colorBlue = "QLabel {color : blue; }";
+	const QString colorRed = "QLabel {color : red; }";
+	const QString colorGreen = "QLabel {color : green; }";
+	const QString colorBlue = "QLabel {color : blue; }";
 
-    qDebug() << status;
-    switch (status) {
-    case QMediaPlayer::StalledMedia:
-        mUi->currentCameraStatus->setText(tr("Streaming"));
-        mUi->currentCameraStatus->setStyleSheet(colorGreen);
-        mUi->cameraLabel->setStyleSheet(colorGreen);
-        mUi->label->setVisible(false);
-        videoWidget->setVisible(true);
-        break;
+	qDebug() << status;
+	switch (status) {
+	case QMediaPlayer::StalledMedia:
+		mUi->currentCameraStatus->setText(tr("Streaming"));
+		mUi->currentCameraStatus->setStyleSheet(colorGreen);
+		mUi->cameraLabel->setStyleSheet(colorGreen);
+		mUi->label->setVisible(false);
+		videoWidget->setVisible(true);
+		break;
 
-    case QMediaPlayer::LoadingMedia:
-        mUi->currentCameraStatus->setText(tr("Loading Media"));
-        mUi->currentCameraStatus->setStyleSheet(colorBlue);
-        mUi->cameraLabel->setStyleSheet(colorBlue);
-        break;
+	case QMediaPlayer::LoadingMedia:
+		mUi->currentCameraStatus->setText(tr("Loading Media"));
+		mUi->currentCameraStatus->setStyleSheet(colorBlue);
+		mUi->cameraLabel->setStyleSheet(colorBlue);
+		break;
 
-    case QMediaPlayer::InvalidMedia:
-        mUi->currentCameraStatus->setText(tr("Invalid Media!"));
-        mUi->currentCameraStatus->setStyleSheet(colorRed);
-        mUi->cameraLabel->setStyleSheet(colorRed);
-        break;
+	case QMediaPlayer::InvalidMedia:
+		mUi->currentCameraStatus->setText(tr("Invalid Media!"));
+		mUi->currentCameraStatus->setStyleSheet(colorRed);
+		mUi->cameraLabel->setStyleSheet(colorRed);
+		break;
 
-    case QMediaPlayer::NoMedia:
-    case QMediaPlayer::EndOfMedia:
-        mUi->currentCameraStatus->setText(tr("No Media"));
-        mUi->currentCameraStatus->setStyleSheet(colorRed);
-        mUi->cameraLabel->setStyleSheet(colorRed);
-        mUi->label->setVisible(true);
-        videoWidget->setVisible(false);
-    default:
-        break;
-    }
+	case QMediaPlayer::NoMedia:
+	case QMediaPlayer::EndOfMedia:
+		mUi->currentCameraStatus->setText(tr("No Media"));
+		mUi->currentCameraStatus->setStyleSheet(colorRed);
+		mUi->cameraLabel->setStyleSheet(colorRed);
+		mUi->label->setVisible(true);
+		videoWidget->setVisible(false);
+	default:
+		break;
+	}
 }
 
 void GamepadForm::startVideoStream()
 {
-    const QString ip = connectionManager.getCameraIp();
-    const QString port = connectionManager.getCameraPort();
-    const auto status = player->mediaStatus();
+	const QString ip = connectionManager.getCameraIp();
+	const QString port = connectionManager.getCameraPort();
+	const auto status = player->mediaStatus();
 
-    if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
-        const QString url = "http://" + ip + ":" + port + "/?action=stream";
-        QNetworkRequest nr = QNetworkRequest(url);
-        nr.setPriority(QNetworkRequest::LowPriority);
-        nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
-        player->setMedia(QMediaContent(nr));
-        player->setVideoOutput(videoWidget);
-        player->play();
-    }
+	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
+		const QString url = "http://" + ip + ":" + port + "/?action=stream";
+		QNetworkRequest nr = QNetworkRequest(url);
+		nr.setPriority(QNetworkRequest::LowPriority);
+		nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+		player->setMedia(QMediaContent(nr));
+		player->setVideoOutput(videoWidget);
+		player->play();
+	}
+}
+
+void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
+{
+	controlButtonsHash[key]->setChecked(checkStatus);
 }
 
 void GamepadForm::createConnection()
@@ -127,16 +133,17 @@ void GamepadForm::createConnection()
 	mMapperPadPressed = new QSignalMapper(this);
 	mMapperPadReleased = new QSignalMapper(this);
 	mMapperDigitPressed = new QSignalMapper(this);
+	mMapperDigitReleased = new QSignalMapper(this);
 
 	mPadHashtable = {
-			{mUi->buttonPad1Up, {1, 0, 100}}
-			, {mUi->buttonPad1Down, {1, 0, -100}}
-			, {mUi->buttonPad1Right, {1, 100, 0}}
-			, {mUi->buttonPad1Left, {1, -100, 0}}
-			, {mUi->buttonPad2Up, {2, 0, 100}}
-			, {mUi->buttonPad2Down, {2, 0, -100}}
-			, {mUi->buttonPad2Right, {2, 100 ,0}}
-			, {mUi->buttonPad2Left, {2, -100, 0}}
+		{mUi->buttonPad1Up, {1, 0, 100}}
+		, {mUi->buttonPad1Down, {1, 0, -100}}
+		, {mUi->buttonPad1Right, {1, 100, 0}}
+		, {mUi->buttonPad1Left, {1, -100, 0}}
+		, {mUi->buttonPad2Up, {2, 0, 100}}
+		, {mUi->buttonPad2Down, {2, 0, -100}}
+		, {mUi->buttonPad2Right, {2, 100 ,0}}
+		, {mUi->buttonPad2Left, {2, -100, 0}}
 	};
 
 	for (auto button : mPadHashtable.keys()) {
@@ -150,19 +157,22 @@ void GamepadForm::createConnection()
 	connect(mMapperPadReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handlePadRelease(QWidget*)));
 
 	mDigitHashtable = {
-			{mUi->button1, 1}
-			, {mUi->button2, 2}
-			, {mUi->button3, 3}
-			, {mUi->button4, 4}
-			, {mUi->button5, 5}
+		{mUi->button1, 1}
+		, {mUi->button2, 2}
+		, {mUi->button3, 3}
+		, {mUi->button4, 4}
+		, {mUi->button5, 5}
 	};
 
 	for (auto button : mDigitHashtable.keys()) {
 		connect(button, SIGNAL(pressed()), mMapperDigitPressed, SLOT(map()));
 		mMapperDigitPressed->setMapping(button, button);
+		connect(button, SIGNAL(released()), mMapperDigitReleased, SLOT(map()));
+		mMapperDigitReleased->setMapping(button, button);
 	}
 
 	connect(mMapperDigitPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitPress(QWidget*)));
+	connect(mMapperDigitReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitRelease(QWidget*)));
 
 }
 
@@ -247,35 +257,49 @@ void GamepadForm::checkConnection()
 	const QString colorRed = "QLabel {color : red; }";
 	const QString colorGreen = "QLabel {color : green; }";
 
-    if (!connectionManager.isConnected()) {
+	if (!connectionManager.isConnected()) {
 		mUi->connection->setText(unsuccessfulConnection);
 		mUi->connection->setStyleSheet(colorRed);
 		setButtonsEnabled(false);
+		setButtonsCheckable(false);
 	} else {
 		mUi->connection->setText(successfulConnection);
 		mUi->connection->setStyleSheet(colorGreen);
 		setButtonsEnabled(true);
+		setButtonsCheckable(true);
 	}
 }
 
 void GamepadForm::setButtonsEnabled(bool enabled)
 {
 	// Here we enable or disable pads and "magic buttons" depending on given parameter.
-	mUi->button1->setEnabled(enabled);
-	mUi->button2->setEnabled(enabled);
-	mUi->button3->setEnabled(enabled);
-	mUi->button4->setEnabled(enabled);
-	mUi->button5->setEnabled(enabled);
+	for (auto button : controlButtonsHash.values())
+		button->setEnabled(enabled);
+}
 
-	mUi->buttonPad1Left->setEnabled(enabled);
-	mUi->buttonPad1Right->setEnabled(enabled);
-	mUi->buttonPad1Up->setEnabled(enabled);
-	mUi->buttonPad1Down->setEnabled(enabled);
+void GamepadForm::setButtonsCheckable(bool checkableStatus)
+{
+	for (auto button : controlButtonsHash.values())
+		button->setCheckable(checkableStatus);
+}
 
-	mUi->buttonPad2Left->setEnabled(enabled);
-	mUi->buttonPad2Right->setEnabled(enabled);
-	mUi->buttonPad2Up->setEnabled(enabled);
-	mUi->buttonPad2Down->setEnabled(enabled);
+void GamepadForm::setUpControlButtonsHash()
+{
+	controlButtonsHash.insert(Qt::Key_1, mUi->button1);
+	controlButtonsHash.insert(Qt::Key_2, mUi->button2);
+	controlButtonsHash.insert(Qt::Key_3, mUi->button3);
+	controlButtonsHash.insert(Qt::Key_4, mUi->button4);
+	controlButtonsHash.insert(Qt::Key_5, mUi->button5);
+
+	controlButtonsHash.insert(Qt::Key_A, mUi->buttonPad1Left);
+	controlButtonsHash.insert(Qt::Key_D, mUi->buttonPad1Right);
+	controlButtonsHash.insert(Qt::Key_W, mUi->buttonPad1Up);
+	controlButtonsHash.insert(Qt::Key_S, mUi->buttonPad1Down);
+
+	controlButtonsHash.insert(Qt::Key_Left, mUi->buttonPad2Left);
+	controlButtonsHash.insert(Qt::Key_Right, mUi->buttonPad2Right);
+	controlButtonsHash.insert(Qt::Key_Up, mUi->buttonPad2Up);
+	controlButtonsHash.insert(Qt::Key_Down, mUi->buttonPad2Down);
 }
 
 bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
@@ -289,8 +313,11 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 
 	// Handle key press event
 	if(event->type() == QEvent::KeyPress) {
+		int pressedKey = ((QKeyEvent*) event)->key();
+		if (controlButtonsHash.keys().contains(pressedKey))
+			setButtonChecked(pressedKey, true);
 
-		mPressedKeys += ((QKeyEvent*) event)->key();
+		mPressedKeys += pressedKey;
 
 		// Handle W A S D buttons
 		resultingPowerX1 = (mPressedKeys.contains(Qt::Key_D) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_A) ? -100 : 0);
@@ -307,11 +334,11 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 
 		// Handle 1 2 3 4 5 buttons
 		QMap<int, QPushButton *> digits = {
-				{Qt::Key_1, mUi->button1}
-				, {Qt::Key_2, mUi->button2}
-				, {Qt::Key_3, mUi->button3}
-				, {Qt::Key_4, mUi->button4}
-				, {Qt::Key_5, mUi->button5}
+			{Qt::Key_1, mUi->button1}
+			, {Qt::Key_2, mUi->button2}
+			, {Qt::Key_3, mUi->button3}
+			, {Qt::Key_4, mUi->button4}
+			, {Qt::Key_5, mUi->button5}
 		};
 
 		for (auto key : digits.keys()) {
@@ -326,6 +353,8 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
 
 		auto releasedKey = ((QKeyEvent*) event)->key();
+		if (controlButtonsHash.keys().contains(releasedKey))
+			setButtonChecked(releasedKey, false);
 		mPressedKeys -= releasedKey;
 
 		if (pad1.contains(releasedKey)) {
@@ -341,12 +370,12 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
-    if (!connectionManager.isConnected()) {
+	if (!connectionManager.isConnected()) {
 		return;
 	}
 
 	// Sending "btn <buttonId>" command to robot.
-    if (connectionManager.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
+	if (connectionManager.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
 		// If sending failed for some reason, we think that we lost connection and disable buttons.
 		setButtonsEnabled(false);
 	}
@@ -355,11 +384,11 @@ void GamepadForm::onButtonPressed(int buttonId)
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
-    if (!connectionManager.isConnected()) {
+	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-    if (connectionManager.write((action + "\n").toLatin1()) == -1) {
+	if (connectionManager.write((action + "\n").toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
 }
@@ -367,18 +396,18 @@ void GamepadForm::onPadPressed(const QString &action)
 void GamepadForm::onPadReleased(int padId)
 {
 	// Here we send "pad <padId> up" command.
-    if (!connectionManager.isConnected()) {
+	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-    if (connectionManager.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
+	if (connectionManager.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
 }
 
 void GamepadForm::openConnectDialog()
 {
-    mMyNewConnectForm = new ConnectForm(&connectionManager);
+	mMyNewConnectForm = new ConnectForm(&connectionManager);
 	mMyNewConnectForm->show();
 }
 
@@ -402,6 +431,8 @@ void GamepadForm::changeEvent(QEvent *event)
 void GamepadForm::handlePadRelease(QWidget *w)
 {
 	onPadReleased(mPadHashtable[w][0]);
+	QPushButton *padButton = (QPushButton *) w;
+	padButton->setChecked(false);
 }
 
 void GamepadForm::handlePadPress(QWidget *w)
@@ -413,6 +444,12 @@ void GamepadForm::handlePadPress(QWidget *w)
 void GamepadForm::handleDigitPress(QWidget *w)
 {
 	onButtonPressed(mDigitHashtable[w]);
+}
+
+void GamepadForm::handleDigitRelease(QWidget *w)
+{
+	QPushButton *digitButton = (QPushButton *) w;
+	digitButton->setChecked(false);
 }
 
 void GamepadForm::retranslate()
