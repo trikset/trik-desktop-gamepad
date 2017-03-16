@@ -26,6 +26,7 @@ public:
 
 signals:
 	void onConnectButtonClicked();
+	void stateChanged(QAbstractSocket::SocketState socketState);
 
 private:
 	QTcpSocket socket;

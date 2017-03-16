@@ -30,6 +30,7 @@
 #include "connectForm.h"
 
 #include "connectionManager.h"
+#include <QMovie>
 
 namespace Ui {
 class GamepadForm;
@@ -161,4 +162,5 @@ private:
 	ConnectionManager connectionManager;
 	QMediaPlayer *player;
 	QVideoWidget *videoWidget;
+	QMovie movie;
 };
