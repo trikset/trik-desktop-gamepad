@@ -2,6 +2,7 @@
 
 #include <QTcpSocket>
 #include <QIODevice>
+#include <QtCore/QTimer>
 
 class ConnectionManager : public QObject
 {
@@ -11,7 +12,7 @@ public:
 	ConnectionManager();
 
 	bool isConnected() const;
-	bool waitForConnected(int msecs = 30000);
+	void waitForConnected(int msecs = 3000);
 
 	QString getCameraIp() const;
 
@@ -28,7 +29,12 @@ signals:
 	void onConnectButtonClicked();
 	void stateChanged(QAbstractSocket::SocketState socketState);
 
+private slots:
+	void checkConnection();
+
 private:
+	QTimer *timer;
+
 	QTcpSocket socket;
 	QString cameraIp;
 	QString cameraPort;

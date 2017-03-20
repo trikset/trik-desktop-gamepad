@@ -6,11 +6,8 @@
 ConnectionManager::ConnectionManager()
 {
 	qDebug() << socket.state();
-	qDebug() << "Manager thread id is " << QThread::currentThreadId();
-	/// function is called to use enum QAbstractSocket::SocketState in queued
-	/// signal and slot connections
-	int id = qRegisterMetaType<QAbstractSocket::SocketState>();
-	qDebug() << id;
+	timer = new QTimer(this);
+	qRegisterMetaType<QAbstractSocket::SocketState>();
 	connect(&socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
 			this, SIGNAL(stateChanged(QAbstractSocket::SocketState)), Qt::QueuedConnection);
 }
@@ -20,9 +17,11 @@ bool ConnectionManager::isConnected() const
 	return socket.state() == QTcpSocket::ConnectedState;
 }
 
-bool ConnectionManager::waitForConnected(int msecs)
+void ConnectionManager::waitForConnected(int msecs)
 {
-	return socket.waitForConnected(msecs);
+	connect(timer, SIGNAL(timeout()), this, SLOT(checkConnection()));
+	connect(timer, SIGNAL(timeout()), timer, SLOT(stop()));
+	timer->start(msecs);
 }
 
 QString ConnectionManager::getCameraIp() const
@@ -38,8 +37,6 @@ qint64 ConnectionManager::write(const char *data)
 void ConnectionManager::connectToHost(const QString &hostName, quint16 port, QIODevice::OpenMode openMode)
 {
 	socket.connectToHost(hostName, port, openMode);
-	qDebug() << "12123";
-	qDebug() << "ConnectToHost function thread id is " << QThread::currentThreadId();
 }
 
 void ConnectionManager::disconnectFromHost()
@@ -60,4 +57,13 @@ QString ConnectionManager::getCameraPort() const
 void ConnectionManager::setCameraPort(const QString &value)
 {
 	cameraPort = value;
+}
+
+void ConnectionManager::checkConnection()
+{
+	qDebug() << socket.state();
+	if (socket.state() != QTcpSocket::ConnectedState) {
+		socket.abort();
+	}
+	qDebug() << socket.state();
 }

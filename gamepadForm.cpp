@@ -22,7 +22,6 @@
 #include <QtWidgets/QMessageBox>
 #include <QtGui/QKeyEvent>
 
-#include <QDebug>
 #include <QNetworkRequest>
 #include <QMediaContent>
 
@@ -34,7 +33,6 @@ GamepadForm::GamepadForm()
 	mUi->setupUi(this);
 	this->installEventFilter(this);
 	setUpGamepadForm();
-	qDebug() << "GamepadForm thread id is " << QThread::currentThreadId();
 }
 
 GamepadForm::~GamepadForm()
@@ -57,7 +55,7 @@ void GamepadForm::setVideoController()
 {
 	player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
 	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
-			this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+			this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)), Qt::QueuedConnection);
 	connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
 			this, SLOT(startVideoStream()));
 	videoWidget = new QVideoWidget(this);
@@ -69,9 +67,6 @@ void GamepadForm::setVideoController()
 	movie.setFileName(":/images/loading.gif");
 	mUi->loadingMediaLabel->setVisible(false);
 	mUi->loadingMediaLabel->setMovie(&movie);
-	if (movie.isValid())
-		movie.start();
-	qDebug() << movie.frameCount();
 
 	QPixmap pixmap(":/images/noVideoSign.png");
 	mUi->invalidMediaLabel->setPixmap(pixmap);
@@ -83,9 +78,13 @@ void GamepadForm::setVideoController()
 
 void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
-	qDebug() << status;
+	movie.setPaused(true);
 	switch (status) {
 	case QMediaPlayer::StalledMedia:
+	case QMediaPlayer::LoadedMedia:
+	case QMediaPlayer::BufferingMedia:
+		player->setVideoOutput(videoWidget);
+		player->play();
 		mUi->loadingMediaLabel->setVisible(false);
 		mUi->invalidMediaLabel->setVisible(false);
 		mUi->label->setVisible(false);
@@ -97,6 +96,7 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 		mUi->label->setVisible(false);
 		videoWidget->setVisible(false);
 		mUi->loadingMediaLabel->setVisible(true);
+		movie.setPaused(false);
 		break;
 
 	case QMediaPlayer::InvalidMedia:
@@ -123,16 +123,12 @@ void GamepadForm::startVideoStream()
 	const QString port = connectionManager.getCameraPort();
 	const auto status = player->mediaStatus();
 
-	//emit player->mediaStatusChanged(QMediaPlayer::LoadingMedia);
-
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
 		const QString url = "http://" + ip + ":" + port + "/?action=stream";
 		//QNetworkRequest nr = QNetworkRequest(url);
 		//nr.setPriority(QNetworkRequest::LowPriority);
 		//nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
 		player->setMedia(QUrl(url));
-		player->setVideoOutput(videoWidget);
-		player->play();
 	}
 }
 

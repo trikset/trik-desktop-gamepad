@@ -46,8 +46,6 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
 	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
-	connect(connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-			this, SLOT(dealWithState(QAbstractSocket::SocketState)), Qt::QueuedConnection);
 }
 
 ConnectForm::~ConnectForm()
@@ -67,48 +65,17 @@ void ConnectForm::onConnectButtonClicked()
 	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
 	emit connectionManager->onConnectButtonClicked();
 
-	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-
-	/*
-	QFuture<void> connectFunction = QtConcurrent::run(
-		this->connectionManager, &ConnectionManager::connectToHost, ip, port, QIODevice::ReadWrite);
-	connectFunction.waitForFinished();
-	*/
-	//connectionManager->connectToHost(ip, port);
+	connectionManager->connectToHost(ip, port);
 
 	// Waiting for opened connection and checking that connection is actually established.
 
-	/*
-	if (!connectionManager->waitForConnected(3000)) {
-		// If not, warn user.
-		QMessageBox::warning(this, tr("Connection failed"), tr("Failed to connect to robot"));
-	} else {
-		mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-		QMessageBox::information(this, tr("Connection succeeded"), tr("Connected to robot"));
-	}
-	*/
+	connectionManager->waitForConnected(3000);
 }
 
 void ConnectForm::onAdvancedButtonClicked()
 {
 	mUi->advancedButton->setVisible(false);
 	setVisibilityToAdditionalButtons(true);
-}
-
-void ConnectForm::dealWithState(QAbstractSocket::SocketState socketState)
-{
-	qDebug() << socketState;
-	qDebug() << "ConnectForm thread id is " << QThread::currentThreadId();
-	switch (socketState) {
-	case QAbstractSocket::ConnectedState:
-		this->accept();
-		break;
-	case QAbstractSocket::UnconnectedState:
-		QMessageBox::warning(this, tr("Connection failed"), tr("Failed to connect to robot"));
-		break;
-	default:
-		break;
-	}
 }
 
 void ConnectForm::setVisibilityToAdditionalButtons(bool mode)

@@ -22,11 +22,6 @@
 
 #include "connectionManager.h"
 
-#include <QDebug>
-#include <QThread>
-#include <QString>
-#include <QtConcurrent/QtConcurrentRun>
-
 namespace Ui {
 class ConnectForm;
 }
@@ -48,8 +43,6 @@ private slots:
 	void onConnectButtonClicked();
 
 	void onAdvancedButtonClicked();
-
-	void dealWithState(QAbstractSocket::SocketState socketState);
 
 private:
 	void setVisibilityToAdditionalButtons(bool mode);
