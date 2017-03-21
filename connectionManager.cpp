@@ -5,6 +5,7 @@
 
 ConnectionManager::ConnectionManager()
 {
+	qDebug() << "ConnectionManager thread is " << QThread::currentThreadId();
 	qDebug() << socket.state();
 	timer = new QTimer(this);
 	qRegisterMetaType<QAbstractSocket::SocketState>();
@@ -19,9 +20,11 @@ bool ConnectionManager::isConnected() const
 
 void ConnectionManager::waitForConnected(int msecs)
 {
-	connect(timer, SIGNAL(timeout()), this, SLOT(checkConnection()));
-	connect(timer, SIGNAL(timeout()), timer, SLOT(stop()));
-	timer->start(msecs);
+	qDebug() << "waitForConnected thread is " << QThread::currentThreadId();
+	socket.waitForConnected(msecs);
+	//connect(timer, SIGNAL(timeout()), this, SLOT(checkConnection()));
+	//connect(timer, SIGNAL(timeout()), timer, SLOT(stop()));
+	//timer->start(msecs);
 }
 
 QString ConnectionManager::getCameraIp() const

@@ -20,6 +20,8 @@
 
 #include <QtWidgets/QMessageBox>
 
+#include <QtConcurrent/QtConcurrentRun>
+
 ConnectForm::ConnectForm(ConnectionManager *manager
 						 , QWidget *parent)
 	: QDialog(parent)
@@ -32,18 +34,15 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 
 	// These constants was added for translations purposes
 	const QString buttonCancel = tr("Cancel");
-	const QString buttonOK = tr("Ok");
 	const QString connectButton = tr("Connect");
+	const QString advancedButton = tr("Advanced...");
 
-	mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-
-	mUi->buttonBox->button(QDialogButtonBox::Ok)->setText(buttonOK);
-	mUi->buttonBox->button(QDialogButtonBox::Cancel)->setText(buttonCancel);
+	mUi->cancelButton->setText(buttonCancel);
 	mUi->connectButton->setText(connectButton);
+	mUi->advancedButton->setText(advancedButton);
 
 	// Connecting buttons with methods
-	connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+	connect(mUi->cancelButton, &QPushButton::pressed, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
 	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
 }
@@ -65,11 +64,17 @@ void ConnectForm::onConnectButtonClicked()
 	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
 	emit connectionManager->onConnectButtonClicked();
 
-	connectionManager->connectToHost(ip, port);
+	//connectionManager->connectToHost(ip, port);
 
 	// Waiting for opened connection and checking that connection is actually established.
 
-	connectionManager->waitForConnected(3000);
+	connectionManager->connectToHost(ip, port);
+	QFuture<void> connectFunction = QtConcurrent::run(
+		this->connectionManager, &ConnectionManager::waitForConnected, 3000);
+	//connectFunction.waitForFinished();
+
+	//connectionManager->waitForConnected(3000);
+	//this->reject();
 }
 
 void ConnectForm::onAdvancedButtonClicked()

@@ -44,9 +44,9 @@ GamepadForm::~GamepadForm()
 void GamepadForm::setUpGamepadForm()
 {
 	createMenu();
-	createTimer();
 	createConnection();
 	setVideoController();
+	setLabels();
 	setUpControlButtonsHash();
 	retranslate();
 }
@@ -58,6 +58,10 @@ void GamepadForm::setVideoController()
 			this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)), Qt::QueuedConnection);
 	connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
 			this, SLOT(startVideoStream()));
+
+	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+			this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+
 	videoWidget = new QVideoWidget(this);
 	videoWidget->setMinimumSize(320, 240);
 	videoWidget->setVisible(false);
@@ -129,6 +133,37 @@ void GamepadForm::startVideoStream()
 		//nr.setPriority(QNetworkRequest::LowPriority);
 		//nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
 		player->setMedia(QUrl(url));
+	}
+}
+
+void GamepadForm::checkSocket(QAbstractSocket::SocketState state)
+{
+	qDebug() << "checkSocket " << state;
+	switch (state) {
+	case QAbstractSocket::ConnectedState:
+		mUi->disconnectedLabel->setVisible(false);
+		mUi->connectedLabel->setVisible(true);
+		mUi->connectingLabel->setVisible(false);
+		setButtonsCheckable(true);
+		setButtonsEnabled(true);
+		break;
+
+	case QAbstractSocket::ConnectingState:
+		mUi->disconnectedLabel->setVisible(false);
+		mUi->connectedLabel->setVisible(false);
+		mUi->connectingLabel->setVisible(true);
+		setButtonsCheckable(false);
+		setButtonsEnabled(false);
+		break;
+
+	case QAbstractSocket::UnconnectedState:
+	default:
+		mUi->disconnectedLabel->setVisible(true);
+		mUi->connectedLabel->setVisible(false);
+		mUi->connectingLabel->setVisible(false);
+		setButtonsCheckable(false);
+		setButtonsEnabled(false);
+		break;
 	}
 }
 
@@ -253,32 +288,6 @@ void GamepadForm::createMenu()
 	this->layout()->setMenuBar(mMenuBar);
 }
 
-void GamepadForm::createTimer()
-{
-	connect(&mTimer, &QTimer::timeout, this, &GamepadForm::checkConnection);
-	mTimer.start(1000);
-}
-
-void GamepadForm::checkConnection()
-{
-	const QString successfulConnection = tr("Connected.\nButtons enabled.");
-	const QString unsuccessfulConnection = tr("Disconnected.\nButtons disabled.");
-	const QString colorRed = "QLabel {color : red; }";
-	const QString colorGreen = "QLabel {color : green; }";
-
-	if (!connectionManager.isConnected()) {
-		mUi->connection->setText(unsuccessfulConnection);
-		mUi->connection->setStyleSheet(colorRed);
-		setButtonsEnabled(false);
-		setButtonsCheckable(false);
-	} else {
-		mUi->connection->setText(successfulConnection);
-		mUi->connection->setStyleSheet(colorGreen);
-		setButtonsEnabled(true);
-		setButtonsCheckable(true);
-	}
-}
-
 void GamepadForm::setButtonsEnabled(bool enabled)
 {
 	// Here we enable or disable pads and "magic buttons" depending on given parameter.
@@ -309,6 +318,21 @@ void GamepadForm::setUpControlButtonsHash()
 	controlButtonsHash.insert(Qt::Key_Right, mUi->buttonPad2Right);
 	controlButtonsHash.insert(Qt::Key_Up, mUi->buttonPad2Up);
 	controlButtonsHash.insert(Qt::Key_Down, mUi->buttonPad2Down);
+}
+
+void GamepadForm::setLabels()
+{
+	QPixmap redBall(":/images/redBall.png");
+	mUi->disconnectedLabel->setPixmap(redBall);
+	mUi->disconnectedLabel->setVisible(true);
+
+	QPixmap greenBall(":/images/greenBall.png");
+	mUi->connectedLabel->setPixmap(greenBall);
+	mUi->connectedLabel->setVisible(false);
+
+	QPixmap blueBall(":/images/blueBall.png");
+	mUi->connectingLabel->setPixmap(blueBall);
+	mUi->connectingLabel->setVisible(false);
 }
 
 bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
