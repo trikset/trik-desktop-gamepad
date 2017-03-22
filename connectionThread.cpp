@@ -3,7 +3,6 @@
 ConnectionThread::ConnectionThread(QObject *parent)
 	: QThread(parent), quit(false)
 {
-	command = "first";
 }
 
 ConnectionThread::~ConnectionThread()
@@ -17,9 +16,8 @@ ConnectionThread::~ConnectionThread()
 
 void ConnectionThread::sendCommand(const QString &commandMessage)
 {
-	qDebug() << currentThreadId();
 	QMutexLocker locker(&mutex);
-	command = commandMessage;
+	commandsQueue.enqueue(commandMessage);
 	if (!isRunning())
 		start();
 	else
@@ -41,11 +39,16 @@ void ConnectionThread::run()
 		return;
 	}
 
-	while (!quit) {
-		qDebug() << currentThreadId();
-		qDebug() << command;
+
+	while (commandsQueue.isEmpty()) {
 		mutex.lock();
-		const char *data = command.toLatin1().data();
+		cond.wait(&mutex);
+		mutex.unlock();
+	}
+
+	while (!quit) {
+		mutex.lock();
+		const char *data = commandsQueue.dequeue().toLatin1().data();
 		int result = socket.write(data);
 
 		/// force socket to write data
@@ -53,7 +56,8 @@ void ConnectionThread::run()
 
 		if (!result)
 			return;
-		cond.wait(&mutex);
+		if (commandsQueue.isEmpty())
+			cond.wait(&mutex);
 		mutex.unlock();
 	}
 

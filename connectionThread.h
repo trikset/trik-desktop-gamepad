@@ -7,6 +7,8 @@
 #include <QTcpSocket>
 #include <QIODevice>
 
+#include <QQueue>
+
 class ConnectionThread : public QThread
 {
 	Q_OBJECT
@@ -15,19 +17,22 @@ public:
 	ConnectionThread(QObject *parent = 0);
 	~ConnectionThread();
 
-	void sendCommand(const QString &commandMessage);
+
 	void run() Q_DECL_OVERRIDE;
 
 
 	void setHostName(const QString &value);
 	void setPort(const quint16 &value);
 
+public slots:
+	void sendCommand(const QString &commandMessage);
+
 signals:
 	void socketStateChanged(QAbstractSocket::SocketState state);
 
 
 private:
-	QString command;
+	QQueue<QString> commandsQueue;
 
 	QString hostName;
 	quint16 port;
