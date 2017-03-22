@@ -25,9 +25,16 @@ public:
 	QString getCameraPort() const;
 	void setCameraPort(const QString &value);
 
+	QString getGamepadIp() const;
+	void setGamepadIp(const QString &value);
+
+	quint16 getGamepadPort() const;
+	void setGamepadPort(const quint16 &value);
+
 signals:
 	void onConnectButtonClicked();
 	void stateChanged(QAbstractSocket::SocketState socketState);
+	void dataReceived();
 
 private slots:
 	void checkConnection();
@@ -38,5 +45,8 @@ private:
 	QTcpSocket socket;
 	QString cameraIp;
 	QString cameraPort;
+
+	QString gamepadIp;
+	quint16 gamepadPort;
 };
 

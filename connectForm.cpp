@@ -20,8 +20,6 @@
 
 #include <QtWidgets/QMessageBox>
 
-#include <QtConcurrent/QtConcurrentRun>
-
 ConnectForm::ConnectForm(ConnectionManager *manager
 						 , QWidget *parent)
 	: QDialog(parent)
@@ -64,17 +62,16 @@ void ConnectForm::onConnectButtonClicked()
 	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
 	emit connectionManager->onConnectButtonClicked();
 
+	connectionManager->setGamepadIp(ip);
+	connectionManager->setGamepadPort(port);
+	emit connectionManager->dataReceived();
+
 	//connectionManager->connectToHost(ip, port);
 
 	// Waiting for opened connection and checking that connection is actually established.
 
-	connectionManager->connectToHost(ip, port);
-	QFuture<void> connectFunction = QtConcurrent::run(
-		this->connectionManager, &ConnectionManager::waitForConnected, 3000);
-	//connectFunction.waitForFinished();
-
 	//connectionManager->waitForConnected(3000);
-	//this->reject();
+	this->reject();
 }
 
 void ConnectForm::onAdvancedButtonClicked()

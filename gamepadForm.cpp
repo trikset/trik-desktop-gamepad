@@ -61,6 +61,13 @@ void GamepadForm::setVideoController()
 
 	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
 			this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+	connect(&connectionManager, SIGNAL(dataReceived()),
+			this, SLOT(startThread()));
+
+
+	connect(&connectionThread, SIGNAL(socketStateChanged(QAbstractSocket::SocketState)),
+			this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+
 
 	videoWidget = new QVideoWidget(this);
 	videoWidget->setMinimumSize(320, 240);
@@ -165,6 +172,13 @@ void GamepadForm::checkSocket(QAbstractSocket::SocketState state)
 		setButtonsEnabled(false);
 		break;
 	}
+}
+
+void GamepadForm::startThread()
+{
+	connectionThread.setPort(connectionManager.getGamepadPort());
+	connectionThread.setHostName(connectionManager.getGamepadIp());
+	connectionThread.start();
 }
 
 void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
@@ -403,6 +417,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
+	/*
 	if (!connectionManager.isConnected()) {
 		return;
 	}
@@ -411,12 +426,14 @@ void GamepadForm::onButtonPressed(int buttonId)
 	if (connectionManager.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
 		// If sending failed for some reason, we think that we lost connection and disable buttons.
 		setButtonsEnabled(false);
-	}
+	}*/
+	connectionThread.sendCommand(QString("btn %1\n").arg(buttonId));
 }
 
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
+	/*
 	if (!connectionManager.isConnected()) {
 		return;
 	}
@@ -424,10 +441,13 @@ void GamepadForm::onPadPressed(const QString &action)
 	if (connectionManager.write((action + "\n").toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
+	*/
+	connectionThread.sendCommand(QString(action + "\n"));
 }
 
 void GamepadForm::onPadReleased(int padId)
 {
+	/*
 	// Here we send "pad <padId> up" command.
 	if (!connectionManager.isConnected()) {
 		return;
@@ -436,6 +456,8 @@ void GamepadForm::onPadReleased(int padId)
 	if (connectionManager.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
 		setButtonsEnabled(false);
 	}
+	*/
+	connectionThread.sendCommand(QString("pad %1 up\n").arg(padId));
 }
 
 void GamepadForm::openConnectDialog()

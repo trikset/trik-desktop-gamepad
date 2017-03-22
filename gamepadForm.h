@@ -32,6 +32,8 @@
 #include "connectionManager.h"
 #include <QMovie>
 
+#include "connectionThread.h"
+
 namespace Ui {
 class GamepadForm;
 }
@@ -96,6 +98,8 @@ private slots:
 
 	void checkSocket(QAbstractSocket::SocketState state);
 
+	void startThread();
+
 private:
 	void setButtonChecked(const int &key, bool ckeckStatus);
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
@@ -157,4 +161,6 @@ private:
 	QMediaPlayer *player;
 	QVideoWidget *videoWidget;
 	QMovie movie;
+
+	ConnectionThread connectionThread;
 };
