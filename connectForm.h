@@ -44,6 +44,9 @@ private slots:
 
 	void onAdvancedButtonClicked();
 
+signals:
+	void dataReceived();
+
 private:
 	void setVisibilityToAdditionalButtons(bool mode);
 

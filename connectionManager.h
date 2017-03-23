@@ -2,7 +2,6 @@
 
 #include <QTcpSocket>
 #include <QIODevice>
-#include <QtCore/QTimer>
 
 class ConnectionManager : public QObject
 {
@@ -12,15 +11,9 @@ public:
 	ConnectionManager();
 
 	bool isConnected() const;
-	void waitForConnected(int msecs = 3000);
 
-	QString getCameraIp() const;
-
-	qint64 write(const char *data);
-
-	void connectToHost(const QString & hostName, quint16 port, QIODevice::OpenMode openMode = QIODevice::ReadWrite);
-	void disconnectFromHost();
 	void setCameraIp(const QString &value);
+	QString getCameraIp() const;
 
 	QString getCameraPort() const;
 	void setCameraPort(const QString &value);
@@ -31,18 +24,18 @@ public:
 	quint16 getGamepadPort() const;
 	void setGamepadPort(const quint16 &value);
 
-signals:
-	void onConnectButtonClicked();
-	void stateChanged(QAbstractSocket::SocketState socketState);
-	void dataReceived();
+public slots:
+	void connectToHost();
+	void disconnectFromHost();
+	void write(const QString &);
 
-private slots:
-	void checkConnection();
+signals:
+	void stateChanged(QAbstractSocket::SocketState socketState);
+	void dataWasWritten(int);
+	void connectionFailed();
 
 private:
-	QTimer *timer;
-
-	QTcpSocket socket;
+	QTcpSocket *socket;
 	QString cameraIp;
 	QString cameraPort;
 

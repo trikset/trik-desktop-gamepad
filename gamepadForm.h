@@ -31,8 +31,7 @@
 
 #include "connectionManager.h"
 #include <QMovie>
-
-#include "connectionThread.h"
+#include <QThread>
 
 namespace Ui {
 class GamepadForm;
@@ -100,6 +99,10 @@ private slots:
 
 	void startThread();
 
+signals:
+	void commandReceived(QString);
+	void programFinished();
+
 private:
 	void setButtonChecked(const int &key, bool ckeckStatus);
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
@@ -158,9 +161,8 @@ private:
 
 	/// Class that handles network communication with TRIK.
 	ConnectionManager connectionManager;
+	QThread thread;
 	QMediaPlayer *player;
 	QVideoWidget *videoWidget;
 	QMovie movie;
-
-	ConnectionThread connectionThread;
 };

@@ -33,12 +33,17 @@ GamepadForm::GamepadForm()
 	mUi->setupUi(this);
 	this->installEventFilter(this);
 	setUpGamepadForm();
+	startThread();
 }
 
 GamepadForm::~GamepadForm()
 {
-	// Gracefully disconnecting from host.
-	connectionManager.disconnectFromHost();
+	// disabling socket from thread where it was enabled
+	emit programFinished();
+	// stopping thread
+	thread.quit();
+	// waiting thread to quit
+	thread.wait();
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -54,20 +59,7 @@ void GamepadForm::setUpGamepadForm()
 void GamepadForm::setVideoController()
 {
 	player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
-			this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)), Qt::QueuedConnection);
-	connect(&connectionManager, SIGNAL(onConnectButtonClicked()),
-			this, SLOT(startVideoStream()));
-
-	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-			this, SLOT(checkSocket(QAbstractSocket::SocketState)));
-	connect(&connectionManager, SIGNAL(dataReceived()),
-			this, SLOT(startThread()));
-
-
-	connect(&connectionThread, SIGNAL(socketStateChanged(QAbstractSocket::SocketState)),
-			this, SLOT(checkSocket(QAbstractSocket::SocketState)));
-
+	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
 
 	videoWidget = new QVideoWidget(this);
 	videoWidget->setMinimumSize(320, 240);
@@ -145,7 +137,6 @@ void GamepadForm::startVideoStream()
 
 void GamepadForm::checkSocket(QAbstractSocket::SocketState state)
 {
-	qDebug() << "checkSocket " << state;
 	switch (state) {
 	case QAbstractSocket::ConnectedState:
 		mUi->disconnectedLabel->setVisible(false);
@@ -176,9 +167,8 @@ void GamepadForm::checkSocket(QAbstractSocket::SocketState state)
 
 void GamepadForm::startThread()
 {
-	connectionThread.setPort(connectionManager.getGamepadPort());
-	connectionThread.setHostName(connectionManager.getGamepadIp());
-	connectionThread.start();
+	connectionManager.moveToThread(&thread);
+	thread.start();
 }
 
 void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
@@ -232,6 +222,9 @@ void GamepadForm::createConnection()
 	connect(mMapperDigitPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitPress(QWidget*)));
 	connect(mMapperDigitReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitRelease(QWidget*)));
 
+	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
+	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
 }
 
 void GamepadForm::createMenu()
@@ -417,53 +410,42 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 void GamepadForm::onButtonPressed(int buttonId)
 {
 	// Checking that we are still connected, just in case.
-	/*
 	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	// Sending "btn <buttonId>" command to robot.
-	if (connectionManager.write(QString("btn %1\n").arg(buttonId).toLatin1()) == -1) {
-		// If sending failed for some reason, we think that we lost connection and disable buttons.
-		setButtonsEnabled(false);
-	}*/
-	connectionThread.sendCommand(QString("btn %1\n").arg(buttonId));
+	emit commandReceived(QString("btn %1\n").arg(buttonId));
 }
 
 void GamepadForm::onPadPressed(const QString &action)
 {
 	// Here we send "pad <padId> <x> <y>" command.
-	/*
 	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	if (connectionManager.write((action + "\n").toLatin1()) == -1) {
-		setButtonsEnabled(false);
-	}
-	*/
-	connectionThread.sendCommand(QString(action + "\n"));
+	emit commandReceived(QString(action + "\n"));
 }
 
 void GamepadForm::onPadReleased(int padId)
 {
-	/*
 	// Here we send "pad <padId> up" command.
 	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	if (connectionManager.write(QString("pad %1 up\n").arg(padId).toLatin1()) == -1) {
-		setButtonsEnabled(false);
-	}
-	*/
-	connectionThread.sendCommand(QString("pad %1 up\n").arg(padId));
+	emit commandReceived(QString("pad %1 up\n").arg(padId));
 }
 
 void GamepadForm::openConnectDialog()
 {
 	mMyNewConnectForm = new ConnectForm(&connectionManager);
 	mMyNewConnectForm->show();
+
+	connect(mMyNewConnectForm, SIGNAL(dataReceived()),
+			&connectionManager, SLOT(connectToHost()));
+	connect(mMyNewConnectForm, SIGNAL(dataReceived()),
+			this, SLOT(startVideoStream()));
 }
 
 void GamepadForm::exit()

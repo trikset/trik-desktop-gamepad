@@ -60,18 +60,13 @@ void ConnectForm::onConnectButtonClicked()
 	else
 		connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
 	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
-	emit connectionManager->onConnectButtonClicked();
 
 	connectionManager->setGamepadIp(ip);
 	connectionManager->setGamepadPort(port);
-	emit connectionManager->dataReceived();
-
-	//connectionManager->connectToHost(ip, port);
-
-	// Waiting for opened connection and checking that connection is actually established.
-
-	//connectionManager->waitForConnected(3000);
 	this->reject();
+
+	emit dataReceived();
+
 }
 
 void ConnectForm::onAdvancedButtonClicked()
