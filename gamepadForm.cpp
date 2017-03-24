@@ -62,6 +62,7 @@ void GamepadForm::setVideoController()
 	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
 
 	videoWidget = new QVideoWidget(this);
+	player->setVideoOutput(videoWidget);
 	videoWidget->setMinimumSize(320, 240);
 	videoWidget->setVisible(false);
 	mUi->verticalLayout->addWidget(videoWidget);
@@ -86,7 +87,6 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 	case QMediaPlayer::StalledMedia:
 	case QMediaPlayer::LoadedMedia:
 	case QMediaPlayer::BufferingMedia:
-		player->setVideoOutput(videoWidget);
 		player->play();
 		mUi->loadingMediaLabel->setVisible(false);
 		mUi->invalidMediaLabel->setVisible(false);
