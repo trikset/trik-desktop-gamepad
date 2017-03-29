@@ -99,6 +99,10 @@ private slots:
 
 	void startThread();
 
+	void checkBytesWritten(int result);
+
+	void showConnectionFailedMessage();
+
 signals:
 	void commandReceived(QString);
 	void programFinished();

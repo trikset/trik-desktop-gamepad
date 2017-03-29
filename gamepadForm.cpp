@@ -171,6 +171,21 @@ void GamepadForm::startThread()
 	thread.start();
 }
 
+void GamepadForm::checkBytesWritten(int result)
+{
+	if (result == -1) {
+		setButtonsEnabled(false);
+		setButtonsCheckable(false);
+	}
+}
+
+void GamepadForm::showConnectionFailedMessage()
+{
+	QMessageBox failedConnectionMessage(this);
+	failedConnectionMessage.setText(tr("Couldn't connect to robot"));
+	failedConnectionMessage.exec();
+}
+
 void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
 {
 	controlButtonsHash[key]->setChecked(checkStatus);
@@ -223,6 +238,8 @@ void GamepadForm::createConnection()
 	connect(mMapperDigitReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitRelease(QWidget*)));
 
 	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+	connect(&connectionManager, SIGNAL(dataWasWritten(int)), this, SLOT(checkBytesWritten(int)));
+	connect(&connectionManager, SIGNAL(connectionFailed()), this, SLOT(showConnectionFailedMessage()));
 	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
 	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
 }
