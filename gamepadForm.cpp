@@ -24,6 +24,7 @@
 
 #include <QNetworkRequest>
 #include <QMediaContent>
+#include <QFontDatabase>
 
 GamepadForm::GamepadForm()
 	: QWidget()
@@ -49,6 +50,7 @@ GamepadForm::~GamepadForm()
 void GamepadForm::setUpGamepadForm()
 {
 	createMenu();
+	setFontToPadButtons();
 	createConnection();
 	setVideoController();
 	setLabels();
@@ -184,6 +186,24 @@ void GamepadForm::showConnectionFailedMessage()
 	QMessageBox failedConnectionMessage(this);
 	failedConnectionMessage.setText(tr("Couldn't connect to robot"));
 	failedConnectionMessage.exec();
+}
+
+void GamepadForm::setFontToPadButtons()
+{
+	const int id = QFontDatabase::addApplicationFont(":/fonts/freemono.ttf");
+	const QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+	const int pointSize = 50;
+	QFont font(family, pointSize);
+
+	mUi->buttonPad1Down->setFont(font);
+	mUi->buttonPad1Up->setFont(font);
+	mUi->buttonPad1Left->setFont(font);
+	mUi->buttonPad1Right->setFont(font);
+
+	mUi->buttonPad2Down->setFont(font);
+	mUi->buttonPad2Up->setFont(font);
+	mUi->buttonPad2Left->setFont(font);
+	mUi->buttonPad2Right->setFont(font);
 }
 
 void GamepadForm::setButtonChecked(const int &key, bool checkStatus)

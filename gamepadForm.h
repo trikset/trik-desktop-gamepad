@@ -103,6 +103,8 @@ private slots:
 
 	void showConnectionFailedMessage();
 
+	void setFontToPadButtons();
+
 signals:
 	void commandReceived(QString);
 	void programFinished();

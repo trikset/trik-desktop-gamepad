@@ -43,5 +43,6 @@ FORMS += \
         connectForm.ui
 
 RESOURCES += \
-        images.qrc
+        images.qrc \
+        fonts.qrc
 

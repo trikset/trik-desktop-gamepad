@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fonts/freemono.ttf</file>
+    </qresource>
+</RCC>
