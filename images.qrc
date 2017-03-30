@@ -10,5 +10,10 @@
         <file>images/button3.png</file>
         <file>images/button4.png</file>
         <file>images/button5.png</file>
+        <file>images/noVideoSign.png</file>
+        <file>images/loading.gif</file>
+        <file>images/blueBall.png</file>
+        <file>images/greenBall.png</file>
+        <file>images/redBall.png</file>
     </qresource>
 </RCC>

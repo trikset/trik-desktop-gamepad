@@ -20,30 +20,29 @@
 
 #include <QtWidgets/QMessageBox>
 
-ConnectForm::ConnectForm(QTcpSocket *socket
-		, QWidget *parent)
-		: QDialog(parent)
-		, mUi(new Ui::ConnectForm)
-		, mSocket(socket)
-
+ConnectForm::ConnectForm(ConnectionManager *manager
+						 , QWidget *parent)
+	: QDialog(parent)
+	, mUi(new Ui::ConnectForm)
+	, connectionManager(manager)
 {
 	mUi->setupUi(this);
 
+	setVisibilityToAdditionalButtons(false);
+
 	// These constants was added for translations purposes
 	const QString buttonCancel = tr("Cancel");
-	const QString buttonOK = tr("Ok");
 	const QString connectButton = tr("Connect");
+	const QString advancedButton = tr("Advanced...");
 
-	mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-
-	mUi->buttonBox->button(QDialogButtonBox::Ok)->setText(buttonOK);
-	mUi->buttonBox->button(QDialogButtonBox::Cancel)->setText(buttonCancel);
+	mUi->cancelButton->setText(buttonCancel);
 	mUi->connectButton->setText(connectButton);
+	mUi->advancedButton->setText(advancedButton);
 
 	// Connecting buttons with methods
-	connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-	connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+	connect(mUi->cancelButton, &QPushButton::pressed, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
+	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
 }
 
 ConnectForm::~ConnectForm()
@@ -54,15 +53,34 @@ ConnectForm::~ConnectForm()
 void ConnectForm::onConnectButtonClicked()
 {
 	const auto ip = mUi->robotIpLineEdit->text();
+	const auto port = mUi->robotPortLineEdit->text().toInt();
 
-	// Connecting. 4444 is hardcoded here since it is default gamepad port on TRIK.
-	mSocket->connectToHost(ip, 4444);
-	// Waiting for opened connection and checking that connection is actually established.
-	if (!mSocket->waitForConnected(3000)) {
-		// If not, warn user.
-		QMessageBox::warning(this, tr("Connection failed"), tr("Failed to connect to robot"));
-	} else {
-		mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-		QMessageBox::information(this, tr("Connection succeeded"), tr("Connected to robot"));
-	}
+	if (mUi->cameraIPLineEdit->text().isEmpty())
+		connectionManager->setCameraIp(ip);
+	else
+		connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
+	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
+
+	connectionManager->setGamepadIp(ip);
+	connectionManager->setGamepadPort(port);
+	this->reject();
+
+	emit dataReceived();
+
+}
+
+void ConnectForm::onAdvancedButtonClicked()
+{
+	mUi->advancedButton->setVisible(false);
+	setVisibilityToAdditionalButtons(true);
+}
+
+void ConnectForm::setVisibilityToAdditionalButtons(bool mode)
+{
+	mUi->cameraIPLabel->setVisible(mode);
+	mUi->cameraIPLineEdit->setVisible(mode);
+	mUi->cameraPortLabel->setVisible(mode);
+	mUi->cameraPortLineEdit->setVisible(mode);
+	mUi->robotPortLabel->setVisible(mode);
+	mUi->robotPortLineEdit->setVisible(mode);
 }

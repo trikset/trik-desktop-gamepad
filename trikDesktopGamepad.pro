@@ -15,7 +15,7 @@
 # This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
 # project. See git revision history for detailed changes.
 
-QT += core gui network widgets
+QT += core gui network widgets multimedia multimediawidgets
 
 CONFIG += c++11
 
@@ -24,7 +24,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
         gamepadForm.cpp \
-        connectForm.cpp
+        connectForm.cpp \
+        connectionManager.cpp
 
 TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
                 languages/trikDesktopGamepad_en.ts \
@@ -34,12 +35,14 @@ TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
 target.path =
 HEADERS += \
         gamepadForm.h \
-        connectForm.h
+        connectForm.h \
+        connectionManager.h
 
 FORMS += \
         gamepadForm.ui \
         connectForm.ui
 
 RESOURCES += \
-        images.qrc
+        images.qrc \
+        fonts.qrc
 
