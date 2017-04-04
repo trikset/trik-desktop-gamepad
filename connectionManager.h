@@ -1,7 +1,10 @@
 #pragma once
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QTcpSocket>
 #include <QIODevice>
+
+#pragma GCC diagnostic pop
 
 class ConnectionManager : public QObject
 {
@@ -42,4 +45,3 @@ private:
 	QString gamepadIp;
 	quint16 gamepadPort;
 };
-

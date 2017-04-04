@@ -16,6 +16,8 @@
  * project. See git revision history for detailed changes. */
 
 #pragma once
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 
 #include <QMediaPlayer>
 #include <QVideoWidget>
@@ -27,11 +29,14 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QSignalMapper>
 #include <QtWidgets/QShortcut>
+#include <QMovie>
+#include <QThread>
+
+#pragma GCC diagnostic pop
+
 #include "connectForm.h"
 
 #include "connectionManager.h"
-#include <QMovie>
-#include <QThread>
 
 namespace Ui {
 class GamepadForm;

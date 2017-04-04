@@ -18,7 +18,12 @@
 #include "connectForm.h"
 #include "ui_connectForm.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
+
 #include <QtWidgets/QMessageBox>
+
+#pragma GCC diagnostic pop
 
 ConnectForm::ConnectForm(ConnectionManager *manager
 						 , QWidget *parent)

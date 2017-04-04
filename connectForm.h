@@ -16,9 +16,13 @@
  * project. See git revision history for detailed changes. */
 
 #pragma once
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 
 #include <QtWidgets/QDialog>
 #include <QtNetwork/QTcpSocket>
+
+#pragma GCC diagnostic pop
 
 #include "connectionManager.h"
 

@@ -15,6 +15,22 @@
 # This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
 # project. See git revision history for detailed changes.
 
+
+QMAKE_CXXFLAGS += -Wall -Wextra -pedantic -Wold-style-cast -Weffc++ #-Wconversion
+QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
+
+#message ("$(QTDIR)")
+
+# these flags didn't work properly
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimedia/"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtCore"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtGui/"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtWidgets/"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets/"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtNetwork/"
+#QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include//QtXml/"
+
+
 QT += core gui network widgets multimedia multimediawidgets
 
 CONFIG += c++11

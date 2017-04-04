@@ -16,8 +16,9 @@
  * project. See git revision history for detailed changes. */
 
 #include "gamepadForm.h"
-
 #include "ui_gamepadForm.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 
 #include <QtWidgets/QMessageBox>
 #include <QtGui/QKeyEvent>
@@ -25,6 +26,7 @@
 #include <QNetworkRequest>
 #include <QMediaContent>
 #include <QFontDatabase>
+#pragma GCC diagnostic pop
 
 GamepadForm::GamepadForm()
 	: QWidget()
