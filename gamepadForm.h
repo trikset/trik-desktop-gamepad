@@ -16,8 +16,6 @@
  * project. See git revision history for detailed changes. */
 
 #pragma once
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
 
 #include <QMediaPlayer>
 #include <QVideoWidget>
@@ -32,7 +30,6 @@
 #include <QMovie>
 #include <QThread>
 
-#pragma GCC diagnostic pop
 
 #include "connectForm.h"
 

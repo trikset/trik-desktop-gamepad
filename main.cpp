@@ -31,11 +31,8 @@
  * All commands are separated by '\n' symbol. So example of a data packet sent to a robot for "pad" command is
  * "pad 1 0 -100\n", excluding quotes.
  * */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#include <QtWidgets/QApplication>
 
-#pragma GCC diagnostic pop
+#include <QtWidgets/QApplication>
 #include "gamepadForm.h"
 
 int main(int argc, char *argv[])
