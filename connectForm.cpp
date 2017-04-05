@@ -55,7 +55,7 @@ ConnectForm::~ConnectForm()
 void ConnectForm::onConnectButtonClicked()
 {
 	const auto ip = mUi->robotIpLineEdit->text();
-	const auto port = mUi->robotPortLineEdit->text().toInt();
+	const quint16 port = static_cast<quint16>(mUi->robotPortLineEdit->text().toInt());
 
 	if (mUi->cameraIPLineEdit->text().isEmpty())
 		connectionManager->setCameraIp(ip);

@@ -32,6 +32,10 @@ class ConnectForm : public QDialog
 {
 	Q_OBJECT
 
+private:
+	ConnectForm(const ConnectForm &other);
+	ConnectForm & operator=(const ConnectForm &other);
+
 public:
 	/// Constructor.
 	ConnectForm(ConnectionManager *connectionManager

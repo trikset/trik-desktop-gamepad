@@ -44,6 +44,10 @@ class GamepadForm : public QWidget
 {
 	Q_OBJECT
 
+private:
+	GamepadForm(const GamepadForm &other);
+	GamepadForm & operator=(const GamepadForm &other);
+
 public:
 	/// Constructor.
 	GamepadForm();

@@ -1,12 +1,20 @@
 #include "connectionManager.h"
 
 ConnectionManager::ConnectionManager()
+	: socket(new QTcpSocket(this))
 {
-	/// (this) lets socket->moveToThread()
-	socket = new QTcpSocket(this);
+	/// passing this to QTcpSocket forces automatically socket->moveToThread()
+	/// when calling connectionManaget.moveToThread()
 	qRegisterMetaType<QAbstractSocket::SocketState>();
 	connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
 			this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
+}
+
+ConnectionManager::~ConnectionManager()
+{
+	disconnect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+			   this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
+	delete socket;
 }
 
 bool ConnectionManager::isConnected() const
@@ -21,8 +29,8 @@ QString ConnectionManager::getCameraIp() const
 
 void ConnectionManager::write(const QString &data)
 {
-	int result = socket->write(data.toLatin1().data());
-	emit dataWasWritten(result);
+	qint64 result = socket->write(data.toLatin1().data());
+	emit dataWasWritten(static_cast<int>(result));
 }
 
 void ConnectionManager::connectToHost()

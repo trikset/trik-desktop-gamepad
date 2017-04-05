@@ -8,8 +8,13 @@ class ConnectionManager : public QObject
 {
 	Q_OBJECT
 
+private:
+	ConnectionManager(const ConnectionManager &other);
+	ConnectionManager & operator=(const ConnectionManager &other);
+
 public:
 	ConnectionManager();
+	~ConnectionManager();
 
 	bool isConnected() const;
 

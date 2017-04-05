@@ -389,7 +389,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 
 	// Handle key press event
 	if(event->type() == QEvent::KeyPress) {
-		int pressedKey = ((QKeyEvent*) event)->key();
+		int pressedKey = (dynamic_cast<QKeyEvent *> (event))->key();
 		if (controlButtonsHash.keys().contains(pressedKey))
 			setButtonChecked(pressedKey, true);
 
@@ -428,7 +428,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 		QSet<int> pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
 		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
 
-		auto releasedKey = ((QKeyEvent*) event)->key();
+		auto releasedKey = (dynamic_cast<QKeyEvent*>(event))->key();
 		if (controlButtonsHash.keys().contains(releasedKey))
 			setButtonChecked(releasedKey, false);
 		mPressedKeys -= releasedKey;
@@ -504,7 +504,7 @@ void GamepadForm::changeEvent(QEvent *event)
 void GamepadForm::handlePadRelease(QWidget *w)
 {
 	onPadReleased(mPadHashtable[w][0]);
-	QPushButton *padButton = (QPushButton *) w;
+	QPushButton *padButton = dynamic_cast<QPushButton *> (w);
 	padButton->setChecked(false);
 }
 
@@ -521,7 +521,7 @@ void GamepadForm::handleDigitPress(QWidget *w)
 
 void GamepadForm::handleDigitRelease(QWidget *w)
 {
-	QPushButton *digitButton = (QPushButton *) w;
+	QPushButton *digitButton = dynamic_cast<QPushButton *> (w);
 	digitButton->setChecked(false);
 }
 
