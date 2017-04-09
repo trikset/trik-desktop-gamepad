@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Mikhail Wall to make it comply with the requirements of trikRuntime
+ * This file was modified by Mikhail Wall and Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #include "connectForm.h"
