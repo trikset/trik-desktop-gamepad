@@ -34,7 +34,8 @@ TEMPLATE = app
 SOURCES += main.cpp \
         gamepadForm.cpp \
         connectForm.cpp \
-        connectionManager.cpp
+        connectionManager.cpp \
+    standardStrategy.cpp
 
 TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
                 languages/trikDesktopGamepad_en.ts \
@@ -45,7 +46,9 @@ target.path =
 HEADERS += \
         gamepadForm.h \
         connectForm.h \
-        connectionManager.h
+        connectionManager.h \
+        istrategy.h \
+        standardStrategy.h
 
 FORMS += \
         gamepadForm.ui \

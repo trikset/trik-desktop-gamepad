@@ -28,6 +28,7 @@
 GamepadForm::GamepadForm()
 	: QWidget()
 	, mUi(new Ui::GamepadForm())
+	, strategy(new StandardStrategy)
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
@@ -66,10 +67,10 @@ void GamepadForm::setUpGamepadForm()
 {
 	createMenu();
 	setFontToPadButtons();
+	setUpControlButtonsHash();
 	createConnection();
 	setVideoController();
 	setLabels();
-	setUpControlButtonsHash();
 	retranslate();
 }
 
@@ -228,55 +229,26 @@ void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
 
 void GamepadForm::createConnection()
 {
-	mMapperPadPressed = new QSignalMapper(this);
-	mMapperPadReleased = new QSignalMapper(this);
-	mMapperDigitPressed = new QSignalMapper(this);
-	mMapperDigitReleased = new QSignalMapper(this);
+	mMapperButtonPressed = new QSignalMapper(this);
+	mMapperButtonReleased = new QSignalMapper(this);
 
-	mPadHashtable = {
-		{mUi->buttonPad1Up, {1, 0, 100}}
-		, {mUi->buttonPad1Down, {1, 0, -100}}
-		, {mUi->buttonPad1Right, {1, 100, 0}}
-		, {mUi->buttonPad1Left, {1, -100, 0}}
-		, {mUi->buttonPad2Up, {2, 0, 100}}
-		, {mUi->buttonPad2Down, {2, 0, -100}}
-		, {mUi->buttonPad2Right, {2, 100 ,0}}
-		, {mUi->buttonPad2Left, {2, -100, 0}}
-	};
-
-	for (auto button : mPadHashtable.keys()) {
-		connect(button, SIGNAL(pressed()), mMapperPadPressed, SLOT(map()));
-		mMapperPadPressed->setMapping(button, button);
-		connect(button, SIGNAL(released()), mMapperPadReleased, SLOT(map()));
-		mMapperPadReleased->setMapping(button, button);
+	for (auto button : controlButtonsHash.values()) {
+		connect(button, SIGNAL(pressed()), mMapperButtonPressed, SLOT(map()));
+		mMapperButtonPressed->setMapping(button, button);
+		connect(button, SIGNAL(released()), mMapperButtonReleased, SLOT(map()));
+		mMapperButtonReleased->setMapping(button, button);
 	}
 
-	connect(mMapperPadPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handlePadPress(QWidget*)));
-	connect(mMapperPadReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handlePadRelease(QWidget*)));
-
-	mDigitHashtable = {
-		{mUi->button1, 1}
-		, {mUi->button2, 2}
-		, {mUi->button3, 3}
-		, {mUi->button4, 4}
-		, {mUi->button5, 5}
-	};
-
-	for (auto button : mDigitHashtable.keys()) {
-		connect(button, SIGNAL(pressed()), mMapperDigitPressed, SLOT(map()));
-		mMapperDigitPressed->setMapping(button, button);
-		connect(button, SIGNAL(released()), mMapperDigitReleased, SLOT(map()));
-		mMapperDigitReleased->setMapping(button, button);
-	}
-
-	connect(mMapperDigitPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitPress(QWidget*)));
-	connect(mMapperDigitReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleDigitRelease(QWidget*)));
+	connect(mMapperButtonPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonPress(QWidget*)));
+	connect(mMapperButtonReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonRelease(QWidget*)));
 
 	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(checkSocket(QAbstractSocket::SocketState)));
 	connect(&connectionManager, SIGNAL(dataWasWritten(int)), this, SLOT(checkBytesWritten(int)));
 	connect(&connectionManager, SIGNAL(connectionFailed()), this, SLOT(showConnectionFailedMessage()));
 	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
 	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
+
+	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
 }
 
 void GamepadForm::createMenu()
@@ -398,95 +370,34 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 {
 	Q_UNUSED(obj)
 
-	int resultingPowerX1 = 0;
-	int resultingPowerY1 = 0;
-	int resultingPowerX2 = 0;
-	int resultingPowerY2 = 0;
-
-	// Handle key press event
+	// Handle key press event for View
 	if(event->type() == QEvent::KeyPress) {
 		int pressedKey = (dynamic_cast<QKeyEvent *> (event))->key();
 		if (controlButtonsHash.keys().contains(pressedKey))
 			setButtonChecked(pressedKey, true);
 
-		mPressedKeys += pressedKey;
-
-		// Handle W A S D buttons
-		resultingPowerX1 = (mPressedKeys.contains(Qt::Key_D) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_A) ? -100 : 0);
-		resultingPowerY1 = (mPressedKeys.contains(Qt::Key_S) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_W) ? 100 : 0);
-		// Handle arrow buttons
-		resultingPowerX2 = (mPressedKeys.contains(Qt::Key_Right) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_Left) ? -100 : 0);
-		resultingPowerY2 = (mPressedKeys.contains(Qt::Key_Down) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
-
-		if (resultingPowerX1 != 0 || resultingPowerY1 != 0) {
-			onPadPressed(QString("pad 1 %1 %2").arg(resultingPowerX1).arg(resultingPowerY1));
-		} else if (resultingPowerX2 != 0 || resultingPowerY2 != 0) {
-			onPadPressed(QString("pad 2 %1 %2").arg(resultingPowerX2).arg(resultingPowerY2));
-		}
-
-		// Handle 1 2 3 4 5 buttons
-		QMap<int, QPushButton *> digits = {
-			{Qt::Key_1, mUi->button1}
-			, {Qt::Key_2, mUi->button2}
-			, {Qt::Key_3, mUi->button3}
-			, {Qt::Key_4, mUi->button4}
-			, {Qt::Key_5, mUi->button5}
-		};
-
-		for (auto key : digits.keys()) {
-			if (mPressedKeys.contains(key)) {
-				digits[key]->pressed();
-			}
-		}
 	} else if(event->type() == QEvent::KeyRelease) {
 
-		// Handle key release event
-		QSet<int> pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
-		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
+		QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
 
-		auto releasedKey = (dynamic_cast<QKeyEvent*>(event))->key();
+		auto releasedKey = keyEvent->key();
 		if (controlButtonsHash.keys().contains(releasedKey))
 			setButtonChecked(releasedKey, false);
-		mPressedKeys -= releasedKey;
-
-		if (pad1.contains(releasedKey)) {
-			onPadReleased(1);
-		} else if (pad2.contains(releasedKey)){
-			onPadReleased(2);
-		}
 	}
+
+	// delegating events to Command-generating-strategy
+	strategy->processEvent(event);
 
 	return false;
 }
 
-void GamepadForm::onButtonPressed(int buttonId)
+void GamepadForm::sendCommand(const QString &command)
 {
-	// Checking that we are still connected, just in case.
 	if (!connectionManager.isConnected()) {
 		return;
 	}
 
-	emit commandReceived(QString("btn %1\n").arg(buttonId));
-}
-
-void GamepadForm::onPadPressed(const QString &action)
-{
-	// Here we send "pad <padId> <x> <y>" command.
-	if (!connectionManager.isConnected()) {
-		return;
-	}
-
-	emit commandReceived(QString(action + "\n"));
-}
-
-void GamepadForm::onPadReleased(int padId)
-{
-	// Here we send "pad <padId> up" command.
-	if (!connectionManager.isConnected()) {
-		return;
-	}
-
-	emit commandReceived(QString("pad %1 up\n").arg(padId));
+	emit commandReceived(command);
 }
 
 void GamepadForm::openConnectDialog()
@@ -523,28 +434,22 @@ void GamepadForm::changeEvent(QEvent *event)
 	QWidget::changeEvent(event);
 }
 
-void GamepadForm::handlePadRelease(QWidget *w)
+void GamepadForm::handleButtonPress(QWidget *widget)
 {
-	onPadReleased(mPadHashtable[w][0]);
-	QPushButton *padButton = dynamic_cast<QPushButton *> (w);
+	QPushButton *padButton = dynamic_cast<QPushButton *> (widget);
+	padButton->setChecked(true);
+	auto key = controlButtonsHash.key(padButton);
+	QKeyEvent keyEvent(QEvent::KeyPress, key, Qt::NoModifier);
+	strategy->processEvent(&keyEvent);
+}
+
+void GamepadForm::handleButtonRelease(QWidget *widget)
+{
+	QPushButton *padButton = dynamic_cast<QPushButton *> (widget);
 	padButton->setChecked(false);
-}
-
-void GamepadForm::handlePadPress(QWidget *w)
-{
-	auto vec = mPadHashtable[w];
-	onPadPressed(QString("pad %1 %2 %3").arg(vec[0]).arg(vec[1]).arg(vec[2]));
-}
-
-void GamepadForm::handleDigitPress(QWidget *w)
-{
-	onButtonPressed(mDigitHashtable[w]);
-}
-
-void GamepadForm::handleDigitRelease(QWidget *w)
-{
-	QPushButton *digitButton = dynamic_cast<QPushButton *> (w);
-	digitButton->setChecked(false);
+	auto key = controlButtonsHash.key(padButton);
+	QKeyEvent keyEvent(QEvent::KeyRelease, key, Qt::NoModifier);
+	strategy->processEvent(&keyEvent);
 }
 
 void GamepadForm::retranslate()

@@ -34,6 +34,7 @@
 #include "connectForm.h"
 
 #include "connectionManager.h"
+#include "standardStrategy.h"
 
 namespace Ui {
 class GamepadForm;
@@ -67,18 +68,11 @@ public slots:
 
 private slots:
 
-	/// Slots for gamepad "magic" buttons.
-	void onButtonPressed(int buttonId);
-	void handleDigitPress(QWidget*);
-	void handleDigitRelease(QWidget*);
+	/// Slots for pad buttons (Up, Down, Left, Right) and "magic" buttons, triggered when button is pressed.
+	void handleButtonPress(QWidget*);
 
-	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is pressed.
-	void onPadPressed(const QString &action);
-	void handlePadPress(QWidget*);
-
-	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is released.
-	void onPadReleased(int padId);
-	void handlePadRelease(QWidget*);
+	/// Slots for pad buttons (Up, Down, Left, Right) and "magic" buttons, triggered when button is released.
+	void handleButtonRelease(QWidget*);
 
 	/// Slot for handle key pressing and releasing events
 	bool eventFilter(QObject *obj, QEvent *event) override;
@@ -111,6 +105,9 @@ private slots:
 	void showConnectionFailedMessage();
 
 	void setFontToPadButtons();
+
+	/// slot for sending command prepared by strategy to robot
+	void sendCommand(const QString &command);
 
 signals:
 	void commandReceived(QString);
@@ -154,8 +151,9 @@ private:
 	/// For setting up translator in app
 	QTranslator *mTranslator;
 
-	/// Set for saving pressed keys
-	QSet<int> mPressedKeys;
+	/// object that encapsulates logic with commands
+	Strategy *strategy;
+
 
 	QHash<int, QPushButton*> controlButtonsHash;
 
@@ -166,12 +164,8 @@ private:
 	/// For catching up event when language was changed
 	void changeEvent(QEvent *event) override;
 
-	QHash<QWidget*, QVector<int>> mPadHashtable;
-	QHash<QWidget*, int> mDigitHashtable;
-	QSignalMapper *mMapperPadPressed;
-	QSignalMapper *mMapperPadReleased;
-	QSignalMapper *mMapperDigitPressed;
-	QSignalMapper *mMapperDigitReleased;
+	QSignalMapper *mMapperButtonPressed;
+	QSignalMapper *mMapperButtonReleased;
 
 	/// Class that handles network communication with TRIK.
 	ConnectionManager connectionManager;
