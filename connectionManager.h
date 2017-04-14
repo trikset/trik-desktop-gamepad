@@ -46,6 +46,10 @@ public:
 
 	void setGamepadPort(const quint16 &value);
 
+	QString getGamepadIp() const;
+
+	quint16 getGamepadPort() const;
+
 public slots:
 	void connectToHost();
 	void disconnectFromHost();

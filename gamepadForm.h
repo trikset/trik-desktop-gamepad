@@ -52,6 +52,7 @@ public:
 	/// Constructor.
 	GamepadForm();
 	~GamepadForm() override;
+	void startController(QStringList args);
 
 public slots:
 
@@ -114,6 +115,7 @@ private slots:
 signals:
 	void commandReceived(QString);
 	void programFinished();
+	void dataReceivedFromCommandLine();
 
 private:
 	void setButtonChecked(const int &key, bool ckeckStatus);

@@ -40,5 +40,14 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	GamepadForm w;
 	w.show();
+
+	/// expected format of arguments is the prefix of given below line:
+	/// gamepadIp gamepadPort cameraPort cameraIp
+	/// if you specify some of the parametres the rest would get default value
+	QStringList args = a.arguments();
+	if (args.size() > 1) {
+		w.startController(args);
+	}
+
 	return a.exec();
 }

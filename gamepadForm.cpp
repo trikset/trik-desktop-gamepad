@@ -46,6 +46,22 @@ GamepadForm::~GamepadForm()
 	thread.wait();
 }
 
+void GamepadForm::startController(QStringList args)
+{
+	connectionManager.setGamepadIp(args.at(1));
+	QString portStr = args.size() < 3 ? "4444" : args.at(2);
+	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
+	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
+	QString cameraIp = args.size() < 5 ? args.at(1) : args.at(4);
+	connectionManager.setCameraPort(cameraPort);
+	connectionManager.setGamepadPort(gamepadPort);
+	connectionManager.setCameraIp(cameraIp);
+	startVideoStream();
+	/// signal is used to execute connectionManager's method in its thread
+	connect(this, SIGNAL(dataReceivedFromCommandLine()), &connectionManager, SLOT(connectToHost()));
+	emit dataReceivedFromCommandLine();
+}
+
 void GamepadForm::setUpGamepadForm()
 {
 	createMenu();
@@ -475,7 +491,13 @@ void GamepadForm::onPadReleased(int padId)
 
 void GamepadForm::openConnectDialog()
 {
-	mMyNewConnectForm = new ConnectForm(&connectionManager);
+	QMap<QString, QString> args;
+	args.insert("gamepadIp", connectionManager.getGamepadIp());
+	args.insert("gamepadPort", QString::number(connectionManager.getGamepadPort()));
+	args.insert("cameraIp", connectionManager.getCameraIp());
+	args.insert("cameraPort", connectionManager.getCameraPort());
+
+	mMyNewConnectForm = new ConnectForm(&connectionManager, args, this);
 	mMyNewConnectForm->show();
 
 	connect(mMyNewConnectForm, SIGNAL(dataReceived()),

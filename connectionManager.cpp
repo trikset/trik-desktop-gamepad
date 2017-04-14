@@ -19,6 +19,10 @@
 
 ConnectionManager::ConnectionManager()
 	: socket(new QTcpSocket(this))
+	, cameraIp("192.168.77.1")
+	, cameraPort("8080")
+	, gamepadIp("192.168.77.1")
+	, gamepadPort(4444)
 {
 	/// passing this to QTcpSocket forces automatically socket->moveToThread()
 	/// when calling connectionManaget.moveToThread()
@@ -48,6 +52,16 @@ void ConnectionManager::write(const QString &data)
 {
 	qint64 result = socket->write(data.toLatin1().data());
 	emit dataWasWritten(static_cast<int>(result));
+}
+
+quint16 ConnectionManager::getGamepadPort() const
+{
+	return gamepadPort;
+}
+
+QString ConnectionManager::getGamepadIp() const
+{
+	return gamepadIp;
 }
 
 void ConnectionManager::connectToHost()
