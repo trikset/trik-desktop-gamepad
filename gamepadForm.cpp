@@ -12,11 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov, Aleksei Alekseev and Mikhail Wall to make it comply with the requirements of trikRuntime
- * project. See git revision history for detailed changes. */
+ * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev to make it comply with the requirements of
+ * trikRuntime project. See git revision history for detailed changes. */
 
 #include "gamepadForm.h"
-
 #include "ui_gamepadForm.h"
 
 #include <QtWidgets/QMessageBox>
@@ -45,6 +44,22 @@ GamepadForm::~GamepadForm()
 	thread.quit();
 	// waiting thread to quit
 	thread.wait();
+}
+
+void GamepadForm::startController(QStringList args)
+{
+	connectionManager.setGamepadIp(args.at(1));
+	QString portStr = args.size() < 3 ? "4444" : args.at(2);
+	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
+	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
+	QString cameraIp = args.size() < 5 ? args.at(1) : args.at(4);
+	connectionManager.setCameraPort(cameraPort);
+	connectionManager.setGamepadPort(gamepadPort);
+	connectionManager.setCameraIp(cameraIp);
+	startVideoStream();
+	/// signal is used to execute connectionManager's method in its thread
+	connect(this, SIGNAL(dataReceivedFromCommandLine()), &connectionManager, SLOT(connectToHost()));
+	emit dataReceivedFromCommandLine();
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -390,7 +405,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 
 	// Handle key press event
 	if(event->type() == QEvent::KeyPress) {
-		int pressedKey = ((QKeyEvent*) event)->key();
+		int pressedKey = (dynamic_cast<QKeyEvent *> (event))->key();
 		if (controlButtonsHash.keys().contains(pressedKey))
 			setButtonChecked(pressedKey, true);
 
@@ -429,7 +444,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 		QSet<int> pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
 		QSet<int> pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
 
-		auto releasedKey = ((QKeyEvent*) event)->key();
+		auto releasedKey = (dynamic_cast<QKeyEvent*>(event))->key();
 		if (controlButtonsHash.keys().contains(releasedKey))
 			setButtonChecked(releasedKey, false);
 		mPressedKeys -= releasedKey;
@@ -476,7 +491,13 @@ void GamepadForm::onPadReleased(int padId)
 
 void GamepadForm::openConnectDialog()
 {
-	mMyNewConnectForm = new ConnectForm(&connectionManager);
+	QMap<QString, QString> args;
+	args.insert("gamepadIp", connectionManager.getGamepadIp());
+	args.insert("gamepadPort", QString::number(connectionManager.getGamepadPort()));
+	args.insert("cameraIp", connectionManager.getCameraIp());
+	args.insert("cameraPort", connectionManager.getCameraPort());
+
+	mMyNewConnectForm = new ConnectForm(&connectionManager, args, this);
 	mMyNewConnectForm->show();
 
 	connect(mMyNewConnectForm, SIGNAL(dataReceived()),
@@ -505,7 +526,7 @@ void GamepadForm::changeEvent(QEvent *event)
 void GamepadForm::handlePadRelease(QWidget *w)
 {
 	onPadReleased(mPadHashtable[w][0]);
-	QPushButton *padButton = (QPushButton *) w;
+	QPushButton *padButton = dynamic_cast<QPushButton *> (w);
 	padButton->setChecked(false);
 }
 
@@ -522,7 +543,7 @@ void GamepadForm::handleDigitPress(QWidget *w)
 
 void GamepadForm::handleDigitRelease(QWidget *w)
 {
-	QPushButton *digitButton = (QPushButton *) w;
+	QPushButton *digitButton = dynamic_cast<QPushButton *> (w);
 	digitButton->setChecked(false);
 }
 

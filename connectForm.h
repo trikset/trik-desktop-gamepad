@@ -12,13 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Mikhail Wall to make it comply with the requirements of trikRuntime
+ * This file was modified by Mikhail Wall and Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #pragma once
 
 #include <QtWidgets/QDialog>
 #include <QtNetwork/QTcpSocket>
+
 
 #include "connectionManager.h"
 
@@ -31,10 +32,17 @@ class ConnectForm : public QDialog
 {
 	Q_OBJECT
 
+private:
+	ConnectForm(const ConnectForm &other);
+	ConnectForm & operator=(const ConnectForm &other);
+
 public:
 	/// Constructor.
 	ConnectForm(ConnectionManager *connectionManager
 				, QWidget *parent = 0);
+
+	/// Constructor that gets the previous entered values or default values
+	ConnectForm(ConnectionManager *manager, const QMap<QString, QString> &args, QWidget *parent);
 	~ConnectForm();
 
 private slots:
@@ -42,9 +50,14 @@ private slots:
 	/// Slot for button for connecting to robot
 	void onConnectButtonClicked();
 
+	/// Slot for letting user to input ports and ips by himself
 	void onAdvancedButtonClicked();
 
+	/// Slot for copying GamepadIp to CameraIp when Advanced button wasn't pressed
+	void copyGamepadIpToCameraIp(const QString &text);
+
 signals:
+	/// Signal is emitted when user presses ConnectButton
 	void dataReceived();
 
 private:

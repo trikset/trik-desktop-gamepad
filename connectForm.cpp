@@ -12,13 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Mikhail Wall to make it comply with the requirements of trikRuntime
+ * This file was modified by Mikhail Wall and Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
 #include "connectForm.h"
 #include "ui_connectForm.h"
 
+
 #include <QtWidgets/QMessageBox>
+
 
 ConnectForm::ConnectForm(ConnectionManager *manager
 						 , QWidget *parent)
@@ -43,6 +45,17 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	connect(mUi->cancelButton, &QPushButton::pressed, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
 	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
+	connect(mUi->robotIpLineEdit, &QLineEdit::textEdited, this, &ConnectForm::copyGamepadIpToCameraIp);
+}
+
+ConnectForm::ConnectForm(ConnectionManager *manager, const QMap<QString, QString> &args, QWidget *parent)
+	: ConnectForm(manager, parent)
+{
+	//ConnectForm(manager, parent);
+	mUi->robotIpLineEdit->setText(args.value("gamepadIp", "192.168.77.1"));
+	mUi->robotPortLineEdit->setText(args.value("gamepadPort", "4444"));
+	mUi->cameraIPLineEdit->setText(args.value("cameraIp", "192.168.77.1"));
+	mUi->cameraPortLineEdit->setText(args.value("cameraPort", "8080"));
 }
 
 ConnectForm::~ConnectForm()
@@ -53,7 +66,7 @@ ConnectForm::~ConnectForm()
 void ConnectForm::onConnectButtonClicked()
 {
 	const auto ip = mUi->robotIpLineEdit->text();
-	const auto port = mUi->robotPortLineEdit->text().toInt();
+	const quint16 port = static_cast<quint16>(mUi->robotPortLineEdit->text().toInt());
 
 	if (mUi->cameraIPLineEdit->text().isEmpty())
 		connectionManager->setCameraIp(ip);
@@ -71,8 +84,14 @@ void ConnectForm::onConnectButtonClicked()
 
 void ConnectForm::onAdvancedButtonClicked()
 {
+	disconnect(mUi->robotIpLineEdit, &QLineEdit::textEdited, this, &ConnectForm::copyGamepadIpToCameraIp);
 	mUi->advancedButton->setVisible(false);
 	setVisibilityToAdditionalButtons(true);
+}
+
+void ConnectForm::copyGamepadIpToCameraIp(const QString& text)
+{
+	mUi->cameraIPLineEdit->setText(text);
 }
 
 void ConnectForm::setVisibilityToAdditionalButtons(bool mode)

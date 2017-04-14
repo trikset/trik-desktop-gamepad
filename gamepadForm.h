@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov, Aleksei Alekseev and Mikhail Wall to make it comply with the requirements of trikRuntime
- * project. See git revision history for detailed changes. */
+ * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev to make it comply with the requirements of
+ * trikRuntime project. See git revision history for detailed changes. */
 
 #pragma once
 
@@ -27,11 +27,13 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QSignalMapper>
 #include <QtWidgets/QShortcut>
+#include <QMovie>
+#include <QThread>
+
+
 #include "connectForm.h"
 
 #include "connectionManager.h"
-#include <QMovie>
-#include <QThread>
 
 namespace Ui {
 class GamepadForm;
@@ -42,10 +44,15 @@ class GamepadForm : public QWidget
 {
 	Q_OBJECT
 
+private:
+	GamepadForm(const GamepadForm &other);
+	GamepadForm & operator=(const GamepadForm &other);
+
 public:
 	/// Constructor.
 	GamepadForm();
 	~GamepadForm() override;
+	void startController(QStringList args);
 
 public slots:
 
@@ -108,6 +115,7 @@ private slots:
 signals:
 	void commandReceived(QString);
 	void programFinished();
+	void dataReceivedFromCommandLine();
 
 private:
 	void setButtonChecked(const int &key, bool ckeckStatus);

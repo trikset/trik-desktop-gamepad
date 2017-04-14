@@ -15,6 +15,14 @@
 # This file was modified by Yurii Litvinov and Mikhail Wall to make it comply with the requirements of trikRuntime
 # project. See git revision history for detailed changes.
 
+# Requesting more warnings
+# QMAKE_CXXFLAGS += -Wall -Wextra -pedantic -Wold-style-cast -Wconversion
+# QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
+
+# Suppressing warnings in Qt's files
+# QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
+# QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
+
 QT += core gui network widgets multimedia multimediawidgets
 
 CONFIG += c++11
