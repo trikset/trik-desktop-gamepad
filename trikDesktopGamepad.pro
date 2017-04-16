@@ -16,8 +16,9 @@
 # project. See git revision history for detailed changes.
 
 # Requesting more warnings
-# QMAKE_CXXFLAGS += -Wall -Wextra -pedantic -Wold-style-cast -Wconversion
-# QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
+QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -Wold-style-cast -Wconversion
+QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
+QMAKE_CXXFLAGS += -Werror -Wno-conversion
 
 # Suppressing warnings in Qt's files
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"

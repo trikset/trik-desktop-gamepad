@@ -81,7 +81,7 @@ private slots:
 	void handlePadRelease(QWidget*);
 
 	/// Slot for handle key pressing and releasing events
-	bool eventFilter(QObject *obj, QEvent *event);
+	bool eventFilter(QObject *obj, QEvent *event) override;
 
 	/// Slot for creating menu bar
 	void createMenu();
@@ -164,7 +164,7 @@ private:
 	void retranslate();
 
 	/// For catching up event when language was changed
-	void changeEvent(QEvent *event);
+	void changeEvent(QEvent *event) override;
 
 	QHash<QWidget*, QVector<int>> mPadHashtable;
 	QHash<QWidget*, int> mDigitHashtable;
