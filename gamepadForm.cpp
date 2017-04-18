@@ -28,7 +28,7 @@
 GamepadForm::GamepadForm()
 	: QWidget()
 	, mUi(new Ui::GamepadForm())
-	, strategy(new StandardStrategy)
+	, strategy(new AccelerateStrategy)
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);

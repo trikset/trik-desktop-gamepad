@@ -35,6 +35,7 @@
 
 #include "connectionManager.h"
 #include "standardStrategy.h"
+#include "accelerateStrategy.h"
 
 namespace Ui {
 class GamepadForm;
