@@ -34,8 +34,7 @@
 #include "connectForm.h"
 
 #include "connectionManager.h"
-#include "standardStrategy.h"
-#include "accelerateStrategy.h"
+#include "strategy.h"
 
 namespace Ui {
 class GamepadForm;
@@ -110,6 +109,9 @@ private slots:
 	/// slot for sending command prepared by strategy to robot
 	void sendCommand(const QString &command);
 
+	/// slot is invoked when user presses mode actions
+	void changeMode(Strategies type);
+
 signals:
 	void commandReceived(QString);
 	void programFinished();
@@ -136,6 +138,8 @@ private:
 	QMenu *mConnectionMenu;
 	QMenu *mLanguageMenu;
 
+	QMenu *mModeMenu;
+
 	/// Menu actions
 	QAction *mConnectAction;
 	QAction *mExitAction;
@@ -148,6 +152,12 @@ private:
 	QAction *mGermanLanguageAction;
 
 	QActionGroup *mLanguages;
+
+	/// Mode actions
+	QAction *mStandartStrategyAction;
+	QAction *mAccelerateStrategyAction;
+
+	QActionGroup *mModesActions;
 
 	/// For setting up translator in app
 	QTranslator *mTranslator;

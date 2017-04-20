@@ -1,7 +1,6 @@
 #pragma once
 
-#include "istrategy.h"
-
+#include "strategy.h"
 #include <QKeyEvent>
 
 class StandardStrategy : public Strategy

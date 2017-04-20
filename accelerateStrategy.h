@@ -1,7 +1,8 @@
 #pragma once
 
-#include "istrategy.h"
+#include "strategy.h"
 #include <QTimer>
+#include <QSignalMapper>
 
 class AccelerateStrategy : public Strategy
 {
@@ -18,7 +19,7 @@ public:
 
 private slots:
 	/// slot for stopping pads if they were active
-	void stopPads();
+	void stopPads(int padNumber);
 
 	/// slot that analyzes mPressedKeys and generates pad-commands
 	/// pads values are changed iteratively every period of time
@@ -45,7 +46,8 @@ private:
 	/// variables for setting 0 to PowerVariables if they were not pressed more than 1 tact
 	QMap<Power, int> cntPowers;
 
-	QTimer stopTimer;
+	QTimer stopTimerForPad1;
+	QTimer stopTimerForPad2;
 	bool pad1WasActive;
 	bool pad2WasActive;
 	QSet<int> mPressedKeys;
@@ -57,5 +59,7 @@ private:
 
 	/// defines period of time to check dealWithPads
 	int speed;
+	bool isActive;
+	QSignalMapper *padsMapper;
 };
 

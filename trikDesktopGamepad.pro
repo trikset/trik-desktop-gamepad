@@ -35,8 +35,9 @@ SOURCES += main.cpp \
         gamepadForm.cpp \
         connectForm.cpp \
         connectionManager.cpp \
-    standardStrategy.cpp \
-    accelerateStrategy.cpp
+        standardStrategy.cpp \
+        accelerateStrategy.cpp \
+        strategy.cpp
 
 TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
                 languages/trikDesktopGamepad_en.ts \
@@ -48,9 +49,9 @@ HEADERS += \
         gamepadForm.h \
         connectForm.h \
         connectionManager.h \
-        istrategy.h \
         standardStrategy.h \
-    accelerateStrategy.h
+        accelerateStrategy.h \
+        strategy.h
 
 FORMS += \
         gamepadForm.ui \

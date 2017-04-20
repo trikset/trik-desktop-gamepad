@@ -28,7 +28,7 @@
 GamepadForm::GamepadForm()
 	: QWidget()
 	, mUi(new Ui::GamepadForm())
-	, strategy(new AccelerateStrategy)
+	, strategy(Strategy::getStrategy(Strategies::standartStrategy))
 {
 	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
@@ -266,7 +266,10 @@ void GamepadForm::createMenu()
 	mConnectionMenu = new QMenu(this);
 	mMenuBar->addMenu(mConnectionMenu);
 
-	mLanguageMenu=  new QMenu(this);
+	mModeMenu = new QMenu(this);
+	mMenuBar->addMenu(mModeMenu);
+
+	mLanguageMenu =  new QMenu(this);
 	mMenuBar->addMenu(mLanguageMenu);
 
 	mConnectAction = new QAction(this);
@@ -277,6 +280,18 @@ void GamepadForm::createMenu()
 	mExitAction = new QAction(this);
 	mExitAction->setShortcuts(QKeySequence::Quit);
 	connect(mExitAction, &QAction::triggered, this, &GamepadForm::exit);
+
+	mModesActions = new QActionGroup(this);
+	mStandartStrategyAction = new QAction(this);
+	mAccelerateStrategyAction = new QAction(this);
+	mStandartStrategyAction->setCheckable(true);
+	mAccelerateStrategyAction->setCheckable(true);
+	mStandartStrategyAction->setChecked(true);
+	connect(mStandartStrategyAction, &QAction::triggered, this, [this](){changeMode(Strategies::standartStrategy);});
+	connect(mAccelerateStrategyAction, &QAction::triggered, this, [this](){changeMode(Strategies::accelerateStrategy);});
+	mModesActions->addAction(mStandartStrategyAction);
+	mModesActions->addAction(mAccelerateStrategyAction);
+	mModesActions->setExclusive(true);
 
 	mRussianLanguageAction = new QAction(this);
 	mEnglishLanguageAction = new QAction(this);
@@ -308,6 +323,9 @@ void GamepadForm::createMenu()
 
 	mConnectionMenu->addAction(mConnectAction);
 	mConnectionMenu->addAction(mExitAction);
+
+	mModeMenu->addAction(mStandartStrategyAction);
+	mModeMenu->addAction(mAccelerateStrategyAction);
 
 	mLanguageMenu->addAction(mRussianLanguageAction);
 	mLanguageMenu->addAction(mEnglishLanguageAction);
@@ -400,6 +418,13 @@ void GamepadForm::sendCommand(const QString &command)
 	emit commandReceived(command);
 }
 
+void GamepadForm::changeMode(Strategies type)
+{
+	disconnect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+	strategy = Strategy::getStrategy(type);
+	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+}
+
 void GamepadForm::openConnectDialog()
 {
 	QMap<QString, QString> args;
@@ -455,9 +480,14 @@ void GamepadForm::handleButtonRelease(QWidget *widget)
 void GamepadForm::retranslate()
 {
 	mConnectionMenu->setTitle(tr("&Connection"));
+	mModeMenu->setTitle(tr("&Mode"));
 	mLanguageMenu->setTitle(tr("&Language"));
+
 	mConnectAction->setText(tr("&Connect"));
 	mExitAction->setText(tr("&Exit"));
+
+	mStandartStrategyAction->setText(tr("&Stantard"));
+	mAccelerateStrategyAction->setText(tr("&Accelerate"));
 
 	mRussianLanguageAction->setText(tr("&Russian"));
 	mEnglishLanguageAction->setText(tr("&English"));
