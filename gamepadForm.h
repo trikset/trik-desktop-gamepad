@@ -112,13 +112,16 @@ private slots:
 	/// slot is invoked when user presses mode actions
 	void changeMode(Strategies type);
 
+	/// handling application state
+	void dealWithApplicationState(Qt::ApplicationState state);
+
 signals:
 	void commandReceived(QString);
 	void programFinished();
 	void dataReceivedFromCommandLine();
 
 private:
-	void setButtonChecked(const int &key, bool ckeckStatus);
+	void setButtonChecked(const int &key, bool checkStatus);
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
 	void setButtonsCheckable(bool checkableStatus);

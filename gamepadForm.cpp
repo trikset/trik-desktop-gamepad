@@ -249,6 +249,7 @@ void GamepadForm::createConnection()
 	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
 
 	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+	connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(dealWithApplicationState(Qt::ApplicationState)));
 }
 
 void GamepadForm::createMenu()
@@ -423,6 +424,15 @@ void GamepadForm::changeMode(Strategies type)
 	disconnect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
 	strategy = Strategy::getStrategy(type);
 	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+}
+
+void GamepadForm::dealWithApplicationState(Qt::ApplicationState state)
+{
+	if (state != Qt::ApplicationActive) {
+		strategy->reset();
+		for (auto button : controlButtonsHash.values())
+			button->setChecked(false);
+	}
 }
 
 void GamepadForm::openConnectDialog()

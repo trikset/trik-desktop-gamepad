@@ -6,6 +6,11 @@
 // defining static variable
 QMap<Strategies, QSharedPointer<Strategy> > Strategy::instances;
 
+void Strategy::reset()
+{
+	mPressedKeys.clear();
+}
+
 Strategy *Strategy::getStrategy(Strategies type)
 {
 	if (!instances.size()) {

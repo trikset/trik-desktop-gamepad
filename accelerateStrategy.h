@@ -50,7 +50,6 @@ private:
 	QTimer stopTimerForPad2;
 	bool pad1WasActive;
 	bool pad2WasActive;
-	QSet<int> mPressedKeys;
 
 	QSet<int> pad1;
 	QSet<int> pad2;
@@ -59,7 +58,6 @@ private:
 
 	/// defines period of time to check dealWithPads
 	int speed;
-	bool isActive;
 	QSignalMapper *padsMapper;
 };
 

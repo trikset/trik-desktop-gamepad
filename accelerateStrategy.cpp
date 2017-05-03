@@ -6,7 +6,6 @@ AccelerateStrategy::AccelerateStrategy()
 	: pad1WasActive(false)
 	, pad2WasActive(false)
 	, speed(300)
-	, isActive(true)
 	, padsMapper(new QSignalMapper(this))
 {
 
@@ -72,12 +71,6 @@ AccelerateStrategy::AccelerateStrategy(int currentSpeed)
 void AccelerateStrategy::processEvent(QEvent *event)
 {
 	int eventType = event->type();
-	if (eventType == QEvent::FocusOut)
-		isActive = false;
-	else if (eventType == QEvent::FocusIn)
-		isActive = true;
-
-
 	if (eventType == QEvent::KeyPress || eventType == QEvent::KeyRelease) {
 		QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *> (event);
 		auto key = static_cast<Qt::Key> (keyEvent->key());
@@ -133,53 +126,51 @@ void AccelerateStrategy::stopPads(int padNumber)
 
 void AccelerateStrategy::dealWithPads()
 {
-	if (isActive) {
-		if (mPressedKeys.size()) {
 
+	if (mPressedKeys.size()) {
 
-			// for pad1
-			bool isSomeKeyFromPad1 = false;
-			for (auto pad1Key : pad1) {
-				if (mPressedKeys.contains(pad1Key)) {
-					stopTimerForPad1.start(2 * speed + 100);
-					isSomeKeyFromPad1 = true;
-					pad1WasActive = true;
-					Power index = indeces[pad1Key];
-					powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad1Key]));
-					cntPowers[index] = 0;
-				}
+		// for pad1
+		bool isSomeKeyFromPad1 = false;
+		for (auto pad1Key : pad1) {
+			if (mPressedKeys.contains(pad1Key)) {
+				stopTimerForPad1.start(2 * speed + 100);
+				isSomeKeyFromPad1 = true;
+				pad1WasActive = true;
+				Power index = indeces[pad1Key];
+				powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad1Key]));
+				cntPowers[index] = 0;
 			}
-			if (pad1WasActive) {
-				checkPower(powers[X1], cntPowers[X1], QSet<Qt::Key> {Qt::Key_A, Qt::Key_D});
-				checkPower(powers[Y1], cntPowers[Y1], QSet<Qt::Key> {Qt::Key_W, Qt::Key_S});
-			}
+		}
+		if (pad1WasActive) {
+			checkPower(powers[X1], cntPowers[X1], QSet<Qt::Key> {Qt::Key_A, Qt::Key_D});
+			checkPower(powers[Y1], cntPowers[Y1], QSet<Qt::Key> {Qt::Key_W, Qt::Key_S});
+		}
 
-			if (isSomeKeyFromPad1) {
-				QString command = QString("pad 1 %1 %2 \n").arg(powers[X1]).arg(powers[Y1]);
-				emit commandPrepared(command);
-			}
+		if (isSomeKeyFromPad1) {
+			QString command = QString("pad 1 %1 %2 \n").arg(powers[X1]).arg(powers[Y1]);
+			emit commandPrepared(command);
+		}
 
-			// for pad2
-			bool isSomeKeyFromPad2 = false;
-			for (auto pad2Key : pad2) {
-				if (mPressedKeys.contains(pad2Key)) {
-					stopTimerForPad2.start(2 * speed + 100);
-					isSomeKeyFromPad2 = true;
-					pad2WasActive = true;
-					Power index = indeces[pad2Key];
-					powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad2Key]));
-					cntPowers[index] = 0;
-				}
+		// for pad2
+		bool isSomeKeyFromPad2 = false;
+		for (auto pad2Key : pad2) {
+			if (mPressedKeys.contains(pad2Key)) {
+				stopTimerForPad2.start(2 * speed + 100);
+				isSomeKeyFromPad2 = true;
+				pad2WasActive = true;
+				Power index = indeces[pad2Key];
+				powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad2Key]));
+				cntPowers[index] = 0;
 			}
-			if (pad2WasActive) {
-				checkPower(powers[X2], cntPowers[X2], QSet<Qt::Key> {Qt::Key_Left, Qt::Key_Right});
-				checkPower(powers[Y2], cntPowers[Y2], QSet<Qt::Key> {Qt::Key_Up, Qt::Key_Down});
-			}
+		}
+		if (pad2WasActive) {
+			checkPower(powers[X2], cntPowers[X2], QSet<Qt::Key> {Qt::Key_Left, Qt::Key_Right});
+			checkPower(powers[Y2], cntPowers[Y2], QSet<Qt::Key> {Qt::Key_Up, Qt::Key_Down});
+		}
 
-			if (isSomeKeyFromPad2) {
-				QString command = QString("pad 2 %1 %2 \n").arg(powers[X2]).arg(powers[Y2]);
-				emit commandPrepared(command);
-			}
+		if (isSomeKeyFromPad2) {
+			QString command = QString("pad 2 %1 %2 \n").arg(powers[X2]).arg(powers[Y2]);
+			emit commandPrepared(command);
 		}
 	}
 }

@@ -19,6 +19,7 @@ class Strategy : public QObject
 public:
 	/// method that encapsulates logic for generating commands
 	virtual void processEvent(QEvent *event) = 0;
+	void reset();
 
 	/// method that is used in GUI to get needed instance in run-time
 	static Strategy *getStrategy(Strategies type);
@@ -31,6 +32,9 @@ private:
 	static void createInstances();
 
 	static QMap<Strategies, QSharedPointer<Strategy> > instances;
+
+protected:
+	QSet<int> mPressedKeys;
 };
 
 
