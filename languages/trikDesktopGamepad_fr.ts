@@ -1,134 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>ConnectForm</name>
     <message>
-        <location filename="connectForm.ui" line="14"/>
+        <location filename="../connectForm.ui" line="14"/>
         <source>Connection</source>
         <translation>Connexion</translation>
     </message>
     <message>
-        <location filename="connectForm.ui" line="26"/>
+        <location filename="../connectForm.ui" line="26"/>
         <source>Robot IP:</source>
-        <translation>Robot IP:</translation>
+        <translation>IP du robot:</translation>
     </message>
     <message>
-        <location filename="connectForm.ui" line="33"/>
+        <location filename="../connectForm.ui" line="39"/>
         <source>192.168.77.1</source>
         <translation>192.168.77.1</translation>
     </message>
     <message>
-        <location filename="connectForm.ui" line="42"/>
-        <location filename="connectForm.cpp" line="35"/>
+        <location filename="../connectForm.ui" line="50"/>
+        <source>Robot Port:</source>
+        <translation>Port du robot:</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="63"/>
+        <source>4444</source>
+        <translation type="unfinished">4444</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="74"/>
+        <source>Camera IP:</source>
+        <translation>IP de la caméra:</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="98"/>
+        <source>Camera Port:</source>
+        <translation>Port de la caméra:</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="111"/>
+        <source>8080</source>
+        <translation type="unfinished">8080</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="120"/>
+        <location filename="../connectForm.cpp" line="37"/>
         <source>Connect</source>
         <translation>Relier</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="33"/>
+        <location filename="../connectForm.ui" line="157"/>
+        <location filename="../connectForm.cpp" line="38"/>
+        <source>Advanced settings...</source>
+        <translation>Paramètres avancés...</translation>
+    </message>
+    <message>
+        <source>Advanced...</source>
+        <translation type="vanished">Paramètres avancés...</translation>
+    </message>
+    <message>
+        <location filename="../connectForm.ui" line="164"/>
+        <location filename="../connectForm.cpp" line="36"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="34"/>
         <source>Ok</source>
-        <translation>D&apos;accord</translation>
+        <translation type="vanished">D&apos;accord</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="63"/>
         <source>Connection failed</source>
-        <translation>La connexion a échoué</translation>
+        <translation type="vanished">La connexion a échoué</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="63"/>
         <source>Failed to connect to robot</source>
-        <translation>Impossible de se connecter au robot de</translation>
+        <translation type="vanished">Impossible de se connecter au robot de</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="66"/>
         <source>Connection succeeded</source>
-        <translation>Connexion réussie</translation>
+        <translation type="vanished">Connexion réussie</translation>
     </message>
     <message>
-        <location filename="connectForm.cpp" line="66"/>
         <source>Connected to robot</source>
-        <translation>Connecté au robot de</translation>
+        <translation type="vanished">Connecté au robot de</translation>
     </message>
 </context>
 <context>
     <name>GamepadForm</name>
     <message>
-        <location filename="gamepadForm.ui" line="26"/>
+        <location filename="../gamepadForm.ui" line="32"/>
         <source>TRIK Gamepad</source>
         <translation>TRIK Gamepad</translation>
     </message>
     <message>
-        <location filename="gamepadForm.ui" line="167"/>
-        <location filename="gamepadForm.cpp" line="192"/>
+        <location filename="../gamepadForm.ui" line="159"/>
+        <source>5</source>
+        <translation>5</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="198"/>
+        <source>2</source>
+        <translation>2</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="237"/>
+        <source>4</source>
+        <translation>4</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="300"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="339"/>
+        <source>3</source>
+        <translation>3</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="464"/>
+        <source>↓</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="505"/>
+        <source>→</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="546"/>
+        <source>←</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="587"/>
+        <source>↑</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="659"/>
+        <source>▲</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="698"/>
+        <source>▼</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="737"/>
+        <source>▶</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.ui" line="776"/>
+        <source>◀</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>Disconnected.
 Buttons disabled.</source>
-        <translation>Coupé.
+        <translation type="vanished">Coupé.
 Boutons désactivés.</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="191"/>
         <source>Connected.
 Buttons enabled.</source>
-        <translation>Connecté.
+        <translation type="vanished">Connecté.
 Boutons activés.</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="367"/>
+        <location filename="../gamepadForm.cpp" line="187"/>
+        <source>Couldn&apos;t connect to robot</source>
+        <translation>Impossible de se connecter au robot de</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="470"/>
         <source>&amp;Connection</source>
         <translation>&amp;Connexion</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="368"/>
+        <location filename="../gamepadForm.cpp" line="471"/>
+        <source>&amp;Mode</source>
+        <translation>&amp;Régime</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="472"/>
         <source>&amp;Language</source>
         <translation>&amp;La langue</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="369"/>
+        <location filename="../gamepadForm.cpp" line="474"/>
         <source>&amp;Connect</source>
         <translation>&amp;Relier</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="370"/>
+        <location filename="../gamepadForm.cpp" line="475"/>
         <source>&amp;Exit</source>
         <translation>&amp;Sortie</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="372"/>
+        <source>&amp;Stantard</source>
+        <translation type="vanished">&amp;Simple</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="477"/>
+        <source>&amp;Simple</source>
+        <translation>&amp;Simple</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="478"/>
+        <source>&amp;Accelerate</source>
+        <translation>&amp;Accélérant</translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="480"/>
         <source>&amp;Russian</source>
         <translation>&amp;Russe</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="373"/>
+        <location filename="../gamepadForm.cpp" line="481"/>
         <source>&amp;English</source>
         <translation>&amp;Anglais</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="374"/>
+        <location filename="../gamepadForm.cpp" line="482"/>
         <source>&amp;French</source>
         <translation>&amp;Français</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="375"/>
+        <location filename="../gamepadForm.cpp" line="483"/>
         <source>&amp;German</source>
         <translation>&amp;Allemand</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="377"/>
+        <location filename="../gamepadForm.cpp" line="485"/>
         <source>&amp;About</source>
         <translation>&amp;Sur</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="430"/>
+        <location filename="../gamepadForm.cpp" line="500"/>
         <source>About TRIK Gamepad</source>
         <translation>A propos de TRIK Gamepad</translation>
     </message>
     <message>
-        <location filename="gamepadForm.cpp" line="431"/>
+        <location filename="../gamepadForm.cpp" line="501"/>
         <source>TRIK Gamepad 1.1.2
 
 This is desktop gamepad for TRIK robots.</source>

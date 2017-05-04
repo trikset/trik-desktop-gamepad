@@ -496,7 +496,7 @@ void GamepadForm::retranslate()
 	mConnectAction->setText(tr("&Connect"));
 	mExitAction->setText(tr("&Exit"));
 
-	mStandartStrategyAction->setText(tr("&Stantard"));
+	mStandartStrategyAction->setText(tr("&Simple"));
 	mAccelerateStrategyAction->setText(tr("&Accelerate"));
 
 	mRussianLanguageAction->setText(tr("&Russian"));

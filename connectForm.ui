@@ -154,7 +154,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Advanced...</string>
+          <string>Advanced settings...</string>
          </property>
         </widget>
        </item>
