@@ -57,7 +57,7 @@ private:
 	/// checks if some key from set was pressed no longer than 1 tact
 	void checkPower(int &power, int &cnt, QSet<Qt::Key> set);
 	QMap<Power, int> powers;
-	QMap<int, Power> indeces;
+	QMap<int, Power> indices;
 	QMap<int, int> additions;
 
 	/// variables for setting 0 to PowerVariables if they were not pressed more than 1 tact

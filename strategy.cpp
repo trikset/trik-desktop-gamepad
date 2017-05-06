@@ -30,7 +30,7 @@ void Strategy::reset()
 
 Strategy *Strategy::getStrategy(Strategies type)
 {
-	if (!instances.size()) {
+	if (instances.empty()) {
 		createInstances();
 	}
 

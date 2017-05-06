@@ -56,7 +56,7 @@ AccelerateStrategy::AccelerateStrategy()
 		, {Y2, 0}
 	};
 
-	indeces = {
+	indices = {
 		{Qt::Key_D, X1}
 		, {Qt::Key_A, X1}
 		, {Qt::Key_W, Y1}
@@ -144,7 +144,7 @@ void AccelerateStrategy::stopPads(int padNumber)
 void AccelerateStrategy::dealWithPads()
 {
 
-	if (mPressedKeys.size()) {
+	if (!mPressedKeys.empty()) {
 
 		// for pad1
 		bool isSomeKeyFromPad1 = false;
@@ -153,7 +153,7 @@ void AccelerateStrategy::dealWithPads()
 				stopTimerForPad1.start(2 * speed + 100);
 				isSomeKeyFromPad1 = true;
 				pad1WasActive = true;
-				Power index = indeces[pad1Key];
+				Power index = indices[pad1Key];
 				powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad1Key]));
 				cntPowers[index] = 0;
 			}
@@ -175,7 +175,7 @@ void AccelerateStrategy::dealWithPads()
 				stopTimerForPad2.start(2 * speed + 100);
 				isSomeKeyFromPad2 = true;
 				pad2WasActive = true;
-				Power index = indeces[pad2Key];
+				Power index = indices[pad2Key];
 				powers[index] = std::max(-100, std::min(100, powers[index] + additions[pad2Key]));
 				cntPowers[index] = 0;
 			}
