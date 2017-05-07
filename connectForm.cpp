@@ -35,7 +35,7 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	// These constants was added for translations purposes
 	const QString buttonCancel = tr("Cancel");
 	const QString connectButton = tr("Connect");
-	const QString advancedButton = tr("Advanced...");
+	const QString advancedButton = tr("Advanced settings...");
 
 	mUi->cancelButton->setText(buttonCancel);
 	mUi->connectButton->setText(connectButton);

@@ -34,6 +34,7 @@
 #include "connectForm.h"
 
 #include "connectionManager.h"
+#include "strategy.h"
 
 namespace Ui {
 class GamepadForm;
@@ -67,18 +68,11 @@ public slots:
 
 private slots:
 
-	/// Slots for gamepad "magic" buttons.
-	void onButtonPressed(int buttonId);
-	void handleDigitPress(QWidget*);
-	void handleDigitRelease(QWidget*);
+	/// Slots for pad buttons (Up, Down, Left, Right) and "magic" buttons, triggered when button is pressed.
+	void handleButtonPress(QWidget*);
 
-	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is pressed.
-	void onPadPressed(const QString &action);
-	void handlePadPress(QWidget*);
-
-	/// Slots for pad buttons (Up, Down, Left, Right), triggered when button is released.
-	void onPadReleased(int padId);
-	void handlePadRelease(QWidget*);
+	/// Slots for pad buttons (Up, Down, Left, Right) and "magic" buttons, triggered when button is released.
+	void handleButtonRelease(QWidget*);
 
 	/// Slot for handle key pressing and releasing events
 	bool eventFilter(QObject *obj, QEvent *event) override;
@@ -112,13 +106,22 @@ private slots:
 
 	void setFontToPadButtons();
 
+	/// slot for sending command prepared by strategy to robot
+	void sendCommand(const QString &command);
+
+	/// slot is invoked when user presses mode actions
+	void changeMode(Strategies type);
+
+	/// handling application state
+	void dealWithApplicationState(Qt::ApplicationState state);
+
 signals:
 	void commandReceived(QString);
 	void programFinished();
 	void dataReceivedFromCommandLine();
 
 private:
-	void setButtonChecked(const int &key, bool ckeckStatus);
+	void setButtonChecked(const int &key, bool checkStatus);
 	/// Helper method that enables or disables gamepad buttons depending on connection state.
 	void setButtonsEnabled(bool enabled);
 	void setButtonsCheckable(bool checkableStatus);
@@ -138,6 +141,8 @@ private:
 	QMenu *mConnectionMenu;
 	QMenu *mLanguageMenu;
 
+	QMenu *mModeMenu;
+
 	/// Menu actions
 	QAction *mConnectAction;
 	QAction *mExitAction;
@@ -151,11 +156,18 @@ private:
 
 	QActionGroup *mLanguages;
 
+	/// Mode actions
+	QAction *mStandartStrategyAction;
+	QAction *mAccelerateStrategyAction;
+
+	QActionGroup *mModesActions;
+
 	/// For setting up translator in app
 	QTranslator *mTranslator;
 
-	/// Set for saving pressed keys
-	QSet<int> mPressedKeys;
+	/// object that encapsulates logic with commands
+	Strategy *strategy;
+
 
 	QHash<int, QPushButton*> controlButtonsHash;
 
@@ -166,12 +178,8 @@ private:
 	/// For catching up event when language was changed
 	void changeEvent(QEvent *event) override;
 
-	QHash<QWidget*, QVector<int>> mPadHashtable;
-	QHash<QWidget*, int> mDigitHashtable;
-	QSignalMapper *mMapperPadPressed;
-	QSignalMapper *mMapperPadReleased;
-	QSignalMapper *mMapperDigitPressed;
-	QSignalMapper *mMapperDigitReleased;
+	QSignalMapper *mMapperButtonPressed;
+	QSignalMapper *mMapperButtonReleased;
 
 	/// Class that handles network communication with TRIK.
 	ConnectionManager connectionManager;
