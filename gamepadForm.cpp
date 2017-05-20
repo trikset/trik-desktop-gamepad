@@ -71,6 +71,7 @@ void GamepadForm::setUpGamepadForm()
 	createConnection();
 	setVideoController();
 	setLabels();
+	setImageControl();
 	retranslate();
 }
 
@@ -100,12 +101,14 @@ void GamepadForm::setVideoController()
 
 void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
+	mTakeImageAction->setEnabled(false);
 	movie.setPaused(true);
 	switch (status) {
 	case QMediaPlayer::StalledMedia:
 	case QMediaPlayer::LoadedMedia:
 	case QMediaPlayer::BufferingMedia:
 		player->play();
+		mTakeImageAction->setEnabled(true);
 		mUi->loadingMediaLabel->setVisible(false);
 		mUi->invalidMediaLabel->setVisible(false);
 		mUi->label->setVisible(false);
@@ -270,7 +273,15 @@ void GamepadForm::createMenu()
 	mModeMenu = new QMenu(this);
 	mMenuBar->addMenu(mModeMenu);
 
-	mLanguageMenu =  new QMenu(this);
+	mImageMenu = new QMenu(this);
+	mMenuBar->addMenu(mImageMenu);
+	mTakeImageAction = new QAction(this);
+	mImageMenu->addAction(mTakeImageAction);
+	mTakeImageAction->setEnabled(false);
+	mTakeImageAction->setShortcut(QKeySequence("Ctrl+I"));
+	connect(mTakeImageAction, SIGNAL(triggered(bool)), this, SLOT(requestImage()));
+
+	mLanguageMenu = new QMenu(this);
 	mMenuBar->addMenu(mLanguageMenu);
 
 	mConnectAction = new QAction(this);
@@ -385,6 +396,15 @@ void GamepadForm::setLabels()
 	mUi->connectingLabel->setVisible(false);
 }
 
+void GamepadForm::setImageControl()
+{
+	probe = new QVideoProbe(this);
+	connect(probe, SIGNAL(videoFrameProbed(QVideoFrame)), this, SLOT(saveImageToClipboard(QVideoFrame)), Qt::QueuedConnection);
+	isFrameNecessary = false;
+	probe->setSource(player);
+	clipboard = QApplication::clipboard();
+}
+
 bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 {
 	Q_UNUSED(obj)
@@ -433,6 +453,58 @@ void GamepadForm::dealWithApplicationState(Qt::ApplicationState state)
 		for (auto button : controlButtonsHash.values())
 			button->setChecked(false);
 	}
+}
+
+void GamepadForm::saveImageToClipboard(QVideoFrame buffer)
+{
+	if (isFrameNecessary) {
+		isFrameNecessary = false;
+		QVideoFrame frame(buffer);
+		frame.map(QAbstractVideoBuffer::ReadOnly);
+
+		QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
+		QImage img;
+		// check whether videoframe can be transformed to qimage by qt
+		if (imageFormat != QImage::Format_Invalid) {
+			img = QImage(frame.bits(),
+						 frame.width(),
+						 frame.height(),
+						 // frame.bytesPerLine(),
+						 imageFormat);
+		} else {
+			int width = frame.width();
+			int height = frame.height();
+			int size = height * width;
+			const uchar *data = frame.bits();
+
+			img = QImage(width, height, QImage::Format_RGB32);
+			/// converting from yuv420 to rgb32
+			for (int i = 0; i < height; i++)
+				for (int j = 0; j < width; j++) {
+					int y = static_cast<int> (data[i * width + j]);
+					int u = static_cast<int> (data[(i / 2) * (width / 2) + (j / 2) + size]);
+					int v = static_cast<int> (data[(i / 2) * (width / 2) + (j / 2) + size + (size / 4)]);
+
+					int r = y + int(1.13983 * (v - 128));
+					int g = y - int(0.39465 * (u - 128)) - int(0.58060 * (v - 128));
+					int b = y + int(2.03211 * (u - 128));
+
+					r = r < 0 ? 0 : r > 255 ? 255 : r;
+					g = g < 0 ? 0 : g > 255 ? 255 : g;
+					b = b < 0 ? 0 : b > 255 ? 255 : b;
+
+					img.setPixel(j, i, qRgb(r, g, b));
+				}
+		}
+
+		clipboard->setImage(img);
+		frame.unmap();
+	}
+}
+
+void GamepadForm::requestImage()
+{
+	isFrameNecessary = true;
 }
 
 void GamepadForm::openConnectDialog()
@@ -503,6 +575,9 @@ void GamepadForm::retranslate()
 	mEnglishLanguageAction->setText(tr("&English"));
 	mFrenchLanguageAction->setText(tr("&French"));
 	mGermanLanguageAction->setText(tr("&German"));
+
+	mImageMenu->setTitle(tr("&Image"));
+	mTakeImageAction->setText(tr("&Screenshot to clipboard"));
 
 	mAboutAction->setText(tr("&About"));
 
