@@ -31,6 +31,10 @@ CONFIG += c++11
 TARGET = gamepad
 TEMPLATE = app  
 
+macx {
+	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
+}
+
 SOURCES += main.cpp \
         gamepadForm.cpp \
         connectForm.cpp \
