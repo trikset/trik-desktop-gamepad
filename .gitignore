@@ -27,3 +27,5 @@ bin/*
 /.project
 object_script.*.Debug
 object_script.*.Release
+.qmake.stash
+gamepad.app
