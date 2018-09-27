@@ -19,7 +19,6 @@
 
 StandardStrategy::StandardStrategy()
 {
-
 }
 
 void StandardStrategy::processEvent(QEvent *event)
@@ -36,8 +35,10 @@ void StandardStrategy::processEvent(QEvent *event)
 		resultingPowerX1 = (mPressedKeys.contains(Qt::Key_D) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_A) ? -100 : 0);
 		resultingPowerY1 = (mPressedKeys.contains(Qt::Key_S) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_W) ? 100 : 0);
 		// Handle arrow buttons
-		resultingPowerX2 = (mPressedKeys.contains(Qt::Key_Right) ? 100 : 0) + (mPressedKeys.contains(Qt::Key_Left) ? -100 : 0);
-		resultingPowerY2 = (mPressedKeys.contains(Qt::Key_Down) ? -100 : 0) + (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
+		resultingPowerX2 = (mPressedKeys.contains(Qt::Key_Right) ? 100 : 0)
+				+ (mPressedKeys.contains(Qt::Key_Left) ? -100 : 0);
+		resultingPowerY2 = (mPressedKeys.contains(Qt::Key_Down) ? -100 : 0)
+				+ (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
 
 		if (resultingPowerX1 != 0 || resultingPowerY1 != 0) {
 			emit commandPrepared(QString("pad 1 %1 %2 \n").arg(resultingPowerX1).arg(resultingPowerY1));

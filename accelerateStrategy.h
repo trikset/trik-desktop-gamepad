@@ -18,8 +18,9 @@
 #pragma once
 
 #include "strategy.h"
-#include <QTimer>
-#include <QSignalMapper>
+
+#include <QtCore/QTimer>
+#include <QtCore/QSignalMapper>
 
 class AccelerateStrategy : public Strategy
 {
