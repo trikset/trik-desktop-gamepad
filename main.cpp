@@ -32,13 +32,19 @@
  * "pad 1 0 -100\n", excluding quotes.
  * */
 
-#include <QtWidgets/QApplication>
+#include "thirdparty/SingleApplication/singleapplication.h"
+
 #include "gamepadForm.h"
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+	SingleApplication a(argc, argv);
 	GamepadForm w;
+	QObject::connect( &a, &SingleApplication::instanceStarted, [ &w ]() {
+		w.raise();
+		w.activateWindow();
+	});
+
 	w.show();
 
 	/// expected format of arguments is the prefix of given below line:
