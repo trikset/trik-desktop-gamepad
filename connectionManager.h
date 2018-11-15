@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <QTcpSocket>
-#include <QIODevice>
+#include <QtNetwork/QTcpSocket>
+#include <QtCore/QIODevice>
 
 
 class ConnectionManager : public QObject

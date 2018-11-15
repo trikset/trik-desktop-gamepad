@@ -17,10 +17,10 @@
 
 #pragma once
 
-#include <QObject>
-#include <QKeyEvent>
-#include <QVector>
-#include <QSharedPointer>
+#include <QtCore/QObject>
+#include <QtGui/QKeyEvent>
+#include <QtCore/QVector>
+#include <QtCore/QSharedPointer>
 
 /// is used to get needed instance
 enum Strategies {

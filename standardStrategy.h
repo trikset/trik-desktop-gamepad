@@ -18,7 +18,7 @@
 #pragma once
 
 #include "strategy.h"
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 class StandardStrategy : public Strategy
 {

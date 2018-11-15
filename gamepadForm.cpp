@@ -21,9 +21,9 @@
 #include <QtWidgets/QMessageBox>
 #include <QtGui/QKeyEvent>
 
-#include <QNetworkRequest>
-#include <QMediaContent>
-#include <QFontDatabase>
+#include <QtNetwork/QNetworkRequest>
+#include <QtMultimedia/QMediaContent>
+#include <QtGui/QFontDatabase>
 
 GamepadForm::GamepadForm()
 	: QWidget()

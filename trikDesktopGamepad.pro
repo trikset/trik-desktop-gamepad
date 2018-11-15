@@ -36,32 +36,34 @@ macx {
 }
 
 SOURCES += main.cpp \
-        gamepadForm.cpp \
-        connectForm.cpp \
-        connectionManager.cpp \
-        standardStrategy.cpp \
-        accelerateStrategy.cpp \
-        strategy.cpp
+	gamepadForm.cpp \
+	connectForm.cpp \
+	connectionManager.cpp \
+	standardStrategy.cpp \
+	accelerateStrategy.cpp \
+	strategy.cpp
 
 TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
-                languages/trikDesktopGamepad_en.ts \
-                languages/trikDesktopGamepad_fr.ts \
-                languages/trikDesktopGamepad_de.ts
+	languages/trikDesktopGamepad_en.ts \
+	languages/trikDesktopGamepad_fr.ts \
+	languages/trikDesktopGamepad_de.ts
 
 target.path =
 HEADERS += \
-        gamepadForm.h \
-        connectForm.h \
-        connectionManager.h \
-        standardStrategy.h \
-        accelerateStrategy.h \
-        strategy.h
+	gamepadForm.h \
+	connectForm.h \
+	connectionManager.h \
+	standardStrategy.h \
+	accelerateStrategy.h \
+	strategy.h
 
 FORMS += \
-        gamepadForm.ui \
-        connectForm.ui
+	gamepadForm.ui \
+	connectForm.ui
 
 RESOURCES += \
-        images.qrc \
-        fonts.qrc
+	images.qrc \
+	fonts.qrc
 
+# Single Application implementation
+include(thirdparty/singleApplication.pro)

@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <QMediaPlayer>
-#include <QVideoWidget>
+#include <QtMultimedia/QMediaPlayer>
+#include <QtMultimediaWidgets/QVideoWidget>
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QMenuBar>
@@ -27,11 +27,11 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QSignalMapper>
 #include <QtWidgets/QShortcut>
-#include <QMovie>
-#include <QThread>
+#include <QtGui/QMovie>
+#include <QtCore/QThread>
 
-#include <QVideoProbe>
-#include <QClipboard>
+#include <QtMultimedia/QVideoProbe>
+#include <QtGui/QClipboard>
 
 #include "connectForm.h"
 
