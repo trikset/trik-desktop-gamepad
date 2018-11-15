@@ -1,0 +1,43 @@
+clone_folder: c:\trik-desktop-gamepad
+
+environment:
+  global:
+    PYTHON_PATH: C:\Python35
+    PYTHON_LIB: '%PYTHON_PATH%\libs'
+    PROJECT_FILE: trikDesktopGamepad 
+    APPVEYOR_SAVE_CACHE_ON_ERROR: true
+    APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -t7z -m0=lzma -mx=3 -md=32m
+    BUILD_DIR: '%APPVEYOR_BUILD_FOLDER%\.build'
+
+  matrix:
+      - MINGW: C:\Qt\Tools\mingw530_32
+        QTDIR: C:\Qt\5.11.1\mingw53_32
+      - MINGW: C:\Qt\Tools\mingw492_32
+        QTDIR: C:\Qt\5.6.3\mingw49_32
+
+configuration:
+  - debug
+  - release
+
+cache:
+  - '%BUILD_DIR%'
+before_build:
+  - git submodule update --init --recursive
+  - set PATH=%PYTHON_PATH%;%QTDIR%\bin;%MINGW%\bin;C:\msys64\usr\bin;%PATH%
+  - if not exist %BUILD_DIR% md %BUILD_DIR%
+  - du -sh %BUILD_DIR%
+  - pacman --verbose --noconfirm --sync ccache rsync curl
+  - path
+  - python -V
+  - g++ --version
+  - curl https://raw.githubusercontent.com/MestreLion/git-tools/master/git-restore-mtime-bare > .fix-mtime.py
+  - python "%PYTHON_PATH%\Tools\scripts\2to3.py" -v -p -w -n -f all .fix-mtime.py
+  - sed -ri "s#line.(startswith|split)\(#line.\1\(b#g" .fix-mtime.py
+  - python .fix-mtime.py
+  - git submodule foreach --recursive python %cd%\.fix-mtime.py
+
+build_script:
+  - cd %BUILD_DIR%
+  - qmake %APPVEYOR_BUILD_FOLDER%\%PROJECT_FILE%.pro -spec win32-g++ CONFIG+=%CONFIGURATION%
+  - mingw32-make -j2 qmake_all
+  - mingw32-make -j2 all
