@@ -1,0 +1,55 @@
+compiler:
+- gcc
+env:
+  global:
+    - CONFIG=release
+    - VERA=false
+    - SUFFIX=
+    - QMAKE_EXTRA=
+    - CELLAR_CACHE_DIR=$([ $TRAVIS_OS_NAME = 'osx' ] && echo "/usr/local/Cellar" || { mkdir -p .empty/{qt,ccache,python@2,python@3} ; echo .empty ; } )
+cache:
+  timeout: 1000
+  apt: true
+  ccache: true
+  pip: true
+  directories:
+    - $CELLAR_CACHE_DIR/qt
+    - $CELLAR_CACHE_DIR/ccache
+    - $CELLAR_CACHE_DIR/python@2
+    - $CELLAR_CACHE_DIR/python@3
+#    - /usr/local/opt/
+addons:
+  apt:
+    update: true
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - python-pip
+matrix:
+  include:
+  - os: linux
+    dist: trusty
+    sudo: required
+    services: docker
+    name: Linux release
+  - os: linux
+    dist: trusty
+    sudo: required
+    services: docker
+    env: CONFIG=debug     VERA=true SUFFIX=-d
+    name: Linux debug + vera
+  - os: osx
+    osx_image: 9.latest
+    name: macOS release
+    env: QMAKE_EXTRA=CONFIG+=no-sanitizers
+git:
+  depth: 1
+language: cpp
+install:
+- "./.travis/install.sh"
+script:
+- "./.travis/script.sh"
+after_script:
+- "./.travis/after_script.sh"
+after_success:
+- if [ "$CONFIG" = "debug" ]; then codecov; fi
