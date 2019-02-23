@@ -22,6 +22,7 @@
 #include <QtCore/QIODevice>
 
 
+/// TODO description
 class ConnectionManager : public QObject
 {
 	Q_OBJECT
@@ -34,34 +35,49 @@ public:
 	ConnectionManager();
 	~ConnectionManager();
 
+	/// TODO description
 	bool isConnected() const;
 
+	/// TODO description
 	void setCameraIp(const QString &value);
+	/// TODO description
 	QString getCameraIp() const;
 
+	/// TODO description
 	QString getCameraPort() const;
+	/// TODO description
 	void setCameraPort(const QString &value);
 
+	/// TODO description
 	void setGamepadIp(const QString &value);
 
+	/// TODO description
 	void setGamepadPort(const quint16 &value);
 
+	/// TODO description
 	QString getGamepadIp() const;
 
+	/// TODO description
 	quint16 getGamepadPort() const;
 
 public slots:
+	/// TODO description
 	void connectToHost();
+	/// TODO description
 	void disconnectFromHost();
+	/// TODO description
 	void write(const QString &);
 
 signals:
+	/// TODO description
 	void stateChanged(QAbstractSocket::SocketState socketState);
+	/// TODO description
 	void dataWasWritten(int);
+	/// TODO description
 	void connectionFailed();
 
 private:
-	QTcpSocket *socket;
+	QTcpSocket *socket; // TODO [Doesn't have | Has] ownership
 	QString cameraIp;
 	QString cameraPort;
 

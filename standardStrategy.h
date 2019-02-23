@@ -20,10 +20,12 @@
 #include "strategy.h"
 #include <QtGui/QKeyEvent>
 
+/// TODO description
 class StandardStrategy : public Strategy
 {
 public:
 	StandardStrategy();
+	/// TODO description
 	void processEvent(QEvent *event);
 };
 

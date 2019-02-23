@@ -29,6 +29,7 @@ enum Strategies {
 };
 
 
+/// TODO description
 class Strategy : public QObject
 {
 	Q_OBJECT
@@ -36,12 +37,14 @@ class Strategy : public QObject
 public:
 	/// method that encapsulates logic for generating commands
 	virtual void processEvent(QEvent *event) = 0;
+	/// TODO description
 	void reset();
 
 	/// method that is used in GUI to get needed instance in run-time
 	static Strategy *getStrategy(Strategies type);
 
 signals:
+	/// TODO description
 	void commandPrepared(const QString &command);
 
 

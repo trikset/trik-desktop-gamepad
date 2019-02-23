@@ -22,17 +22,19 @@
 #include <QtCore/QTimer>
 #include <QtCore/QSignalMapper>
 
+/// TODO description
 class AccelerateStrategy : public Strategy
 {
 	Q_OBJECT
 
 public:
 	AccelerateStrategy();
+	/// TODO description
 	AccelerateStrategy(int speed);
 
 	/// slot for getting events from UI
 	void processEvent(QEvent *event);
-
+	/// TODO description
 	void setSpeed(int newSpeed);
 
 private slots:
@@ -76,6 +78,6 @@ private:
 
 	/// defines period of time to check dealWithPads
 	int speed;
-	QSignalMapper *padsMapper;
+	QSignalMapper *padsMapper; // TODO [Doesn't have | Has] ownership
 };
 
