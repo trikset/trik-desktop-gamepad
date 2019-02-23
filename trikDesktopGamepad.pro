@@ -32,6 +32,7 @@ TARGET = gamepad
 TEMPLATE = app  
 
 macx {
+	CONFIG -= app_bundle
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
 }
 
