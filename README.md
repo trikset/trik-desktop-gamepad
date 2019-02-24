@@ -1,3 +1,4 @@
+Travis [![Build Status](https://travis-ci.org/trikset/trik-desktop-gamepad.svg?branch=master)](https://travis-ci.org/trikset/trik-desktop-gamepad)
 # trik-desktop-gamepad
 
 Simple desktop gamepad for TRIK on C++/Qt.
