@@ -1,4 +1,7 @@
 Travis [![Build Status](https://travis-ci.org/trikset/trik-desktop-gamepad.svg?branch=master)](https://travis-ci.org/trikset/trik-desktop-gamepad)
+
+Appveyor [![Build status](https://ci.appveyor.com/api/projects/status/asrrwcndmcfnxeww/branch/master?svg=true)](https://ci.appveyor.com/project/iakov/trik-desktop-gamepad/branch/master)
+
 # trik-desktop-gamepad
 
 Simple desktop gamepad for TRIK on C++/Qt.
