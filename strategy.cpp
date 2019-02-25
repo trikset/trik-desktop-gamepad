@@ -1,5 +1,3 @@
-#include "strategy.h"
-
 /* Copyright 2017 Konstantin Batoev.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +14,8 @@
  *
  * This file was modified by Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
+
+#include "strategy.h"
 
 #include "standardStrategy.h"
 #include "accelerateStrategy.h"

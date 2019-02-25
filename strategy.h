@@ -29,6 +29,7 @@ enum Strategies {
 };
 
 
+/// class that generates commands
 class Strategy : public QObject
 {
 	Q_OBJECT
@@ -36,12 +37,14 @@ class Strategy : public QObject
 public:
 	/// method that encapsulates logic for generating commands
 	virtual void processEvent(QEvent *event) = 0;
+	/// method that do all keys not pressed
 	void reset();
 
 	/// method that is used in GUI to get needed instance in run-time
 	static Strategy *getStrategy(Strategies type);
 
 signals:
+	/// signal with generated command
 	void commandPrepared(const QString &command);
 
 

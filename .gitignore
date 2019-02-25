@@ -29,3 +29,6 @@ object_script.*.Debug
 object_script.*.Release
 .qmake.stash
 gamepad.app
+
+# Vera++ specific
+vera++/params

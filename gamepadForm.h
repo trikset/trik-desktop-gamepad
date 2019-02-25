@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev to make it comply with the requirements of
- * trikRuntime project. See git revision history for detailed changes. */
+ * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev
+ * to make it comply with the requirements of trikRuntime project.
+ * See git revision history for detailed changes. */
 
 #pragma once
 
@@ -55,6 +56,7 @@ public:
 	/// Constructor.
 	GamepadForm();
 	~GamepadForm() override;
+	/// method that sets up connection manager and connect to host
 	void startController(QStringList args);
 
 public slots:
@@ -121,8 +123,11 @@ private slots:
 	void requestImage();
 
 signals:
+	/// signal to send command
 	void commandReceived(QString);
+	/// signal to disconnect from host
 	void programFinished();
+	/// signal to connect to host
 	void dataReceivedFromCommandLine();
 
 private:
@@ -138,67 +143,67 @@ private:
 	Ui::GamepadForm *mUi;
 
 	/// For opening dialog from gamepadForm
-	ConnectForm *mMyNewConnectForm;
+	ConnectForm *mMyNewConnectForm; // TODO [Doesn't have | Has] ownership
 
 	/// For creating menu bar
-	QMenuBar *mMenuBar;
+	QMenuBar *mMenuBar; // TODO [Doesn't have | Has] ownership
 
 	/// For creating connection menu
-	QMenu *mConnectionMenu;
-	QMenu *mLanguageMenu;
-	QMenu *mImageMenu;
+	QMenu *mConnectionMenu; // TODO [Doesn't have | Has] ownership
+	QMenu *mLanguageMenu; // TODO [Doesn't have | Has] ownership
+	QMenu *mImageMenu; // TODO [Doesn't have | Has] ownership
 
-	QMenu *mModeMenu;
+	QMenu *mModeMenu; // TODO [Doesn't have | Has] ownership
 
 	/// Menu actions
-	QAction *mConnectAction;
-	QAction *mExitAction;
-	QAction *mAboutAction;
+	QAction *mConnectAction; // TODO [Doesn't have | Has] ownership
+	QAction *mExitAction; // TODO [Doesn't have | Has] ownership
+	QAction *mAboutAction; // TODO [Doesn't have | Has] ownership
 
 	/// Languages actions
-	QAction *mRussianLanguageAction;
-	QAction *mEnglishLanguageAction;
-	QAction *mFrenchLanguageAction;
-	QAction *mGermanLanguageAction;
+	QAction *mRussianLanguageAction; // TODO [Doesn't have | Has] ownership
+	QAction *mEnglishLanguageAction; // TODO [Doesn't have | Has] ownership
+	QAction *mFrenchLanguageAction; // TODO [Doesn't have | Has] ownership
+	QAction *mGermanLanguageAction; // TODO [Doesn't have | Has] ownership
 
-	QActionGroup *mLanguages;
+	QActionGroup *mLanguages; // TODO [Doesn't have | Has] ownership
 
 	/// Image Actions
-	QAction *mTakeImageAction;
+	QAction *mTakeImageAction; // TODO [Doesn't have | Has] ownership
 
 	/// Mode actions
-	QAction *mStandartStrategyAction;
-	QAction *mAccelerateStrategyAction;
+	QAction *mStandartStrategyAction; // TODO [Doesn't have | Has] ownership
+	QAction *mAccelerateStrategyAction; // TODO [Doesn't have | Has] ownership
 
-	QActionGroup *mModesActions;
+	QActionGroup *mModesActions; // TODO [Doesn't have | Has] ownership
 
 	/// For setting up translator in app
-	QTranslator *mTranslator;
+	QTranslator *mTranslator; // TODO [Doesn't have | Has] ownership
 
 	/// object that encapsulates logic with commands
-	Strategy *strategy;
+	Strategy *strategy; // TODO [Doesn't have | Has] ownership
 
 
 	QHash<int, QPushButton*> controlButtonsHash;
 
-	QShortcut *shortcut;
+	QShortcut *shortcut; // TODO [Doesn't have | Has] ownership
 	/// For changing language whem another language was chosen
 	void retranslate();
 
 	/// For catching up event when language was changed
 	void changeEvent(QEvent *event) override;
 
-	QSignalMapper *mMapperButtonPressed;
-	QSignalMapper *mMapperButtonReleased;
+	QSignalMapper *mMapperButtonPressed; // TODO [Doesn't have | Has] ownership
+	QSignalMapper *mMapperButtonReleased; // TODO [Doesn't have | Has] ownership
 
 	/// Class that handles network communication with TRIK.
 	ConnectionManager connectionManager;
 	QThread thread;
-	QMediaPlayer *player;
-	QVideoWidget *videoWidget;
+	QMediaPlayer *player; // TODO [Doesn't have | Has] ownership
+	QVideoWidget *videoWidget; // TODO [Doesn't have | Has] ownership
 	QMovie movie;
 
-	QClipboard *clipboard;
-	QVideoProbe *probe;
+	QClipboard *clipboard; // TODO [Doesn't have | Has] ownership
+	QVideoProbe *probe; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary;
 };

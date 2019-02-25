@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev to make it comply with the requirements of
- * trikRuntime project. See git revision history for detailed changes. */
+ * This file was modified by Yurii Litvinov, Aleksei Alekseev, Mikhail Wall and Konstantin Batoev
+ * to make it comply with the requirements of trikRuntime project.
+ * See git revision history for detailed changes. */
 
 #include "gamepadForm.h"
 #include "ui_gamepadForm.h"
@@ -78,7 +79,8 @@ void GamepadForm::setUpGamepadForm()
 void GamepadForm::setVideoController()
 {
 	player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
+		this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
 
 	videoWidget = new QVideoWidget(this);
 	player->setVideoOutput(videoWidget);
@@ -149,9 +151,9 @@ void GamepadForm::startVideoStream()
 
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
 		const QString url = "http://" + ip + ":" + port + "/?action=stream";
-		//QNetworkRequest nr = QNetworkRequest(url);
-		//nr.setPriority(QNetworkRequest::LowPriority);
-		//nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+		// QNetworkRequest nr = QNetworkRequest(url);
+		// nr.setPriority(QNetworkRequest::LowPriority);
+		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
 		player->setMedia(QUrl(url));
 	}
 }
@@ -245,14 +247,16 @@ void GamepadForm::createConnection()
 	connect(mMapperButtonPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonPress(QWidget*)));
 	connect(mMapperButtonReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonRelease(QWidget*)));
 
-	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(checkSocket(QAbstractSocket::SocketState)));
+	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+		this, SLOT(checkSocket(QAbstractSocket::SocketState)));
 	connect(&connectionManager, SIGNAL(dataWasWritten(int)), this, SLOT(checkBytesWritten(int)));
 	connect(&connectionManager, SIGNAL(connectionFailed()), this, SLOT(showConnectionFailedMessage()));
 	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
 	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
 
 	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
-	connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(dealWithApplicationState(Qt::ApplicationState)));
+	connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)),
+		this, SLOT(dealWithApplicationState(Qt::ApplicationState)));
 }
 
 void GamepadForm::createMenu()
@@ -300,7 +304,8 @@ void GamepadForm::createMenu()
 	mAccelerateStrategyAction->setCheckable(true);
 	mStandartStrategyAction->setChecked(true);
 	connect(mStandartStrategyAction, &QAction::triggered, this, [this](){changeMode(Strategies::standartStrategy);});
-	connect(mAccelerateStrategyAction, &QAction::triggered, this, [this](){changeMode(Strategies::accelerateStrategy);});
+	connect(mAccelerateStrategyAction, &QAction::triggered,
+		this, [this](){changeMode(Strategies::accelerateStrategy);});
 	mModesActions->addAction(mStandartStrategyAction);
 	mModesActions->addAction(mAccelerateStrategyAction);
 	mModesActions->setExclusive(true);
@@ -399,7 +404,8 @@ void GamepadForm::setLabels()
 void GamepadForm::setImageControl()
 {
 	probe = new QVideoProbe(this);
-	connect(probe, SIGNAL(videoFrameProbed(QVideoFrame)), this, SLOT(saveImageToClipboard(QVideoFrame)), Qt::QueuedConnection);
+	connect(probe, SIGNAL(videoFrameProbed(QVideoFrame)), this,
+		SLOT(saveImageToClipboard(QVideoFrame)), Qt::QueuedConnection);
 	isFrameNecessary = false;
 	probe->setSource(player);
 	clipboard = QApplication::clipboard();

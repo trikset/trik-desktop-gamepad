@@ -51,7 +51,7 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 ConnectForm::ConnectForm(ConnectionManager *manager, const QMap<QString, QString> &args, QWidget *parent)
 	: ConnectForm(manager, parent)
 {
-	//ConnectForm(manager, parent);
+	// ConnectForm(manager, parent);
 	mUi->robotIpLineEdit->setText(args.value("gamepadIp", "192.168.77.1"));
 	mUi->robotPortLineEdit->setText(args.value("gamepadPort", "4444"));
 	mUi->cameraIPLineEdit->setText(args.value("cameraIp", "192.168.77.1"));
