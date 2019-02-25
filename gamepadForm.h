@@ -56,7 +56,7 @@ public:
 	/// Constructor.
 	GamepadForm();
 	~GamepadForm() override;
-	/// TODO description
+	/// method that sets up connection manager and connect to host
 	void startController(QStringList args);
 
 public slots:
@@ -123,11 +123,11 @@ private slots:
 	void requestImage();
 
 signals:
-	/// TODO description
+	/// signal to send command
 	void commandReceived(QString);
-	/// TODO description
+	/// signal to disconnect from host
 	void programFinished();
-	/// TODO description
+	/// signal to connect to host
 	void dataReceivedFromCommandLine();
 
 private:

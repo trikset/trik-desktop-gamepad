@@ -20,12 +20,12 @@
 #include "strategy.h"
 #include <QtGui/QKeyEvent>
 
-/// TODO description
+/// class that generates commands from pad only with max/min values
 class StandardStrategy : public Strategy
 {
 public:
 	StandardStrategy();
-	/// TODO description
+	/// method that generates commands
 	void processEvent(QEvent *event);
 };
 

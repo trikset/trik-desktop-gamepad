@@ -22,19 +22,19 @@
 #include <QtCore/QTimer>
 #include <QtCore/QSignalMapper>
 
-/// TODO description
+/// class that generates commands from pad with various values depending on time a key is pressed
 class AccelerateStrategy : public Strategy
 {
 	Q_OBJECT
 
 public:
 	AccelerateStrategy();
-	/// TODO description
+	/// set initial period of time to check dealWithPads
 	AccelerateStrategy(int speed);
 
 	/// slot for getting events from UI
 	void processEvent(QEvent *event);
-	/// TODO description
+	/// set period of time to check dealWithPads
 	void setSpeed(int newSpeed);
 
 private slots:

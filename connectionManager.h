@@ -35,29 +35,31 @@ public:
 	ConnectionManager();
 	~ConnectionManager();
 
-	/// TODO description
+	/// checks connection
 	bool isConnected() const;
 
-	/// TODO description
+	/// sets camera ip
 	void setCameraIp(const QString &value);
-	/// TODO description
+
+	/// returns camera ip
 	QString getCameraIp() const;
 
-	/// TODO description
+	/// returns camera port
 	QString getCameraPort() const;
-	/// TODO description
+
+	/// sets camera port
 	void setCameraPort(const QString &value);
 
-	/// TODO description
+	/// sets gamepad ip
 	void setGamepadIp(const QString &value);
 
-	/// TODO description
+	/// sets gamepad port
 	void setGamepadPort(const quint16 &value);
 
-	/// TODO description
+	/// returns gamepad ip
 	QString getGamepadIp() const;
 
-	/// TODO description
+	/// returns gamepad port
 	quint16 getGamepadPort() const;
 
 public slots:
