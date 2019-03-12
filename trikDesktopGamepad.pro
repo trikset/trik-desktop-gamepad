@@ -30,7 +30,11 @@ CONFIG += c++11
 
 TARGET = gamepad
 TEMPLATE = app  
-
+CONFIG+=object_parallel_to_source
+OBJECTS_DIR=.build/obj
+MOC_DIR=.build/moc
+UI_DIR=.build/uic
+RCC_DIR=.build/rcc
 macx {
 	CONFIG -= app_bundle
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
@@ -49,7 +53,6 @@ TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
 	languages/trikDesktopGamepad_fr.ts \
 	languages/trikDesktopGamepad_de.ts
 
-target.path =
 HEADERS += \
 	gamepadForm.h \
 	connectForm.h \

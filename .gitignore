@@ -1,34 +1,16 @@
 /gamepad
 *~
-# Compiled Object files
-*.slo
-*.lo
-*.o
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+.*.swp
 
 # Qt specific
 *.autosave
-*.moc
-moc_*.cpp
-ui_*.h
-qrc_*.cpp
-Makefile*
+.build/
+Makefile
 *.pro.user*
-bin/*
 /.project
 object_script.*.Debug
 object_script.*.Release
 .qmake.stash
-gamepad.app
 
 # Vera++ specific
 vera++/params
