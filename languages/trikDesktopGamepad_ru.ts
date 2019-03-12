@@ -169,32 +169,32 @@ Buttons disabled.</source>
 Кнопки выключены.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="187"/>
+        <location filename="../gamepadForm.cpp" line="208"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Не удалось подключиться к роботу</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="470"/>
+        <location filename="../gamepadForm.cpp" line="570"/>
         <source>&amp;Connection</source>
         <translation>&amp;Соединение</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="471"/>
+        <location filename="../gamepadForm.cpp" line="571"/>
         <source>&amp;Mode</source>
         <translation>&amp;Режим</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="472"/>
+        <location filename="../gamepadForm.cpp" line="572"/>
         <source>&amp;Language</source>
         <translation>&amp;Язык</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="474"/>
+        <location filename="../gamepadForm.cpp" line="574"/>
         <source>&amp;Connect</source>
         <translation>&amp;Подлючиться</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="475"/>
+        <location filename="../gamepadForm.cpp" line="575"/>
         <source>&amp;Exit</source>
         <translation>&amp;Выход</translation>
     </message>
@@ -203,42 +203,52 @@ Buttons disabled.</source>
         <translation type="vanished">&amp;Простой</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="477"/>
+        <location filename="../gamepadForm.cpp" line="577"/>
         <source>&amp;Simple</source>
         <translation>&amp;Простой</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="478"/>
+        <location filename="../gamepadForm.cpp" line="578"/>
         <source>&amp;Accelerate</source>
         <translation>&amp;Ускоряющий</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="480"/>
+        <location filename="../gamepadForm.cpp" line="580"/>
         <source>&amp;Russian</source>
         <translation>&amp;Русский</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="481"/>
+        <location filename="../gamepadForm.cpp" line="581"/>
         <source>&amp;English</source>
         <translation>&amp;Английский</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="482"/>
+        <location filename="../gamepadForm.cpp" line="582"/>
         <source>&amp;French</source>
         <translation>&amp;Французский</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="483"/>
+        <location filename="../gamepadForm.cpp" line="583"/>
         <source>&amp;German</source>
         <translation>&amp;Немецкий</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="485"/>
+        <location filename="../gamepadForm.cpp" line="585"/>
+        <source>&amp;Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="586"/>
+        <source>&amp;Screenshot to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gamepadForm.cpp" line="588"/>
         <source>&amp;About</source>
         <translation>&amp;О программе</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="501"/>
+        <location filename="../gamepadForm.cpp" line="604"/>
         <source>TRIK Gamepad 1.1.2
 
 This is desktop gamepad for TRIK robots.</source>
@@ -253,7 +263,7 @@ Buttons enabled.</source>
 Кнопки включены.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="500"/>
+        <location filename="../gamepadForm.cpp" line="603"/>
         <source>About TRIK Gamepad</source>
         <translation>О пульте управления ТРИК</translation>
     </message>
