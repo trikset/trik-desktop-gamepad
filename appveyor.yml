@@ -19,8 +19,8 @@ configuration:
   - debug
   - release
 
-cache:
-  - '%BUILD_DIR%'
+#cache:
+#  - '%BUILD_DIR%'
 before_build:
   - git submodule update --init --recursive
   - set PATH=%PYTHON_PATH%;%QTDIR%\bin;%MINGW%\bin;C:\msys64\usr\bin;%PATH%
