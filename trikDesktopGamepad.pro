@@ -20,7 +20,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -Wold-style-cast -Wconversion
 QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
 QMAKE_CXXFLAGS += -Werror -Wno-conversion
 
-# Suppressing warnings in Qt's files
+# Suppressing warnings in Qt system headers files
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
 
@@ -31,6 +31,12 @@ CONFIG += c++11
 TARGET = gamepad
 TEMPLATE = app  
 
+CONFIG -= debug_and_release_target build_all debug_and_release
+CONFIG+=object_parallel_to_source
+OBJECTS_DIR=.build/obj
+MOC_DIR=.build/moc
+UI_DIR=.build/uic
+RCC_DIR=.build/rcc
 macx {
 	CONFIG -= app_bundle
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
@@ -49,7 +55,6 @@ TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
 	languages/trikDesktopGamepad_fr.ts \
 	languages/trikDesktopGamepad_de.ts
 
-target.path =
 HEADERS += \
 	gamepadForm.h \
 	connectForm.h \
