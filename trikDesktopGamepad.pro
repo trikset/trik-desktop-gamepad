@@ -20,7 +20,7 @@ QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -Wold-style-cast -Wconversion
 QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
 QMAKE_CXXFLAGS += -Werror -Wno-conversion
 
-# Suppressing warnings in Qt's files
+# Suppressing warnings in Qt system headers files
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
 
@@ -30,6 +30,8 @@ CONFIG += c++11
 
 TARGET = gamepad
 TEMPLATE = app  
+
+CONFIG -= debug_and_release_target build_all debug_and_release
 CONFIG+=object_parallel_to_source
 OBJECTS_DIR=.build/obj
 MOC_DIR=.build/moc
