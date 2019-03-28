@@ -24,6 +24,9 @@ QMAKE_CXXFLAGS += -Werror -Wno-conversion
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
 
+TARGET = gamepad
+TEMPLATE = app
+
 CONFIG -= debug_and_release_target build_all debug_and_release
 CONFIG+=object_parallel_to_source
 OBJECTS_DIR=.build/obj
@@ -35,5 +38,4 @@ macx {
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
 }
 
-# Single Application implementation
 include(trikDesktopGamepad.pri)
