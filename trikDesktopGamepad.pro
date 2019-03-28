@@ -24,13 +24,6 @@ QMAKE_CXXFLAGS += -Werror -Wno-conversion
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
 
-QT += core gui network widgets multimedia multimediawidgets
-
-CONFIG += c++11
-
-TARGET = gamepad
-TEMPLATE = app  
-
 CONFIG -= debug_and_release_target build_all debug_and_release
 CONFIG+=object_parallel_to_source
 OBJECTS_DIR=.build/obj
@@ -42,34 +35,5 @@ macx {
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../
 }
 
-SOURCES += main.cpp \
-	gamepadForm.cpp \
-	connectForm.cpp \
-	connectionManager.cpp \
-	standardStrategy.cpp \
-	accelerateStrategy.cpp \
-	strategy.cpp
-
-TRANSLATIONS += languages/trikDesktopGamepad_ru.ts \
-	languages/trikDesktopGamepad_en.ts \
-	languages/trikDesktopGamepad_fr.ts \
-	languages/trikDesktopGamepad_de.ts
-
-HEADERS += \
-	gamepadForm.h \
-	connectForm.h \
-	connectionManager.h \
-	standardStrategy.h \
-	accelerateStrategy.h \
-	strategy.h
-
-FORMS += \
-	gamepadForm.ui \
-	connectForm.ui
-
-RESOURCES += \
-	images.qrc \
-	fonts.qrc
-
 # Single Application implementation
-include(thirdparty/singleApplication.pro)
+include(trikDesktopGamepad.pri)
