@@ -1,9 +1,5 @@
 QT += core gui network widgets multimedia multimediawidgets
-
 CONFIG += c++11
-
-TARGET = gamepad
-TEMPLATE = app
 
 SOURCES += \
 	$$PWD/main.cpp \
@@ -36,4 +32,5 @@ RESOURCES += \
 	$$PWD/images.qrc \
 	$$PWD/fonts.qrc
 
+# Single Application implementation
 include(thirdparty/singleApplication.pro)
