@@ -245,12 +245,8 @@ Buttons disabled.</translation>
     </message>
     <message>
         <location filename="../gamepadForm.cpp" line="604"/>
-        <source>TRIK Gamepad 1.1.2
-
-This is desktop gamepad for TRIK robots.</source>
-        <translation>TRIK Gamepad 1.1.2
-
-This is desktop gamepad for TRIK robots.</translation>
+        <source>This is desktop gamepad for TRIK robots.</source>
+        <translation>This is desktop gamepad for TRIK robots.</translation>
     </message>
     <message>
         <source>Connected.
@@ -262,14 +258,6 @@ Buttons enabled.</translation>
         <location filename="../gamepadForm.cpp" line="603"/>
         <source>About TRIK Gamepad</source>
         <translation>About TRIK Gamepad</translation>
-    </message>
-    <message>
-        <source>TRIK 1.1.0
-
-This is desktop gamepad for TRIK robots.</source>
-        <translation type="obsolete">TRIK 1.1.0
-
-This is desktop gamepad for TRIK robots.</translation>
     </message>
 </context>
 </TS>

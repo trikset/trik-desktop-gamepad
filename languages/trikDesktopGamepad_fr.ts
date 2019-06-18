@@ -256,18 +256,8 @@ Boutons activés.</translation>
     </message>
     <message>
         <location filename="../gamepadForm.cpp" line="604"/>
-        <source>TRIK Gamepad 1.1.2
-
-This is desktop gamepad for TRIK robots.</source>
-        <translation>TRIK Gamepad 1.1.2
-
-Ceci est gamepad de bureau pour les robots TRIK.</translation>
-    </message>
-    <message>
-        <source>TRIK 1.1.0
-
-This is desktop gamepad for TRIK robots.</source>
-        <translation type="obsolete">Ceci est gamepad de bureau pour les robots Trik.</translation>
+        <source>This is desktop gamepad for TRIK robots.</source>
+        <translation>Ceci est gamepad de bureau pour les robots TRIK.</translation>
     </message>
 </context>
 </TS>
