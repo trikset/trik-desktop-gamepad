@@ -601,6 +601,6 @@ void GamepadForm::changeLanguage(const QString &language)
 void GamepadForm::about()
 {
 	const QString title = tr("About TRIK Gamepad");
-	const QString about =  "TRIK Gamepad 1.1.2\n\n"+tr("This is desktop gamepad for TRIK robots.");
+	const QString about =  "TRIK Gamepad 2.0.2\n\n"+tr("This is desktop gamepad for TRIK robots.");
 	QMessageBox::about(this, title, about);
 }
