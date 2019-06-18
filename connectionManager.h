@@ -20,6 +20,7 @@
 
 #include <QtNetwork/QTcpSocket>
 #include <QtCore/QIODevice>
+#include <QScopedPointer>
 
 
 /// TODO description
@@ -79,7 +80,7 @@ signals:
 	void connectionFailed();
 
 private:
-	QTcpSocket *socket; // TODO [Doesn't have | Has] ownership
+	QScopedPointer<QTcpSocket> socket;
 	QString cameraIp;
 	QString cameraPort;
 
