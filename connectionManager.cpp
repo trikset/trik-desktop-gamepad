@@ -15,6 +15,7 @@
  * This file was modified by Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
+#include <QNetworkProxy>
 #include "connectionManager.h"
 
 ConnectionManager::ConnectionManager()
@@ -27,15 +28,14 @@ ConnectionManager::ConnectionManager()
 	/// passing this to QTcpSocket forces automatically socket->moveToThread()
 	/// when calling connectionManaget.moveToThread()
 	qRegisterMetaType<QAbstractSocket::SocketState>();
-	connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+	connect(socket.data(), SIGNAL(stateChanged(QAbstractSocket::SocketState)),
 			this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
 }
 
 ConnectionManager::~ConnectionManager()
 {
-	disconnect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+	disconnect(socket.data(), SIGNAL(stateChanged(QAbstractSocket::SocketState)),
 			   this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
-	delete socket;
 }
 
 bool ConnectionManager::isConnected() const
@@ -67,6 +67,7 @@ QString ConnectionManager::getGamepadIp() const
 void ConnectionManager::connectToHost()
 {
 	const int timeout = 3 * 1000;
+	socket->setProxy(QNetworkProxy::NoProxy);
 	socket->connectToHost(gamepadIp, gamepadPort);
 	if (!socket->waitForConnected(timeout))
 		emit connectionFailed();

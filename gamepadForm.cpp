@@ -54,7 +54,7 @@ void GamepadForm::startController(QStringList args)
 	QString portStr = args.size() < 3 ? "4444" : args.at(2);
 	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
 	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
-	QString cameraIp = args.size() < 5 ? args.at(1) : args.at(4);
+	QString cameraIp = args.size() < 5 ? connectionManager.getGamepadIp() : args.at(4);
 	connectionManager.setCameraPort(cameraPort);
 	connectionManager.setGamepadPort(gamepadPort);
 	connectionManager.setCameraIp(cameraIp);
