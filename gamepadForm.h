@@ -206,4 +206,6 @@ private:
 	QClipboard *clipboard; // TODO [Doesn't have | Has] ownership
 	QVideoProbe *probe; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary;
+
+	QTimer mKeepaliveTimer;
 };
