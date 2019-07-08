@@ -36,6 +36,9 @@ GamepadForm::GamepadForm()
 	this->installEventFilter(this);
 	setUpGamepadForm();
 	startThread();
+
+	connect(&mKeepaliveTimer, &QTimer::timeout, [this]() { sendCommand("keepalive 4000\n"); } );
+	mKeepaliveTimer.start(3000);
 }
 
 GamepadForm::~GamepadForm()
