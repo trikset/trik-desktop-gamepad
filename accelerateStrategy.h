@@ -26,11 +26,11 @@
 class AccelerateStrategy : public Strategy
 {
 	Q_OBJECT
+	Q_DISABLE_COPY(AccelerateStrategy)
 
 public:
-	AccelerateStrategy();
 	/// set initial period of time to check dealWithPads
-	AccelerateStrategy(int speed);
+	explicit AccelerateStrategy(int speed = 300);
 
 	/// slot for getting events from UI
 	void processEvent(QEvent *event);
@@ -78,6 +78,5 @@ private:
 
 	/// defines period of time to check dealWithPads
 	int speed;
-	QSignalMapper *padsMapper; // TODO [Doesn't have | Has] ownership
 };
 

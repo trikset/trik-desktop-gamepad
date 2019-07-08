@@ -19,23 +19,15 @@
 
 #include <math.h>
 
-AccelerateStrategy::AccelerateStrategy()
+AccelerateStrategy::AccelerateStrategy(int currentSpeed)
 	: pad1WasActive(false)
 	, pad2WasActive(false)
-	, speed(300)
-	, padsMapper(new QSignalMapper(this))
+	, speed(currentSpeed)
 {
 
-	connect(&stopTimerForPad1, SIGNAL(timeout()), padsMapper, SLOT(map()));
-	padsMapper->setMapping(&stopTimerForPad1, 1);
-	connect(&stopTimerForPad1, SIGNAL(timeout()), &stopTimerForPad1, SLOT(stop()));
-
-	connect(&stopTimerForPad2, SIGNAL(timeout()), padsMapper, SLOT(map()));
-	padsMapper->setMapping(&stopTimerForPad2, 2);
-	connect(&stopTimerForPad2, SIGNAL(timeout()), &stopTimerForPad2, SLOT(stop()));
-
-	connect(padsMapper, SIGNAL(mapped(int)), this, SLOT(stopPads(int)));
-	connect(&workTimer, SIGNAL(timeout()), this, SLOT(dealWithPads()));
+	connect(&stopTimerForPad1, &QTimer::timeout, [this]() { stopTimerForPad1.stop(); emit stopPads(1); });
+	connect(&stopTimerForPad2, &QTimer::timeout, [this]() { stopTimerForPad2.stop(); emit stopPads(2); });
+	connect(&workTimer, &QTimer::timeout, this, &AccelerateStrategy::dealWithPads);
 
 	pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
 	pad2 = {Qt::Key_Left, Qt::Key_Right, Qt::Key_Up, Qt::Key_Down};
@@ -77,12 +69,6 @@ AccelerateStrategy::AccelerateStrategy()
 		, {Qt::Key_Down, -10}
 	};
 
-}
-
-AccelerateStrategy::AccelerateStrategy(int currentSpeed)
-	: AccelerateStrategy()
-{
-	speed = currentSpeed;
 }
 
 void AccelerateStrategy::processEvent(QEvent *event)
