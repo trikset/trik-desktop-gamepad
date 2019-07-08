@@ -15,6 +15,7 @@
  * This file was modified by Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
+#include <QEventLoop>
 #include <QNetworkProxy>
 #include "connectionManager.h"
 
@@ -75,11 +76,21 @@ void ConnectionManager::connectToHost()
 {
 	reset();
 	constexpr auto timeout = 3 * 1000;
+	QEventLoop loop;
+	QTimer::singleShot(timeout, &loop, &QEventLoop::quit);
+	connect(&socket, &QTcpSocket::connected, &loop, &QEventLoop::quit);
+	connect(&socket
+			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error)
+			, &loop
+			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
 	socket.setProxy(QNetworkProxy::NoProxy);
 	socket.connectToHost(gamepadIp, gamepadPort);
-	if (socket.waitForConnected(timeout)) {
+	loop.exec();
+
+	if (socket.state() == QTcpSocket::ConnectedState) {
 		keepaliveTimer.start(3000);
 	} else {
+		socket.abort();
 		emit connectionFailed();
 	}
 }
