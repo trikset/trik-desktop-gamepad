@@ -31,24 +31,18 @@ GamepadForm::GamepadForm()
 	, mUi(new Ui::GamepadForm())
 	, strategy(Strategy::getStrategy(Strategies::standartStrategy))
 {
-	// Here all GUI widgets are created and initialized.
 	mUi->setupUi(this);
 	this->installEventFilter(this);
 	setUpGamepadForm();
-	startThread();
-
-	connect(&mKeepaliveTimer, &QTimer::timeout, [this]() { sendCommand("keepalive 4000\n"); } );
-	mKeepaliveTimer.start(3000);
+	connectionManager.moveToThread(&thread);
+	connect(&thread, &QThread::finished, &connectionManager, &ConnectionManager::reset);
+	thread.start();
 }
 
 GamepadForm::~GamepadForm()
 {
-	// disabling socket from thread where it was enabled
-	emit programFinished();
-	// stopping thread
 	thread.quit();
-	// waiting thread to quit
-	thread.wait();
+	thread.wait(1000);
 }
 
 void GamepadForm::startController(QStringList args)
@@ -62,9 +56,7 @@ void GamepadForm::startController(QStringList args)
 	connectionManager.setGamepadPort(gamepadPort);
 	connectionManager.setCameraIp(cameraIp);
 	startVideoStream();
-	/// signal is used to execute connectionManager's method in its thread
-	connect(this, SIGNAL(dataReceivedFromCommandLine()), &connectionManager, SLOT(connectToHost()));
-	emit dataReceivedFromCommandLine();
+	QMetaObject::invokeMethod(&connectionManager, &ConnectionManager::connectToHost, Qt::QueuedConnection);
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -81,16 +73,17 @@ void GamepadForm::setUpGamepadForm()
 
 void GamepadForm::setVideoController()
 {
-	player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
-		this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
-
 	videoWidget = new QVideoWidget(this);
-	player->setVideoOutput(videoWidget);
 	videoWidget->setMinimumSize(320, 240);
 	videoWidget->setVisible(false);
 	mUi->verticalLayout->addWidget(videoWidget);
 	mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
+
+	player = new QMediaPlayer(videoWidget, QMediaPlayer::StreamPlayback);
+
+	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
+		this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+	player->setVideoOutput(videoWidget);
 
 	movie.setFileName(":/images/loading.gif");
 	mUi->loadingMediaLabel->setVisible(false);
@@ -141,6 +134,8 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 		mUi->invalidMediaLabel->setVisible(false);
 		videoWidget->setVisible(false);
 		mUi->label->setVisible(true);
+		break;
+
 	default:
 		break;
 	}
@@ -189,12 +184,6 @@ void GamepadForm::checkSocket(QAbstractSocket::SocketState state)
 		setButtonsEnabled(false);
 		break;
 	}
-}
-
-void GamepadForm::startThread()
-{
-	connectionManager.moveToThread(&thread);
-	thread.start();
 }
 
 void GamepadForm::checkBytesWritten(int result)
@@ -255,7 +244,6 @@ void GamepadForm::createConnection()
 	connect(&connectionManager, SIGNAL(dataWasWritten(int)), this, SLOT(checkBytesWritten(int)));
 	connect(&connectionManager, SIGNAL(connectionFailed()), this, SLOT(showConnectionFailedMessage()));
 	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
-	connect(this, SIGNAL(programFinished()), &connectionManager, SLOT(disconnectFromHost()));
 
 	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
 	connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)),
@@ -527,10 +515,8 @@ void GamepadForm::openConnectDialog()
 	mMyNewConnectForm = new ConnectForm(&connectionManager, args, this);
 	mMyNewConnectForm->show();
 
-	connect(mMyNewConnectForm, SIGNAL(dataReceived()),
-			&connectionManager, SLOT(connectToHost()));
-	connect(mMyNewConnectForm, SIGNAL(dataReceived()),
-			this, SLOT(startVideoStream()));
+	connect(mMyNewConnectForm, &ConnectForm::dataReceived, &connectionManager, &ConnectionManager::connectToHost);
+	connect(mMyNewConnectForm, &ConnectForm::dataReceived, this, &GamepadForm::startVideoStream);
 }
 
 void GamepadForm::exit()
