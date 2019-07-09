@@ -171,12 +171,12 @@ Buttons enabled.</source>
 Buttons aktiviert.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+208"/>
+        <location filename="../gamepadForm.cpp" line="+200"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Fehler beim Roboter zu verbinden</translation>
     </message>
     <message>
-        <location line="+362"/>
+        <location line="+359"/>
         <source>&amp;Connection</source>
         <translation>&amp;Verbindung</translation>
     </message>

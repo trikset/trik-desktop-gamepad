@@ -15,32 +15,31 @@
  * This file was modified by Konstantin Batoev to make it comply with the requirements of trikRuntime
  * project. See git revision history for detailed changes. */
 
+#include <QEventLoop>
 #include <QNetworkProxy>
 #include "connectionManager.h"
 
 ConnectionManager::ConnectionManager()
-	: socket(new QTcpSocket(this))
+	: socket(this)
+	, keepaliveTimer(this)
 	, cameraIp("192.168.77.1")
 	, cameraPort("8080")
 	, gamepadIp("192.168.77.1")
 	, gamepadPort(4444)
-{
-	/// passing this to QTcpSocket forces automatically socket->moveToThread()
-	/// when calling connectionManaget.moveToThread()
-	qRegisterMetaType<QAbstractSocket::SocketState>();
-	connect(socket.data(), SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-			this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
-}
 
-ConnectionManager::~ConnectionManager()
+
 {
-	disconnect(socket.data(), SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-			   this, SIGNAL(stateChanged(QAbstractSocket::SocketState)));
+	/// passing this to QTcpSocket allows `socket` to be moved
+	/// to another thread with the parent
+	/// when connectionManager.moveToThread() is called
+	qRegisterMetaType<QAbstractSocket::SocketState>();
+	connect(&socket, &QTcpSocket::stateChanged, this, &ConnectionManager::stateChanged);
+	connect(&keepaliveTimer, &QTimer::timeout, this, [this]() { write("keepalive 4000\n"); } );
 }
 
 bool ConnectionManager::isConnected() const
 {
-	return socket->state() == QTcpSocket::ConnectedState;
+	return socket.state() == QTcpSocket::ConnectedState;
 }
 
 QString ConnectionManager::getCameraIp() const
@@ -50,8 +49,17 @@ QString ConnectionManager::getCameraIp() const
 
 void ConnectionManager::write(const QString &data)
 {
-	qint64 result = socket->write(data.toLatin1().data());
+	qint64 result = socket.write(data.toLatin1().data());
 	emit dataWasWritten(static_cast<int>(result));
+}
+
+void ConnectionManager::reset()
+{
+	if (!keepaliveTimer.isActive())
+		return;
+	keepaliveTimer.stop();
+	socket.disconnectFromHost();
+	emit dataWasWritten(-1); // simulate disconnect
 }
 
 quint16 ConnectionManager::getGamepadPort() const
@@ -66,16 +74,25 @@ QString ConnectionManager::getGamepadIp() const
 
 void ConnectionManager::connectToHost()
 {
-	const int timeout = 3 * 1000;
-	socket->setProxy(QNetworkProxy::NoProxy);
-	socket->connectToHost(gamepadIp, gamepadPort);
-	if (!socket->waitForConnected(timeout))
-		emit connectionFailed();
-}
+	reset();
+	constexpr auto timeout = 3 * 1000;
+	QEventLoop loop;
+	QTimer::singleShot(timeout, &loop, &QEventLoop::quit);
+	connect(&socket, &QTcpSocket::connected, &loop, &QEventLoop::quit);
+	connect(&socket
+			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error)
+			, &loop
+			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
+	socket.setProxy(QNetworkProxy::NoProxy);
+	socket.connectToHost(gamepadIp, gamepadPort);
+	loop.exec();
 
-void ConnectionManager::disconnectFromHost()
-{
-	socket->disconnectFromHost();
+	if (socket.state() == QTcpSocket::ConnectedState) {
+		keepaliveTimer.start(3000);
+	} else {
+		socket.abort();
+		emit connectionFailed();
+	}
 }
 
 void ConnectionManager::setCameraIp(const QString &value)

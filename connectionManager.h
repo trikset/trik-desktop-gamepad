@@ -21,20 +21,18 @@
 #include <QtNetwork/QTcpSocket>
 #include <QtCore/QIODevice>
 #include <QScopedPointer>
+#include <QTimer>
 
 
 /// TODO description
 class ConnectionManager : public QObject
 {
 	Q_OBJECT
-
-private:
-	ConnectionManager(const ConnectionManager &other);
-	ConnectionManager & operator=(const ConnectionManager &other);
+	Q_DISABLE_COPY(ConnectionManager)
 
 public:
 	ConnectionManager();
-	~ConnectionManager();
+	~ConnectionManager() = default;
 
 	/// checks connection
 	bool isConnected() const;
@@ -67,9 +65,10 @@ public slots:
 	/// TODO description
 	void connectToHost();
 	/// TODO description
-	void disconnectFromHost();
-	/// TODO description
 	void write(const QString &);
+
+	/// Disconnect
+	void reset();
 
 signals:
 	/// TODO description
@@ -80,7 +79,9 @@ signals:
 	void connectionFailed();
 
 private:
-	QScopedPointer<QTcpSocket> socket;
+	QTcpSocket socket;
+	QTimer keepaliveTimer;
+
 	QString cameraIp;
 	QString cameraPort;
 

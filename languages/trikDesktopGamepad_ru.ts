@@ -169,12 +169,12 @@ Buttons disabled.</source>
 Кнопки выключены.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+208"/>
+        <location filename="../gamepadForm.cpp" line="+200"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Не удалось подключиться к роботу</translation>
     </message>
     <message>
-        <location line="+362"/>
+        <location line="+359"/>
         <source>&amp;Connection</source>
         <translation>&amp;Соединение</translation>
     </message>

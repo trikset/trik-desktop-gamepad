@@ -18,21 +18,20 @@
 
 #pragma once
 
-#include <QtMultimedia/QMediaPlayer>
-#include <QtMultimediaWidgets/QVideoWidget>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMenuBar>
-#include <QtNetwork/QTcpSocket>
-#include <QtCore/QTimer>
-#include <QtCore/QTranslator>
-#include <QtCore/QSignalMapper>
-#include <QtWidgets/QShortcut>
-#include <QtGui/QMovie>
-#include <QtCore/QThread>
+#include <QWidget>
+#include <QMenuBar>
+#include <QTcpSocket>
+#include <QTranslator>
+#include <QSignalMapper>
+#include <QShortcut>
+#include <QMovie>
+#include <QThread>
 
-#include <QtMultimedia/QVideoProbe>
-#include <QtGui/QClipboard>
+#include <QVideoProbe>
+#include <QClipboard>
 
 #include "connectForm.h"
 
@@ -47,10 +46,7 @@ class GamepadForm;
 class GamepadForm : public QWidget
 {
 	Q_OBJECT
-
-private:
-	GamepadForm(const GamepadForm &other);
-	GamepadForm & operator=(const GamepadForm &other);
+	Q_DISABLE_COPY(GamepadForm)
 
 public:
 	/// Constructor.
@@ -102,8 +98,6 @@ private slots:
 
 	void checkSocket(QAbstractSocket::SocketState state);
 
-	void startThread();
-
 	void checkBytesWritten(int result);
 
 	void showConnectionFailedMessage();
@@ -127,8 +121,6 @@ signals:
 	void commandReceived(QString);
 	/// signal to disconnect from host
 	void programFinished();
-	/// signal to connect to host
-	void dataReceivedFromCommandLine();
 
 private:
 	void setButtonChecked(const int &key, bool checkStatus);
@@ -206,6 +198,4 @@ private:
 	QClipboard *clipboard; // TODO [Doesn't have | Has] ownership
 	QVideoProbe *probe; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary;
-
-	QTimer mKeepaliveTimer;
 };
