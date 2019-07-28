@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 {
 	SingleApplication a(argc, argv);
 	GamepadForm w;
+	w.setWindowIcon(QIcon(":/images/icon.png"));
 	QObject::connect( &a, &SingleApplication::instanceStarted, [ &w ]() {
 		w.raise();
 		w.activateWindow();
