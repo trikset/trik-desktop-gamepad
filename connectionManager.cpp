@@ -25,9 +25,6 @@ ConnectionManager::ConnectionManager()
 	, cameraIp("192.168.77.1")
 	, cameraPort("8080")
 	, gamepadIp("192.168.77.1")
-	, gamepadPort(4444)
-
-
 {
 	/// passing this to QTcpSocket allows `socket` to be moved
 	/// to another thread with the parent

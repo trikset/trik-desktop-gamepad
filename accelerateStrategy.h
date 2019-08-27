@@ -33,7 +33,7 @@ public:
 	explicit AccelerateStrategy(int speed = 300);
 
 	/// slot for getting events from UI
-	void processEvent(QEvent *event);
+	void processEvent(QEvent *event) final;
 	/// set period of time to check dealWithPads
 	void setSpeed(int newSpeed);
 
@@ -68,8 +68,8 @@ private:
 
 	QTimer stopTimerForPad1;
 	QTimer stopTimerForPad2;
-	bool pad1WasActive;
-	bool pad2WasActive;
+	bool pad1WasActive { false };
+	bool pad2WasActive { false };
 
 	QSet<int> pad1;
 	QSet<int> pad2;

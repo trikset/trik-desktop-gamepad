@@ -22,10 +22,7 @@
 
 
 #include "connectionManager.h"
-
-namespace Ui {
-class ConnectForm;
-}
+#include "ui_connectForm.h"
 
 /// Dialog for creating connection between robot and application
 class ConnectForm : public QDialog
@@ -39,11 +36,11 @@ private:
 public:
 	/// Constructor.
 	ConnectForm(ConnectionManager *connectionManager
-				, QWidget *parent = 0);
+				, QWidget *parent = nullptr);
 
 	/// Constructor that gets the previous entered values or default values
 	ConnectForm(ConnectionManager *manager, const QMap<QString, QString> &args, QWidget *parent);
-	~ConnectForm();
+	~ConnectForm() override = default;
 
 private slots:
 

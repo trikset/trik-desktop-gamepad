@@ -17,10 +17,6 @@
 
 #include "standardStrategy.h"
 
-StandardStrategy::StandardStrategy()
-{
-}
-
 void StandardStrategy::processEvent(QEvent *event)
 {
 	int resultingPowerX1 = 0;

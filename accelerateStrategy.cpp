@@ -17,12 +17,10 @@
 
 #include "accelerateStrategy.h"
 
-#include <math.h>
+#include <cmath>
 
 AccelerateStrategy::AccelerateStrategy(int currentSpeed)
-	: pad1WasActive(false)
-	, pad2WasActive(false)
-	, speed(currentSpeed)
+	: speed(currentSpeed)
 {
 
 	connect(&stopTimerForPad1, &QTimer::timeout, [this]() { stopTimerForPad1.stop(); emit stopPads(1); });
@@ -75,7 +73,7 @@ void AccelerateStrategy::processEvent(QEvent *event)
 {
 	int eventType = event->type();
 	if (eventType == QEvent::KeyPress || eventType == QEvent::KeyRelease) {
-		QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *> (event);
+		auto keyEvent = dynamic_cast<QKeyEvent *> (event);
 		auto key = static_cast<Qt::Key> (keyEvent->key());
 		QSet<int> allKeys = pad1 + pad2 + magicButtons;
 		if (allKeys.contains(key)) {

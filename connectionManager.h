@@ -32,7 +32,7 @@ class ConnectionManager : public QObject
 
 public:
 	ConnectionManager();
-	~ConnectionManager() = default;
+	~ConnectionManager() override = default;
 
 	/// checks connection
 	bool isConnected() const;
@@ -86,5 +86,5 @@ private:
 	QString cameraPort;
 
 	QString gamepadIp;
-	quint16 gamepadPort;
+	quint16 gamepadPort { 4444 };
 };

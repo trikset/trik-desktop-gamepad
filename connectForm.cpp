@@ -58,11 +58,6 @@ ConnectForm::ConnectForm(ConnectionManager *manager, const QMap<QString, QString
 	mUi->cameraPortLineEdit->setText(args.value("cameraPort", "8080"));
 }
 
-ConnectForm::~ConnectForm()
-{
-
-}
-
 void ConnectForm::onConnectButtonClicked()
 {
 	const auto ip = mUi->robotIpLineEdit->text();
