@@ -27,8 +27,7 @@
 #include <QtGui/QFontDatabase>
 
 GamepadForm::GamepadForm()
-	: QWidget()
-	, mUi(new Ui::GamepadForm())
+	: mUi(new Ui::GamepadForm())
 	, strategy(Strategy::getStrategy(Strategies::standartStrategy))
 {
 	mUi->setupUi(this);
@@ -81,8 +80,7 @@ void GamepadForm::setVideoController()
 
 	player = new QMediaPlayer(videoWidget, QMediaPlayer::StreamPlayback);
 
-	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),
-		this, SLOT(handleMediaStatusChanged(QMediaPlayer::MediaStatus)));
+	connect(player, &QMediaPlayer::mediaStatusChanged, this, &GamepadForm::handleMediaStatusChanged);
 	player->setVideoOutput(videoWidget);
 
 	movie.setFileName(":/images/loading.gif");
@@ -226,28 +224,18 @@ void GamepadForm::setButtonChecked(const int &key, bool checkStatus)
 
 void GamepadForm::createConnection()
 {
-	mMapperButtonPressed = new QSignalMapper(this);
-	mMapperButtonReleased = new QSignalMapper(this);
-
-	for (auto button : controlButtonsHash.values()) {
-		connect(button, SIGNAL(pressed()), mMapperButtonPressed, SLOT(map()));
-		mMapperButtonPressed->setMapping(button, button);
-		connect(button, SIGNAL(released()), mMapperButtonReleased, SLOT(map()));
-		mMapperButtonReleased->setMapping(button, button);
+	for (auto &&button : controlButtonsHash) {
+		connect(button, &QPushButton::pressed, this, [this, button](){handleButtonPress(button); });
+		connect(button, &QPushButton::released, this, [this, button](){handleButtonRelease(button); });
 	}
 
-	connect(mMapperButtonPressed, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonPress(QWidget*)));
-	connect(mMapperButtonReleased, SIGNAL(mapped(QWidget *)), this, SLOT(handleButtonRelease(QWidget*)));
+	connect(&connectionManager, &ConnectionManager::stateChanged, this, &GamepadForm::checkSocket);
+	connect(&connectionManager, &ConnectionManager::dataWasWritten, this, &GamepadForm::checkBytesWritten);
+	connect(&connectionManager, &ConnectionManager::connectionFailed, this, &GamepadForm::showConnectionFailedMessage);
+	connect(this, &GamepadForm::commandReceived, &connectionManager, &ConnectionManager::write);
 
-	connect(&connectionManager, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-		this, SLOT(checkSocket(QAbstractSocket::SocketState)));
-	connect(&connectionManager, SIGNAL(dataWasWritten(int)), this, SLOT(checkBytesWritten(int)));
-	connect(&connectionManager, SIGNAL(connectionFailed()), this, SLOT(showConnectionFailedMessage()));
-	connect(this, SIGNAL(commandReceived(QString)), &connectionManager, SLOT(write(QString)));
-
-	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
-	connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)),
-		this, SLOT(dealWithApplicationState(Qt::ApplicationState)));
+	connect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
+	connect(qApp, &QApplication::applicationStateChanged, this, &GamepadForm::dealWithApplicationState);
 }
 
 void GamepadForm::createMenu()
@@ -274,7 +262,7 @@ void GamepadForm::createMenu()
 	mImageMenu->addAction(mTakeImageAction);
 	mTakeImageAction->setEnabled(false);
 	mTakeImageAction->setShortcut(QKeySequence("Ctrl+I"));
-	connect(mTakeImageAction, SIGNAL(triggered(bool)), this, SLOT(requestImage()));
+	connect(mTakeImageAction, &QAction::triggered, this, &GamepadForm::requestImage);
 
 	mLanguageMenu = new QMenu(this);
 	mMenuBar->addMenu(mLanguageMenu);
@@ -395,8 +383,7 @@ void GamepadForm::setLabels()
 void GamepadForm::setImageControl()
 {
 	probe = new QVideoProbe(this);
-	connect(probe, SIGNAL(videoFrameProbed(QVideoFrame)), this,
-		SLOT(saveImageToClipboard(QVideoFrame)), Qt::QueuedConnection);
+	connect(probe, &QVideoProbe::videoFrameProbed, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
 	isFrameNecessary = false;
 	probe->setSource(player);
 	clipboard = QApplication::clipboard();
@@ -438,16 +425,16 @@ void GamepadForm::sendCommand(const QString &command)
 
 void GamepadForm::changeMode(Strategies type)
 {
-	disconnect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+	disconnect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
 	strategy = Strategy::getStrategy(type);
-	connect(strategy, SIGNAL(commandPrepared(QString)), this, SLOT(sendCommand(QString)));
+	connect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
 }
 
 void GamepadForm::dealWithApplicationState(Qt::ApplicationState state)
 {
 	if (state != Qt::ApplicationActive) {
 		strategy->reset();
-		for (auto button : controlButtonsHash.values())
+		for (auto &&button : controlButtonsHash)
 			button->setChecked(false);
 	}
 }
