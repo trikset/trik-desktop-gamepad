@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
 QMAKE_CXXFLAGS += -Werror -Wno-conversion
 
 # Suppressing warnings in Qt system headers files
-# QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include"
+QMAKE_CXXFLAGS += -isystem "$$[QT_INSTALL_HEADERS]"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
 
 TARGET = gamepad
