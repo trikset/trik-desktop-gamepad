@@ -13,7 +13,7 @@ case $TRAVIS_OS_NAME in
 esac
 
 if [ "$VERA" = "true" ]; then $EXECUTOR ./runVera++.sh ; fi
-$EXECUTOR bash -c "export CCACHE_DIR=$HOME/.ccache/$TRAVIS_OS_NAME-$CONFIG \
+$EXECUTOR bash -lixc "export CCACHE_DIR=$HOME/.ccache/$TRAVIS_OS_NAME-$CONFIG \
 && export CCACHE_CPP2=yes \
 && export CCACHE_SLOPPINESS=time_macros \
 && which g++ \
