@@ -194,5 +194,5 @@ private:
 
 	QClipboard *clipboard { nullptr }; // TODO [Doesn't have | Has] ownership
 	QVideoProbe *probe { nullptr }; // TODO [Doesn't have | Has] ownership
-	bool isFrameNecessary;
+	bool isFrameNecessary {};
 };
