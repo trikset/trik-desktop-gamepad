@@ -34,9 +34,6 @@
   <property name="windowOpacity">
    <double>1.000000000000000</double>
   </property>
-  <property name="accessibleDescription">
-   <string/>
-  </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
@@ -611,9 +608,6 @@
           <width>209</width>
           <height>148</height>
          </size>
-        </property>
-        <property name="accessibleDescription">
-         <string notr="true"/>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>

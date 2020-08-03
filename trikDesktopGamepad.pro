@@ -19,6 +19,7 @@
 QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -Wold-style-cast -Wconversion
 QMAKE_CXXFLAGS += -Winit-self -Wunreachable-code
 QMAKE_CXXFLAGS += -Werror -Wno-conversion
+QMAKE_CXXFLAGS += -Wno-error=deprecated-declarations
 
 # Suppressing warnings in Qt system headers files
 QMAKE_CXXFLAGS += -isystem "$$[QT_INSTALL_HEADERS]"
@@ -26,6 +27,8 @@ QMAKE_CXXFLAGS += -isystem "$$[QT_INSTALL_HEADERS]"
 
 TARGET = gamepad
 TEMPLATE = app
+
+DEFINES += QT_NO_ACCESSIBILITY
 
 CONFIG -= debug_and_release_target build_all debug_and_release
 CONFIG+=object_parallel_to_source
