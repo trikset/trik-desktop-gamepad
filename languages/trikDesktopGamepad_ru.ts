@@ -98,7 +98,7 @@
         <translation>Пульт управления ТРИК</translation>
     </message>
     <message>
-        <location line="+127"/>
+        <location line="+124"/>
         <source>5</source>
         <translation></translation>
     </message>
@@ -143,7 +143,7 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+69"/>
         <source>▲</source>
         <translation></translation>
     </message>
