@@ -2,7 +2,7 @@
 set -euxo pipefail
 case $TRAVIS_OS_NAME in
   osx)
-    REQURED_PACKAGES="qt ccache python@2 python@3"
+    REQURED_PACKAGES="qt ccache"
     for p in $REQURED_PACKAGES ; do
       rmdir $CELLAR_CACHE_DIR/$p && brew install $p \
       || brew link --force $p
