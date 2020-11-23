@@ -1,5 +1,5 @@
-compiler:
-- gcc
+language: cpp
+compiler: gcc
 env:
   global:
     - CONFIG=release
@@ -35,7 +35,6 @@ matrix:
     env: CONFIG=debug     VERA=true SUFFIX=-d
     name: Linux debug + vera
   - os: osx
-    osx_image: 9.latest
     name: macOS release
     env: QMAKE_EXTRA=CONFIG+=no-sanitizers
 git:
