@@ -53,7 +53,7 @@ public:
 	GamepadForm();
 	~GamepadForm() override;
 	/// method that sets up connection manager and connect to host
-	void startController(QStringList args);
+	void startController(const QStringList &args);
 
 public slots:
 
@@ -186,7 +186,7 @@ private:
 	void changeEvent(QEvent *event) override;
 
 	/// Class that handles network communication with TRIK.
-	ConnectionManager connectionManager;
+	ConnectionManager *connectionManager {}; // Ownership is passed to the thread
 	QThread thread;
 	QMediaPlayer *player { nullptr }; // TODO [Doesn't have | Has] ownership
 	QVideoWidget *videoWidget { nullptr }; // TODO [Doesn't have | Has] ownership

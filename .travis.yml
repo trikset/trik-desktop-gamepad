@@ -35,6 +35,7 @@ matrix:
     env: CONFIG=debug     VERA=true SUFFIX=-d
     name: Linux debug + vera
   - os: osx
+    osx_image: xcode11
     name: macOS release
     env: QMAKE_EXTRA=CONFIG+=no-sanitizers
 git:

@@ -32,30 +32,32 @@ GamepadForm::GamepadForm()
 {
 	mUi->setupUi(this);
 	this->installEventFilter(this);
+	connectionManager = new ConnectionManager();
+	connectionManager->moveToThread(&thread);
+	connect(&thread, &QThread::finished, connectionManager, &ConnectionManager::deleteLater);
 	setUpGamepadForm();
-	connectionManager.moveToThread(&thread);
-	connect(&thread, &QThread::finished, &connectionManager, &ConnectionManager::reset);
 	thread.start();
 }
 
 GamepadForm::~GamepadForm()
 {
+	delete mUi;
 	thread.quit();
-	thread.wait(1000);
+	thread.wait();
 }
 
-void GamepadForm::startController(QStringList args)
+void GamepadForm::startController(const QStringList &args)
 {
-	connectionManager.setGamepadIp(args.at(1));
+	connectionManager->setGamepadIp(args.at(1));
 	QString portStr = args.size() < 3 ? "4444" : args.at(2);
 	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
 	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
-	QString cameraIp = args.size() < 5 ? connectionManager.getGamepadIp() : args.at(4);
-	connectionManager.setCameraPort(cameraPort);
-	connectionManager.setGamepadPort(gamepadPort);
-	connectionManager.setCameraIp(cameraIp);
+	QString cameraIp = args.size() < 5 ? connectionManager->getGamepadIp() : args.at(4);
+	connectionManager->setCameraPort(cameraPort);
+	connectionManager->setGamepadPort(gamepadPort);
+	connectionManager->setCameraIp(cameraIp);
 	startVideoStream();
-	QMetaObject::invokeMethod(&connectionManager, &ConnectionManager::connectToHost, Qt::QueuedConnection);
+	QMetaObject::invokeMethod(connectionManager, &ConnectionManager::connectToHost, Qt::QueuedConnection);
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -141,8 +143,8 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 
 void GamepadForm::startVideoStream()
 {
-	const QString ip = connectionManager.getCameraIp();
-	const QString port = connectionManager.getCameraPort();
+	const QString ip = connectionManager->getCameraIp();
+	const QString port = connectionManager->getCameraPort();
 	const auto status = player->mediaStatus();
 
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
@@ -229,10 +231,10 @@ void GamepadForm::createConnection()
 		connect(button, &QPushButton::released, this, [this, button](){handleButtonRelease(button); });
 	}
 
-	connect(&connectionManager, &ConnectionManager::stateChanged, this, &GamepadForm::checkSocket);
-	connect(&connectionManager, &ConnectionManager::dataWasWritten, this, &GamepadForm::checkBytesWritten);
-	connect(&connectionManager, &ConnectionManager::connectionFailed, this, &GamepadForm::showConnectionFailedMessage);
-	connect(this, &GamepadForm::commandReceived, &connectionManager, &ConnectionManager::write);
+	connect(connectionManager, &ConnectionManager::stateChanged, this, &GamepadForm::checkSocket);
+	connect(connectionManager, &ConnectionManager::dataWasWritten, this, &GamepadForm::checkBytesWritten);
+	connect(connectionManager, &ConnectionManager::connectionFailed, this, &GamepadForm::showConnectionFailedMessage);
+	connect(this, &GamepadForm::commandReceived, connectionManager, &ConnectionManager::write);
 
 	connect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
 	connect(qApp, &QApplication::applicationStateChanged, this, &GamepadForm::dealWithApplicationState);
@@ -416,7 +418,7 @@ bool GamepadForm::eventFilter(QObject *obj, QEvent *event)
 
 void GamepadForm::sendCommand(const QString &command)
 {
-	if (!connectionManager.isConnected()) {
+	if (!connectionManager->isConnected()) {
 		return;
 	}
 
@@ -494,15 +496,15 @@ void GamepadForm::requestImage()
 void GamepadForm::openConnectDialog()
 {
 	QMap<QString, QString> args;
-	args.insert("gamepadIp", connectionManager.getGamepadIp());
-	args.insert("gamepadPort", QString::number(connectionManager.getGamepadPort()));
-	args.insert("cameraIp", connectionManager.getCameraIp());
-	args.insert("cameraPort", connectionManager.getCameraPort());
+	args.insert("gamepadIp", connectionManager->getGamepadIp());
+	args.insert("gamepadPort", QString::number(connectionManager->getGamepadPort()));
+	args.insert("cameraIp", connectionManager->getCameraIp());
+	args.insert("cameraPort", connectionManager->getCameraPort());
 
-	mMyNewConnectForm = new ConnectForm(&connectionManager, args, this);
+	mMyNewConnectForm = new ConnectForm(connectionManager, args, this);
 	mMyNewConnectForm->show();
 
-	connect(mMyNewConnectForm, &ConnectForm::dataReceived, &connectionManager, &ConnectionManager::connectToHost);
+	connect(mMyNewConnectForm, &ConnectForm::dataReceived, connectionManager, &ConnectionManager::connectToHost);
 	connect(mMyNewConnectForm, &ConnectForm::dataReceived, this, &GamepadForm::startVideoStream);
 }
 
