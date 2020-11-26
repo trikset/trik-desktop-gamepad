@@ -32,7 +32,7 @@ class ConnectionManager : public QObject
 
 public:
 	ConnectionManager();
-	~ConnectionManager() override = default;
+	~ConnectionManager();
 
 	/// checks connection
 	bool isConnected() const;

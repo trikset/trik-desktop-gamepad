@@ -20,9 +20,7 @@
 #include "connectionManager.h"
 
 ConnectionManager::ConnectionManager()
-	: socket(this)
-	, keepaliveTimer(this)
-	, cameraIp("192.168.77.1")
+	: cameraIp("192.168.77.1")
 	, cameraPort("8080")
 	, gamepadIp("192.168.77.1")
 {
@@ -32,6 +30,11 @@ ConnectionManager::ConnectionManager()
 	qRegisterMetaType<QAbstractSocket::SocketState>();
 	connect(&socket, &QTcpSocket::stateChanged, this, &ConnectionManager::stateChanged);
 	connect(&keepaliveTimer, &QTimer::timeout, this, [this]() { write("keepalive 4000\n"); } );
+}
+
+ConnectionManager::~ConnectionManager()
+{
+	reset();
 }
 
 bool ConnectionManager::isConnected() const
