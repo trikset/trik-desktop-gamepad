@@ -34,6 +34,9 @@ public:
 	ConnectionManager();
 	~ConnectionManager();
 
+	/// inits manager after moved to correct thread
+	void init();
+
 	/// checks connection
 	bool isConnected() const;
 
@@ -79,8 +82,8 @@ signals:
 	void connectionFailed();
 
 private:
-	QTcpSocket socket;
-	QTimer keepaliveTimer;
+	QTcpSocket *socket;
+	QTimer *keepaliveTimer;
 
 	QString cameraIp;
 	QString cameraPort;
