@@ -35,6 +35,7 @@ GamepadForm::GamepadForm()
 	connectionManager = new ConnectionManager();
 	connectionManager->moveToThread(&thread);
 	connect(&thread, &QThread::finished, connectionManager, &ConnectionManager::deleteLater);
+	connect(&thread, &QThread::started, connectionManager, &ConnectionManager::init);
 	setUpGamepadForm();
 	thread.start();
 }
