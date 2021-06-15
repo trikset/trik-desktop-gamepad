@@ -24,12 +24,13 @@ ConnectionManager::ConnectionManager()
 	, cameraPort("8080")
 	, gamepadIp("192.168.77.1")
 {
-
 }
 
 ConnectionManager::~ConnectionManager()
 {
 	reset();
+	keepaliveTimer->deleteLater();
+	socket->deleteLater();
 }
 
 void ConnectionManager::init()
