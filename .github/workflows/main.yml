@@ -1,36 +1,65 @@
-# This is a basic workflow to help you get started with Actions
+name: GitHub CI
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches:
   pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches:
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            os-name: windows
+            qt-version: '5.12.10'
+            mingw-version: 7.3
+            mingw-short-version: 73
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+          - os: ubuntu-latest
+            os-name: linux
+            qt-version: '5.12.10'
+
+          - os: macos-latest
+            os-name: mac
+            qt-version: '5.12.10'
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: ${{ matrix.qt-version }}
+          host: ${{ matrix.os-name }}
+          arch: 'win32_mingw${{ matrix.mingw-short-version }}'
+          tools: 'tools_mingw,${{ matrix.mingw-version }},qt.tools.win32_mingw${{ matrix.mingw-short-version }}0'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Update PATH
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+             set -xue
+             cygpath -w /usr/bin >> $GITHUB_PATH
+             cygpath -w "${IQTA_TOOLS}/mingw${{matrix.mingw-short-version}}0_32/bin" >> $GITHUB_PATH
+             cygpath -w "${Qt5_Dir}/bin" >> $GITHUB_PATH
+        if: ${{ matrix.os-name == 'windows' }}
+
+      - name: QMake
+        run: 'qmake trikDesktopGamepad.pro CONFIG+=release'
+
+      - name: QMake all
+        timeout-minutes: 1
+        run: make -j $(nproc) qmake_all
+
+      - name: Make all
+        timeout-minutes: 10
+        run: make -j $(nproc) all
