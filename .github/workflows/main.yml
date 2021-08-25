@@ -58,6 +58,14 @@ jobs:
              cygpath -w "${Qt5_Dir}/bin" >> $GITHUB_PATH
         if: ${{ matrix.os-name == 'windows' }}
 
+      - name: Check available tools
+        run: |
+             set -xueo pipefail
+             uname -a
+             qmake --version
+             make --version
+             g++ --version
+
       - name: QMake
         run: 'qmake trikDesktopGamepad.pro CONFIG+=release'
 
