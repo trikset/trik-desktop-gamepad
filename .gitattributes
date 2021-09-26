@@ -1,0 +1,7 @@
+* text=auto eol=lf
+#*.ts eol=lf
+#*.cpp eol=lf
+#*.h eol=lf
+#*.pro eol=lf
+#*.pri eol=lf
+
