@@ -84,6 +84,8 @@ void GamepadForm::setVideoController()
 	player = new QMediaPlayer(videoWidget, QMediaPlayer::StreamPlayback);
 
 	connect(player, &QMediaPlayer::mediaStatusChanged, this, &GamepadForm::handleMediaStatusChanged);
+	connect(player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this, &GamepadForm::handleMediaPlayerError);
+
 	player->setVideoOutput(videoWidget);
 
 	movie.setFileName(":/images/loading.gif");
@@ -142,6 +144,11 @@ void GamepadForm::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 	}
 }
 
+void GamepadForm::handleMediaPlayerError(QMediaPlayer::Error error)
+{
+	qDebug() << "ERROR:" << error << player->errorString();
+}
+
 void GamepadForm::startVideoStream()
 {
 	const QString ip = connectionManager->getCameraIp();
@@ -149,7 +156,7 @@ void GamepadForm::startVideoStream()
 	const auto status = player->mediaStatus();
 
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
-		const QString url = "http://" + ip + ":" + port + "/?action=stream";
+		const QString url = "http://" + ip + ":" + port + "/?action=stream&filename=noname.jpg";
 		// QNetworkRequest nr = QNetworkRequest(url);
 		// nr.setPriority(QNetworkRequest::LowPriority);
 		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
@@ -339,13 +346,13 @@ void GamepadForm::createMenu()
 void GamepadForm::setButtonsEnabled(bool enabled)
 {
 	// Here we enable or disable pads and "magic buttons" depending on given parameter.
-	for (auto button : controlButtonsHash.values())
+	for (auto &&button : controlButtonsHash.values())
 		button->setEnabled(enabled);
 }
 
 void GamepadForm::setButtonsCheckable(bool checkableStatus)
 {
-	for (auto button : controlButtonsHash.values())
+	for (auto &&button : controlButtonsHash.values())
 		button->setCheckable(checkableStatus);
 }
 

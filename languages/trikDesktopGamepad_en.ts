@@ -165,7 +165,7 @@ Buttons disabled.</source>
 Buttons disabled.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+201"/>
+        <location filename="../gamepadForm.cpp" line="+208"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Failed to connect to robot</translation>
     </message>

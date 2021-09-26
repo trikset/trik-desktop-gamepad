@@ -34,10 +34,7 @@ Strategy *Strategy::getStrategy(Strategies type)
 		createInstances();
 	}
 
-	if (instances.keys().contains(type))
-		return instances.value(type).data();
-	else
-		return nullptr;
+	return instances[type].data();
 }
 
 void Strategy::createInstances()

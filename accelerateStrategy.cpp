@@ -23,8 +23,8 @@ AccelerateStrategy::AccelerateStrategy(int currentSpeed)
 	: speed(currentSpeed)
 {
 
-	connect(&stopTimerForPad1, &QTimer::timeout, [this]() { stopTimerForPad1.stop(); emit stopPads(1); });
-	connect(&stopTimerForPad2, &QTimer::timeout, [this]() { stopTimerForPad2.stop(); emit stopPads(2); });
+	connect(&stopTimerForPad1, &QTimer::timeout, this, [this]() { stopTimerForPad1.stop(); stopPads(1); });
+	connect(&stopTimerForPad2, &QTimer::timeout, this, [this]() { stopTimerForPad2.stop(); stopPads(2); });
 	connect(&workTimer, &QTimer::timeout, this, &AccelerateStrategy::dealWithPads);
 
 	pad1 = {Qt::Key_W, Qt::Key_A, Qt::Key_S, Qt::Key_D};
@@ -132,7 +132,7 @@ void AccelerateStrategy::dealWithPads()
 
 		// for pad1
 		bool isSomeKeyFromPad1 = false;
-		for (auto pad1Key : pad1) {
+		for (auto &&pad1Key : qAsConst(pad1)) {
 			if (mPressedKeys.contains(pad1Key)) {
 				stopTimerForPad1.start(2 * speed + 100);
 				isSomeKeyFromPad1 = true;
@@ -154,7 +154,7 @@ void AccelerateStrategy::dealWithPads()
 
 		// for pad2
 		bool isSomeKeyFromPad2 = false;
-		for (auto pad2Key : pad2) {
+		for (auto &&pad2Key : qAsConst(pad2)) {
 			if (mPressedKeys.contains(pad2Key)) {
 				stopTimerForPad2.start(2 * speed + 100);
 				isSomeKeyFromPad2 = true;
