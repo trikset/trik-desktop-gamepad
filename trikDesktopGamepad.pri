@@ -1,5 +1,6 @@
 QT += core gui network widgets multimedia multimediawidgets
 CONFIG += c++11
+DEFINES += QT_NO_ACCESSIBILITY
 
 SOURCES += \
 	$$PWD/main.cpp \
