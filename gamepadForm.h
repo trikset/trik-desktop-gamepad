@@ -94,6 +94,8 @@ private slots:
 
 	void handleMediaStatusChanged(QMediaPlayer::MediaStatus status);
 
+	void handleMediaPlayerError(QMediaPlayer::Error error);
+
 	void startVideoStream();
 
 	void checkSocket(QAbstractSocket::SocketState state);

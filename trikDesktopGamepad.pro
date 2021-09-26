@@ -28,14 +28,13 @@ QMAKE_CXXFLAGS += -isystem "$$[QT_INSTALL_HEADERS]"
 TARGET = gamepad
 TEMPLATE = app
 
-DEFINES += QT_NO_ACCESSIBILITY
+#CONFIG -= debug_and_release_target build_all debug_and_release
+#CONFIG += object_parallel_to_source
+#OBJECTS_DIR=.build/obj
+#MOC_DIR=.build/moc
+#UI_DIR=.build/uic
+#RCC_DIR=.build/rcc
 
-CONFIG -= debug_and_release_target build_all debug_and_release
-CONFIG+=object_parallel_to_source
-OBJECTS_DIR=.build/obj
-MOC_DIR=.build/moc
-UI_DIR=.build/uic
-RCC_DIR=.build/rcc
 macx {
 	CONFIG -= app_bundle
 	QMAKE_LFLAGS += -rpath . -rpath @executable_path/../Lib -rpath @executable_path/../Frameworks -rpath @executable_path/../../../

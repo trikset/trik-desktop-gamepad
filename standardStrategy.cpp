@@ -51,7 +51,7 @@ void StandardStrategy::processEvent(QEvent *event)
 			, {Qt::Key_5, 5}
 		};
 
-		for (auto key : digits.keys()) {
+		for (auto &&key : digits.keys()) {
 			if (mPressedKeys.contains(key)) {
 				emit commandPrepared(QString("btn " + QString::number(digits[key]) + "\n"));
 			}
