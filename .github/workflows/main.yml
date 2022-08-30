@@ -16,17 +16,17 @@ jobs:
         include:
           - os: windows-latest
             os-name: windows
-            qt-version: '5.12.11'
-            mingw-version: 7.3
-            mingw-short-version: 73
+            qt-version: '5.12'
+            mingw-version: 8.1
+            mingw-short-version: 81
 
           - os: ubuntu-latest
             os-name: linux
-            qt-version: '5.12.11'
+            qt-version: '5.12'
 
           - os: macos-latest
             os-name: mac
-            qt-version: '5.12.11'
+            qt-version: '5.12'
     defaults:
       run:
         shell: bash
@@ -47,16 +47,16 @@ jobs:
         with:
           version: ${{ matrix.qt-version }}
           host: ${{ matrix.os-name }}
-          arch: 'win32_mingw${{ matrix.mingw-short-version }}'
-          tools: 'tools_mingw,${{ matrix.mingw-version }}.0,qt.tools.win32_mingw${{ matrix.mingw-short-version }}0'
+          arch: ${{ startsWith(matrix.os-name, 'win') && format('win32_mingw{0}', matrix.mingw-short-version) || ''}}
+          tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,{0}.0,qt.tools.win32_mingw{1}0', matrix.mingw-version, matrix.mingw-short-version) || '' }}
 
       - name: Update PATH
+        if: ${{ startsWith(matrix.os-name, 'win') }}
         run: |
              set -xue
              cygpath -w /usr/bin >> $GITHUB_PATH
              cygpath -w "${IQTA_TOOLS}/mingw${{matrix.mingw-short-version}}0_32/bin" >> $GITHUB_PATH
              cygpath -w "${Qt5_Dir}/bin" >> $GITHUB_PATH
-        if: ${{ matrix.os-name == 'windows' }}
 
       - name: Check available tools
         run: |
