@@ -80,7 +80,7 @@ QString ConnectionManager::getGamepadIp() const
 	return gamepadIp;
 }
 
-void ConnectionManager::connectToHost()
+void ConnectionManager::connectToHost(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort)
 {
 	reset();
 	constexpr auto timeout = 3 * 1000;
@@ -92,38 +92,20 @@ void ConnectionManager::connectToHost()
 			, &loop
 			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
 	socket->setProxy(QNetworkProxy::NoProxy);
-	socket->connectToHost(gamepadIp, gamepadPort);
+	cameraIp = cIp;
+	cameraPort = cPort;
+	socket->connectToHost(gamepadIp = gIp, gamepadPort = gPort);
 	loop.exec();
 
 	if (socket->state() == QTcpSocket::ConnectedState) {
 		keepaliveTimer->start(3000);
 	} else {
 		socket->abort();
-		emit connectionFailed();
+		Q_EMIT connectionFailed();
 	}
-}
-
-void ConnectionManager::setCameraIp(const QString &value)
-{
-	cameraIp = value;
 }
 
 QString ConnectionManager::getCameraPort() const
 {
 	return cameraPort;
-}
-
-void ConnectionManager::setCameraPort(const QString &value)
-{
-	cameraPort = value;
-}
-
-void ConnectionManager::setGamepadPort(const quint16 &value)
-{
-	gamepadPort = value;
-}
-
-void ConnectionManager::setGamepadIp(const QString &value)
-{
-	gamepadIp = value;
 }

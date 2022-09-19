@@ -34,6 +34,7 @@ GamepadForm::GamepadForm()
 	this->installEventFilter(this);
 	connectionManager = new ConnectionManager();
 	connectionManager->moveToThread(&thread);
+	connect(this, &GamepadForm::newConnectionParameters, connectionManager, &ConnectionManager::connectToHost);
 	connect(&thread, &QThread::finished, connectionManager, &ConnectionManager::deleteLater);
 	connect(&thread, &QThread::started, connectionManager, &ConnectionManager::init);
 	setUpGamepadForm();
@@ -49,16 +50,12 @@ GamepadForm::~GamepadForm()
 
 void GamepadForm::startController(const QStringList &args)
 {
-	connectionManager->setGamepadIp(args.at(1));
+	const auto &gamepadIp = args.at(1);
 	QString portStr = args.size() < 3 ? "4444" : args.at(2);
 	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
 	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
-	QString cameraIp = args.size() < 5 ? connectionManager->getGamepadIp() : args.at(4);
-	connectionManager->setCameraPort(cameraPort);
-	connectionManager->setGamepadPort(gamepadPort);
-	connectionManager->setCameraIp(cameraIp);
-	startVideoStream();
-	QMetaObject::invokeMethod(connectionManager, &ConnectionManager::connectToHost, Qt::QueuedConnection);
+	QString cameraIp = args.size() < 5 ? gamepadIp : args.at(4);
+	Q_EMIT newConnectionParameters(cameraIp, cameraPort, gamepadIp, gamepadPort);
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -149,14 +146,13 @@ void GamepadForm::handleMediaPlayerError(QMediaPlayer::Error error)
 	qDebug() << "ERROR:" << error << player->errorString();
 }
 
-void GamepadForm::startVideoStream()
+void GamepadForm::startVideoStream(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort)
 {
-	const QString ip = connectionManager->getCameraIp();
-	const QString port = connectionManager->getCameraPort();
+	Q_UNUSED(gIp)
+	Q_UNUSED(gPort)
 	const auto status = player->mediaStatus();
-
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
-		const QString url = "http://" + ip + ":" + port + "/?action=stream&filename=noname.jpg";
+		const QString url = "http://" + cIp + ":" + cPort + "/?action=stream&filename=noname.jpg";
 		// QNetworkRequest nr = QNetworkRequest(url);
 		// nr.setPriority(QNetworkRequest::LowPriority);
 		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
@@ -509,11 +505,11 @@ void GamepadForm::openConnectDialog()
 	args.insert("cameraIp", connectionManager->getCameraIp());
 	args.insert("cameraPort", connectionManager->getCameraPort());
 
-	mMyNewConnectForm = new ConnectForm(connectionManager, args, this);
-	mMyNewConnectForm->show();
+	connect(this, &GamepadForm::newConnectionParameters, this, &GamepadForm::startVideoStream);
 
-	connect(mMyNewConnectForm, &ConnectForm::dataReceived, connectionManager, &ConnectionManager::connectToHost);
-	connect(mMyNewConnectForm, &ConnectForm::dataReceived, this, &GamepadForm::startVideoStream);
+	mMyNewConnectForm = new ConnectForm(connectionManager, args, this);
+	connect(mMyNewConnectForm, &ConnectForm::newConnectionParameters, this, &GamepadForm::newConnectionParameters);
+	mMyNewConnectForm->show();
 }
 
 void GamepadForm::exit()

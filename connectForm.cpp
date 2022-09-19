@@ -63,18 +63,11 @@ void ConnectForm::onConnectButtonClicked()
 	const auto ip = mUi->robotIpLineEdit->text();
 	const quint16 port = static_cast<quint16>(mUi->robotPortLineEdit->text().toInt());
 
-	if (mUi->cameraIPLineEdit->text().isEmpty())
-		connectionManager->setCameraIp(ip);
-	else
-		connectionManager->setCameraIp(mUi->cameraIPLineEdit->text());
-	connectionManager->setCameraPort(mUi->cameraPortLineEdit->text());
+	const auto &cameraIp = mUi->cameraIPLineEdit->text().isEmpty() ? ip : mUi->cameraIPLineEdit->text();
+	const auto &cameraPort  = mUi->cameraPortLineEdit->text();
 
-	connectionManager->setGamepadIp(ip);
-	connectionManager->setGamepadPort(port);
-	this->reject();
-
-	emit dataReceived();
-
+	this->reject(); //??? Why `reject`?
+	Q_EMIT newConnectionParameters(cameraIp, cameraPort, ip, port);
 }
 
 void ConnectForm::onAdvancedButtonClicked()

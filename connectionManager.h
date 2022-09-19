@@ -37,26 +37,17 @@ public:
 	/// inits manager after moved to correct thread
 	void init();
 
+	/// set camera and gamepad connection parameters
+	void setCameraAndGamepad(const QString &cameraIp, const QString &cameraPort, const QString &gamepadIp, quint16 gamepadPort);
+
 	/// checks connection
 	bool isConnected() const;
-
-	/// sets camera ip
-	void setCameraIp(const QString &value);
 
 	/// returns camera ip
 	QString getCameraIp() const;
 
 	/// returns camera port
 	QString getCameraPort() const;
-
-	/// sets camera port
-	void setCameraPort(const QString &value);
-
-	/// sets gamepad ip
-	void setGamepadIp(const QString &value);
-
-	/// sets gamepad port
-	void setGamepadPort(const quint16 &value);
 
 	/// returns gamepad ip
 	QString getGamepadIp() const;
@@ -66,7 +57,7 @@ public:
 
 public slots:
 	/// TODO description
-	void connectToHost();
+	void connectToHost(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
 	/// TODO description
 	void write(const QString &);
 
