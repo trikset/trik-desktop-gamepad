@@ -96,7 +96,7 @@ private slots:
 
 	void handleMediaPlayerError(QMediaPlayer::Error error);
 
-	void startVideoStream();
+	void startVideoStream(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
 
 	void checkSocket(QAbstractSocket::SocketState state);
 
@@ -123,6 +123,8 @@ signals:
 	void commandReceived(QString);
 	/// signal to disconnect from host
 	void programFinished();
+	/// Signal is emitted when connection parameters change
+	void newConnectionParameters(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
 
 private:
 	void setButtonChecked(const int &key, bool checkStatus);

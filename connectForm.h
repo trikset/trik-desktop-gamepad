@@ -55,7 +55,7 @@ private slots:
 
 signals:
 	/// Signal is emitted when user presses ConnectButton
-	void dataReceived();
+	void newConnectionParameters(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
 
 private:
 	void setVisibilityToAdditionalButtons(bool mode);
