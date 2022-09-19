@@ -109,13 +109,13 @@ void AccelerateStrategy::stopPads(int padNumber)
 		powers[X1] = powers[Y1] = 0;
 		cntPowers[X1] = cntPowers[X1] = 0;
 		pad1WasActive = false;
-		emit commandPrepared(padUp.arg(1));
+		Q_EMIT commandPrepared(padUp.arg(1));
 		break;
 	case 2:
 		powers[X2] = powers[Y2] = 0;
 		cntPowers[X2] = cntPowers[Y2] = 0;
 		pad2WasActive = false;
-		emit commandPrepared(padUp.arg(2));
+		Q_EMIT commandPrepared(padUp.arg(2));
 		break;
 	default:
 		break;
@@ -149,7 +149,7 @@ void AccelerateStrategy::dealWithPads()
 
 		if (isSomeKeyFromPad1) {
 			QString command = QString("pad 1 %1 %2 \n").arg(powers[X1]).arg(powers[Y1]);
-			emit commandPrepared(command);
+			Q_EMIT commandPrepared(command);
 		}
 
 		// for pad2
@@ -171,7 +171,7 @@ void AccelerateStrategy::dealWithPads()
 
 		if (isSomeKeyFromPad2) {
 			QString command = QString("pad 2 %1 %2 \n").arg(powers[X2]).arg(powers[Y2]);
-			emit commandPrepared(command);
+			Q_EMIT commandPrepared(command);
 		}
 	}
 }
@@ -189,7 +189,7 @@ void AccelerateStrategy::dealWithButtons(QKeyEvent *keyEvent)
 	auto key = keyEvent->key();
 	if (keyEvent->type() == QEvent::KeyPress) {
 		QString command = QString("btn " + QString::number(digits[key]) + "\n");
-		emit commandPrepared(command);
+		Q_EMIT commandPrepared(command);
 	}
 }
 
