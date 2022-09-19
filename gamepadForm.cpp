@@ -44,8 +44,6 @@ GamepadForm::GamepadForm()
 GamepadForm::~GamepadForm()
 {
 	delete mUi;
-	thread.quit();
-	thread.wait();
 }
 
 void GamepadForm::startController(const QStringList &args)
@@ -56,6 +54,13 @@ void GamepadForm::startController(const QStringList &args)
 	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
 	QString cameraIp = args.size() < 5 ? gamepadIp : args.at(4);
 	Q_EMIT newConnectionParameters(cameraIp, cameraPort, gamepadIp, gamepadPort);
+}
+
+void GamepadForm::closeEvent(QCloseEvent *event)
+{
+	thread.quit();
+	thread.wait();
+	QWidget::closeEvent(event);
 }
 
 void GamepadForm::setUpGamepadForm()
