@@ -54,6 +54,7 @@ public:
 	~GamepadForm() override;
 	/// method that sets up connection manager and connect to host
 	void startController(const QStringList &args);
+	virtual void closeEvent(QCloseEvent *event) override;
 
 public slots:
 
