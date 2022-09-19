@@ -37,9 +37,9 @@ void StandardStrategy::processEvent(QEvent *event)
 				+ (mPressedKeys.contains(Qt::Key_Up) ? 100 : 0);
 
 		if (resultingPowerX1 != 0 || resultingPowerY1 != 0) {
-			emit commandPrepared(QString("pad 1 %1 %2 \n").arg(resultingPowerX1).arg(resultingPowerY1));
+			Q_EMIT commandPrepared(QString("pad 1 %1 %2 \n").arg(resultingPowerX1).arg(resultingPowerY1));
 		} else if (resultingPowerX2 != 0 || resultingPowerY2 != 0) {
-			emit commandPrepared(QString("pad 2 %1 %2 \n").arg(resultingPowerX2).arg(resultingPowerY2));
+			Q_EMIT commandPrepared(QString("pad 2 %1 %2 \n").arg(resultingPowerX2).arg(resultingPowerY2));
 		}
 
 		// Handle 1 2 3 4 5 buttons
@@ -53,7 +53,7 @@ void StandardStrategy::processEvent(QEvent *event)
 
 		for (auto &&key : digits.keys()) {
 			if (mPressedKeys.contains(key)) {
-				emit commandPrepared(QString("btn " + QString::number(digits[key]) + "\n"));
+				Q_EMIT commandPrepared(QString("btn " + QString::number(digits[key]) + "\n"));
 			}
 		}
 
@@ -65,9 +65,9 @@ void StandardStrategy::processEvent(QEvent *event)
 		mPressedKeys -= key;
 
 		if (pad1.contains(key)) {
-			emit commandPrepared(QString("pad 1 up\n"));
+			Q_EMIT commandPrepared(QString("pad 1 up\n"));
 		} else if (pad2.contains(key)) {
-			emit commandPrepared(QString("pad 2 up\n"));
+			Q_EMIT commandPrepared(QString("pad 2 up\n"));
 		}
 	}
 }

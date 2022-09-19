@@ -58,7 +58,7 @@ QString ConnectionManager::getCameraIp() const
 void ConnectionManager::write(const QString &data)
 {
 	qint64 result = socket->write(data.toLatin1().data());
-	emit dataWasWritten(static_cast<int>(result));
+	Q_EMIT dataWasWritten(static_cast<int>(result));
 }
 
 void ConnectionManager::reset()
@@ -67,7 +67,7 @@ void ConnectionManager::reset()
 		return;
 	keepaliveTimer->stop();
 	socket->disconnectFromHost();
-	emit dataWasWritten(-1); // simulate disconnect
+	Q_EMIT dataWasWritten(-1); // simulate disconnect
 }
 
 quint16 ConnectionManager::getGamepadPort() const

@@ -430,7 +430,7 @@ void GamepadForm::sendCommand(const QString &command)
 		return;
 	}
 
-	emit commandReceived(command);
+	Q_EMIT commandReceived(command);
 }
 
 void GamepadForm::changeMode(Strategies type)
