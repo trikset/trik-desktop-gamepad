@@ -17,6 +17,12 @@
 
 #include "standardStrategy.h"
 
+StandardStrategy::StandardStrategy(QObject *parent)
+	: Strategy(parent)
+{
+
+}
+
 void StandardStrategy::processEvent(QEvent *event)
 {
 	int resultingPowerX1 = 0;

@@ -28,18 +28,12 @@ ConnectionManager::ConnectionManager(QSettings *settings, QObject *parent)
 ConnectionManager::~ConnectionManager()
 {
 	reset();
-	mKeepaliveTimer->deleteLater();
-	mSocket->deleteLater();
 }
 
 void ConnectionManager::init()
 {
-	mKeepaliveTimer = new QTimer();
-	mSocket = new QTcpSocket();
-	/// passing this to QTcpSocket allows `socket` to be moved
-	/// to another thread with the parent
-	/// when connectionManager.moveToThread() is called
-	qRegisterMetaType<QAbstractSocket::SocketState>();
+	mKeepaliveTimer = new QTimer(this);
+	mSocket = new QTcpSocket(this);
 	connect(mSocket, &QTcpSocket::stateChanged, this, &ConnectionManager::stateChanged);
 	connect(mKeepaliveTimer, &QTimer::timeout, this, [this]() { write("keepalive 4000\n"); } );
 }
@@ -57,8 +51,6 @@ void ConnectionManager::write(const QString &data)
 
 void ConnectionManager::reset()
 {
-	if (!mKeepaliveTimer->isActive())
-		return;
 	mKeepaliveTimer->stop();
 	mSocket->disconnectFromHost();
 	Q_EMIT dataWasWritten(-1); // simulate disconnect

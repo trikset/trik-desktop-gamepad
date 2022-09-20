@@ -19,8 +19,9 @@
 
 #include <cmath>
 
-AccelerateStrategy::AccelerateStrategy(int currentSpeed)
-	: speed(currentSpeed)
+AccelerateStrategy::AccelerateStrategy(int currentSpeed, QObject *parent)
+	: Strategy(parent)
+	, speed(currentSpeed)
 {
 
 	connect(&stopTimerForPad1, &QTimer::timeout, this, [this]() { stopTimerForPad1.stop(); stopPads(1); });

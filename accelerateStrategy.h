@@ -30,8 +30,7 @@ class AccelerateStrategy : public Strategy
 
 public:
 	/// set initial period of time to check dealWithPads
-	explicit AccelerateStrategy(int speed = 300);
-
+	explicit AccelerateStrategy(int speed, QObject *parent = nullptr);
 	/// slot for getting events from UI
 	void processEvent(QEvent *event) final;
 	/// set period of time to check dealWithPads

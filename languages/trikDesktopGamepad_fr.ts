@@ -45,7 +45,7 @@
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../connectForm.cpp" line="+38"/>
+        <location filename="../connectForm.cpp" line="+39"/>
         <source>Connect</source>
         <translation>Relier</translation>
     </message>
@@ -171,12 +171,12 @@ Buttons enabled.</source>
 Boutons activés.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+213"/>
+        <location filename="../gamepadForm.cpp" line="+221"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Impossible de se connecter au robot de</translation>
     </message>
     <message>
-        <location line="+340"/>
+        <location line="+341"/>
         <source>&amp;Connection</source>
         <translation>&amp;Connexion</translation>
     </message>
