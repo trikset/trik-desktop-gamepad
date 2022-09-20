@@ -28,16 +28,21 @@
 
 GamepadForm::GamepadForm()
 	: mUi(new Ui::GamepadForm())
-	, strategy(Strategy::getStrategy(Strategies::standartStrategy))
-	, mSettings("CyberTech", "gamepad")
+	, strategy(Strategy::getStrategy(Strategies::standartStrategy,this))
+	, mSettings(QSettings::Format::NativeFormat, QSettings::Scope::UserScope, "CyberTech Labs", "desktop-gamepad")
 {
 	mUi->setupUi(this);
 	this->installEventFilter(this);
 	connectionManager = new ConnectionManager(&mSettings);
+	/// passing this to QTcpSocket allows `socket` to be moved
+	/// to another thread with the parent
+	/// when connectionManager.moveToThread() is called
+	qRegisterMetaType<QAbstractSocket::SocketState>();
 	connectionManager->moveToThread(&thread);
 	connect(this, &GamepadForm::newConnectionParameters, this, &GamepadForm::restartVideoStream);
 	connect(this, &GamepadForm::newConnectionParameters, connectionManager, &ConnectionManager::reconnectToHost);
 	connect(&thread, &QThread::started, connectionManager, &ConnectionManager::init);
+	connect(&thread, &QThread::finished, connectionManager, &ConnectionManager::deleteLater);
 	setUpGamepadForm();
 	thread.start();
 }
@@ -45,6 +50,9 @@ GamepadForm::GamepadForm()
 GamepadForm::~GamepadForm()
 {
 	delete mUi;
+
+	// To prevent strange stack overflow crash on exit on Linux
+	delete videoWidget;
 }
 
 void GamepadForm::startControllerFromSysArgs(const QStringList &args)
@@ -439,10 +447,11 @@ void GamepadForm::sendCommand(const QString &command)
 }
 
 void GamepadForm::changeMode(Strategies type)
-{
-	disconnect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
-	strategy = Strategy::getStrategy(type);
+{	
+	auto oldStratedy = strategy;
+	strategy = Strategy::getStrategy(type, this);
 	connect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
+	delete oldStratedy;
 }
 
 void GamepadForm::dealWithApplicationState(Qt::ApplicationState state)

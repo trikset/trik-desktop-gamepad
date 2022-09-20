@@ -21,24 +21,29 @@
 #include "accelerateStrategy.h"
 
 // defining static variable
-QMap<Strategies, QSharedPointer<Strategy> > Strategy::instances;
+
+Strategy::Strategy(QObject *parent)
+	: QObject(parent)
+{
+
+}
 
 void Strategy::reset()
 {
 	mPressedKeys.clear();
 }
 
-Strategy *Strategy::getStrategy(Strategies type)
-{
-	if (instances.empty()) {
-		createInstances();
+Strategy *Strategy::getStrategy(Strategies type, QObject *parent)
+{	
+	switch (type) {
+	case Strategies::standartStrategy:
+		return new StandardStrategy(parent);
+		break;
+	case Strategies::accelerateStrategy:
+		return new AccelerateStrategy(300, parent);
+		break;
+	default:
+		return nullptr;
+		break;
 	}
-
-	return instances[type].data();
-}
-
-void Strategy::createInstances()
-{
-	instances.insert(standartStrategy, QSharedPointer<Strategy>(new StandardStrategy));
-	instances.insert(accelerateStrategy, QSharedPointer<Strategy>(new AccelerateStrategy));
 }

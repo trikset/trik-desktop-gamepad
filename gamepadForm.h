@@ -175,10 +175,10 @@ private:
 	QActionGroup *mModesActions { nullptr }; // TODO [Doesn't have | Has] ownership
 
 	/// For setting up translator in app
-	QTranslator *mTranslator { nullptr }; // TODO [Doesn't have | Has] ownership
+	QTranslator *mTranslator { nullptr }; // Has ownership
 
 	/// object that encapsulates logic with commands
-	Strategy *strategy { nullptr }; // TODO [Doesn't have | Has] ownership
+	Strategy *strategy { nullptr }; // Doesn't have ownership
 
 
 	QHash<int, QPushButton*> controlButtonsHash;
@@ -197,7 +197,7 @@ private:
 	QVideoWidget *videoWidget { nullptr }; // TODO [Doesn't have | Has] ownership
 	QMovie movie;
 
-	QClipboard *clipboard { nullptr }; // TODO [Doesn't have | Has] ownership
+	QClipboard *clipboard { nullptr }; //Doesn't have ownership
 	QVideoProbe *probe { nullptr }; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary {};
 	QSettings mSettings;

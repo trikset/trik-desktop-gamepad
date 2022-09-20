@@ -26,7 +26,7 @@
     <message>
         <location line="+13"/>
         <source>4444</source>
-	<translation>4444</translation>
+        <translation>4444</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -41,11 +41,11 @@
     <message>
         <location line="+13"/>
         <source>8080</source>
-	<translation>8080</translation>
+        <translation>8080</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../connectForm.cpp" line="+38"/>
+        <location filename="../connectForm.cpp" line="+39"/>
         <source>Connect</source>
         <translation>Connect</translation>
     </message>
@@ -165,12 +165,12 @@ Buttons disabled.</source>
 Buttons disabled.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+213"/>
+        <location filename="../gamepadForm.cpp" line="+221"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Failed to connect to robot</translation>
     </message>
     <message>
-        <location line="+340"/>
+        <location line="+341"/>
         <source>&amp;Connection</source>
         <translation>&amp;Connection</translation>
     </message>
@@ -231,12 +231,12 @@ Buttons disabled.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Image</source>
-	<translation>&amp;Image</translation>
+        <translation>&amp;Image</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Screenshot to clipboard</source>
-	<translation>&amp;Screenshot to clipboard</translation>
+        <translation>&amp;Screenshot to clipboard</translation>
     </message>
     <message>
         <location line="+2"/>

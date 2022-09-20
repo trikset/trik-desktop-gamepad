@@ -44,3 +44,14 @@ macx {
 }
 
 include(trikDesktopGamepad.pri)
+
+lsan.files = lsan.supp
+lsan.path = $$OUT_PWD
+OTHER_FILES += $$lsan.files
+
+#copy LSan suppressions to build dir
+copy_lsan.commands = $(COPY_FILE) $$PWD/$$lsan.files $$lsan.path
+export(copy_lsan)
+first.depends += copy_lsan
+export(first.depends)
+QMAKE_EXTRA_TARGETS += first copy_lsan
