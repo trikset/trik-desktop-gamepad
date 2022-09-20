@@ -22,6 +22,7 @@
 #include <QtCore/QIODevice>
 #include <QScopedPointer>
 #include <QTimer>
+#include <QSettings>
 
 
 /// TODO description
@@ -31,7 +32,7 @@ class ConnectionManager : public QObject
 	Q_DISABLE_COPY(ConnectionManager)
 
 public:
-	ConnectionManager();
+	explicit ConnectionManager(QSettings *settings, QObject *parent = nullptr);
 	~ConnectionManager();
 
 	/// inits manager after moved to correct thread
@@ -43,21 +44,9 @@ public:
 	/// checks connection
 	bool isConnected() const;
 
-	/// returns camera ip
-	QString getCameraIp() const;
-
-	/// returns camera port
-	QString getCameraPort() const;
-
-	/// returns gamepad ip
-	QString getGamepadIp() const;
-
-	/// returns gamepad port
-	quint16 getGamepadPort() const;
-
 public slots:
-	/// TODO description
-	void connectToHost(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
+	/// Reinstantiate the connection to the desired host
+	void reconnectToHost();
 	/// TODO description
 	void write(const QString &);
 
@@ -73,12 +62,7 @@ signals:
 	void connectionFailed();
 
 private:
-	QTcpSocket *socket;
-	QTimer *keepaliveTimer;
-
-	QString cameraIp;
-	QString cameraPort;
-
-	QString gamepadIp;
-	quint16 gamepadPort { 4444 };
+	QTcpSocket *mSocket {};
+	QTimer *mKeepaliveTimer {};
+	QSettings *mSettings; // No ownership
 };

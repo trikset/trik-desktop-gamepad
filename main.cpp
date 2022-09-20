@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	/// if you specify some of the parametres the rest would get default value
 	QStringList args = a.arguments();
 	if (args.size() > 1) {
-		w.startController(args);
+		w.startControllerFromSysArgs(args);
 	}
 
 	return a.exec();

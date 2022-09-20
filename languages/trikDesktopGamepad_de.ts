@@ -45,7 +45,7 @@
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../connectForm.cpp" line="+37"/>
+        <location filename="../connectForm.cpp" line="+38"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
@@ -171,12 +171,12 @@ Buttons enabled.</source>
 Buttons aktiviert.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+208"/>
+        <location filename="../gamepadForm.cpp" line="+213"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Fehler beim Roboter zu verbinden</translation>
     </message>
     <message>
-        <location line="+348"/>
+        <location line="+340"/>
         <source>&amp;Connection</source>
         <translation>&amp;Verbindung</translation>
     </message>
@@ -250,7 +250,7 @@ Buttons aktiviert.</translation>
         <translation>&amp;Etwa</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
         <source>About TRIK Gamepad</source>
         <translation>Über TRIK Gamepad</translation>
     </message>
