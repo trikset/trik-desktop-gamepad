@@ -235,12 +235,12 @@ Buttons disabled.</source>
     <message>
         <location line="+2"/>
         <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Видео</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Screenshot to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Снимок экрана</translation>
     </message>
     <message>
         <location line="+2"/>
