@@ -23,9 +23,11 @@
 
 
 ConnectForm::ConnectForm(ConnectionManager *manager
+						 , QSettings *settings
 						 , QWidget *parent)
 	: QDialog(parent)
 	, mUi(new Ui::ConnectForm)
+	, mSettings(settings)
 	, connectionManager(manager)
 {
 	mUi->setupUi(this);
@@ -41,21 +43,16 @@ ConnectForm::ConnectForm(ConnectionManager *manager
 	mUi->connectButton->setText(connectButton);
 	mUi->advancedButton->setText(advancedButton);
 
+	mUi->robotIpLineEdit->setText(settings->value("gamepadIp", "192.168.77.1").toString());
+	mUi->robotPortLineEdit->setText(settings->value("gamepadPort", "4444").toString());
+	mUi->cameraIPLineEdit->setText(settings->value("cameraIp", "192.168.77.1").toString());
+	mUi->cameraPortLineEdit->setText(settings->value("cameraPort", "8080").toString());
+
 	// Connecting buttons with methods
 	connect(mUi->cancelButton, &QPushButton::pressed, this, &QDialog::reject);
 	connect(mUi->connectButton, &QPushButton::pressed, this, &ConnectForm::onConnectButtonClicked);
 	connect(mUi->advancedButton, &QPushButton::pressed, this, &ConnectForm::onAdvancedButtonClicked);
 	connect(mUi->robotIpLineEdit, &QLineEdit::textEdited, this, &ConnectForm::copyGamepadIpToCameraIp);
-}
-
-ConnectForm::ConnectForm(ConnectionManager *manager, const QMap<QString, QString> &args, QWidget *parent)
-	: ConnectForm(manager, parent)
-{
-	// ConnectForm(manager, parent);
-	mUi->robotIpLineEdit->setText(args.value("gamepadIp", "192.168.77.1"));
-	mUi->robotPortLineEdit->setText(args.value("gamepadPort", "4444"));
-	mUi->cameraIPLineEdit->setText(args.value("cameraIp", "192.168.77.1"));
-	mUi->cameraPortLineEdit->setText(args.value("cameraPort", "8080"));
 }
 
 void ConnectForm::onConnectButtonClicked()
@@ -67,7 +64,14 @@ void ConnectForm::onConnectButtonClicked()
 	const auto &cameraPort  = mUi->cameraPortLineEdit->text();
 
 	this->reject(); //??? Why `reject`?
-	Q_EMIT newConnectionParameters(cameraIp, cameraPort, ip, port);
+
+
+	mSettings->setValue("cameraIp", cameraIp);
+	mSettings->setValue("cameraPort", cameraPort);
+	mSettings->setValue("gamepadIp", ip);
+	mSettings->setValue("gamepadPort", port);
+
+	Q_EMIT newConnectionParameters();
 }
 
 void ConnectForm::onAdvancedButtonClicked()

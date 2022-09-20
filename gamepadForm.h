@@ -53,7 +53,7 @@ public:
 	GamepadForm();
 	~GamepadForm() override;
 	/// method that sets up connection manager and connect to host
-	void startController(const QStringList &args);
+	void startControllerFromSysArgs(const QStringList &args);
 	virtual void closeEvent(QCloseEvent *event) override;
 
 public slots:
@@ -97,7 +97,7 @@ private slots:
 
 	void handleMediaPlayerError(QMediaPlayer::Error error);
 
-	void startVideoStream(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
+	void restartVideoStream();
 
 	void checkSocket(QAbstractSocket::SocketState state);
 
@@ -125,7 +125,7 @@ signals:
 	/// signal to disconnect from host
 	void programFinished();
 	/// Signal is emitted when connection parameters change
-	void newConnectionParameters(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort);
+	void newConnectionParameters();
 
 private:
 	void setButtonChecked(const int &key, bool checkStatus);
@@ -200,4 +200,5 @@ private:
 	QClipboard *clipboard { nullptr }; // TODO [Doesn't have | Has] ownership
 	QVideoProbe *probe { nullptr }; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary {};
+	QSettings mSettings;
 };

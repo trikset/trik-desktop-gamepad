@@ -29,13 +29,14 @@
 GamepadForm::GamepadForm()
 	: mUi(new Ui::GamepadForm())
 	, strategy(Strategy::getStrategy(Strategies::standartStrategy))
+	, mSettings("CyberTech", "gamepad")
 {
 	mUi->setupUi(this);
 	this->installEventFilter(this);
-	connectionManager = new ConnectionManager();
+	connectionManager = new ConnectionManager(&mSettings);
 	connectionManager->moveToThread(&thread);
-	connect(this, &GamepadForm::newConnectionParameters, connectionManager, &ConnectionManager::connectToHost);
-	connect(&thread, &QThread::finished, connectionManager, &ConnectionManager::deleteLater);
+	connect(this, &GamepadForm::newConnectionParameters, this, &GamepadForm::restartVideoStream);
+	connect(this, &GamepadForm::newConnectionParameters, connectionManager, &ConnectionManager::reconnectToHost);
 	connect(&thread, &QThread::started, connectionManager, &ConnectionManager::init);
 	setUpGamepadForm();
 	thread.start();
@@ -46,14 +47,17 @@ GamepadForm::~GamepadForm()
 	delete mUi;
 }
 
-void GamepadForm::startController(const QStringList &args)
+void GamepadForm::startControllerFromSysArgs(const QStringList &args)
 {
-	const auto &gamepadIp = args.at(1);
-	QString portStr = args.size() < 3 ? "4444" : args.at(2);
-	quint16 gamepadPort = static_cast<quint16>(portStr.toInt());
-	QString cameraPort = args.size() < 4 ? "8080" : args.at(3);
-	QString cameraIp = args.size() < 5 ? gamepadIp : args.at(4);
-	Q_EMIT newConnectionParameters(cameraIp, cameraPort, gamepadIp, gamepadPort);
+	const auto &gamepadIp = args.at(1);	
+	const auto &gamepadPort = args.size() < 3 ? "4444" : args.at(2);
+	const auto &cameraPort = args.size() < 4 ? "8080" : args.at(3);
+	const auto &cameraIp = args.size() < 5 ? gamepadIp : args.at(4);
+	mSettings.setValue("cameraIp", cameraIp);
+	mSettings.setValue("cameraPort", cameraPort);
+	mSettings.setValue("gamepadIp", gamepadIp);
+	mSettings.setValue("gamepadPort", gamepadPort);
+	Q_EMIT newConnectionParameters();
 }
 
 void GamepadForm::closeEvent(QCloseEvent *event)
@@ -151,10 +155,10 @@ void GamepadForm::handleMediaPlayerError(QMediaPlayer::Error error)
 	qDebug() << "ERROR:" << error << player->errorString();
 }
 
-void GamepadForm::startVideoStream(const QString &cIp, const QString &cPort, const QString &gIp, quint16 gPort)
+void GamepadForm::restartVideoStream()
 {
-	Q_UNUSED(gIp)
-	Q_UNUSED(gPort)
+	const auto &cIp = mSettings.value("cameraIp").toString();
+	const auto &cPort = mSettings.value("cameraPort").toString();
 	const auto status = player->mediaStatus();
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
 		const QString url = "http://" + cIp + ":" + cPort + "/?action=stream&filename=noname.jpg";
@@ -252,12 +256,12 @@ void GamepadForm::createConnection()
 void GamepadForm::createMenu()
 {
 	// Path to your local directory. Set up if you don't put .qm files into your debug folder.
-	const QString pathToDir = "languages/trikDesktopGamepad";
+	const auto &pathToDir = mSettings.value("languagesPath", ":i18n/trikDesktopGamepad").toString();
 
-	const QString russian = pathToDir + "_ru";
-	const QString english = pathToDir + "_en";
-	const QString french = pathToDir + "_fr";
-	const QString german = pathToDir + "_de";
+	const auto &russian = pathToDir + "_ru";
+	const auto &english = pathToDir + "_en";
+	const auto &french = pathToDir + "_fr";
+	const auto &german = pathToDir + "_de";
 
 	mMenuBar = new QMenuBar(this);
 
@@ -503,16 +507,8 @@ void GamepadForm::requestImage()
 }
 
 void GamepadForm::openConnectDialog()
-{
-	QMap<QString, QString> args;
-	args.insert("gamepadIp", connectionManager->getGamepadIp());
-	args.insert("gamepadPort", QString::number(connectionManager->getGamepadPort()));
-	args.insert("cameraIp", connectionManager->getCameraIp());
-	args.insert("cameraPort", connectionManager->getCameraPort());
-
-	connect(this, &GamepadForm::newConnectionParameters, this, &GamepadForm::startVideoStream);
-
-	mMyNewConnectForm = new ConnectForm(connectionManager, args, this);
+{	
+	mMyNewConnectForm = new ConnectForm(connectionManager, &mSettings, this);
 	connect(mMyNewConnectForm, &ConnectForm::newConnectionParameters, this, &GamepadForm::newConnectionParameters);
 	mMyNewConnectForm->show();
 }
@@ -579,9 +575,10 @@ void GamepadForm::retranslate()
 void GamepadForm::changeLanguage(const QString &language)
 {
 	mTranslator = new QTranslator(this);
-	mTranslator->load(language);
+	if (!mTranslator->load(language)) {
+		qDebug() << "Failed to load translations for" << language;
+	}
 	qApp->installTranslator(mTranslator);
-
 	mUi->retranslateUi(this);
 }
 

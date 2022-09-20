@@ -45,7 +45,7 @@
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../connectForm.cpp" line="+37"/>
+        <location filename="../connectForm.cpp" line="+38"/>
         <source>Connect</source>
         <translation>Подключиться</translation>
     </message>
@@ -169,12 +169,12 @@ Buttons disabled.</source>
 Кнопки выключены.</translation>
     </message>
     <message>
-        <location filename="../gamepadForm.cpp" line="+208"/>
+        <location filename="../gamepadForm.cpp" line="+213"/>
         <source>Couldn&apos;t connect to robot</source>
         <translation>Не удалось подключиться к роботу</translation>
     </message>
     <message>
-        <location line="+348"/>
+        <location line="+340"/>
         <source>&amp;Connection</source>
         <translation>&amp;Соединение</translation>
     </message>
@@ -248,7 +248,7 @@ Buttons disabled.</source>
         <translation>&amp;О программе</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>This is desktop gamepad for TRIK robots.</source>
         <translation>Это десктопный пульт управления для роботов ТРИК.</translation>
     </message>
