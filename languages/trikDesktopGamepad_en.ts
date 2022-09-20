@@ -26,7 +26,7 @@
     <message>
         <location line="+13"/>
         <source>4444</source>
-        <translation type="unfinished">4444</translation>
+	<translation>4444</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -41,7 +41,7 @@
     <message>
         <location line="+13"/>
         <source>8080</source>
-        <translation type="unfinished">8080</translation>
+	<translation>8080</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -231,12 +231,12 @@ Buttons disabled.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+	<translation>&amp;Image</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Screenshot to clipboard</source>
-        <translation type="unfinished"></translation>
+	<translation>&amp;Screenshot to clipboard</translation>
     </message>
     <message>
         <location line="+2"/>
