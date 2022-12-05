@@ -23,7 +23,6 @@
 #include <QtGui/QKeyEvent>
 
 #include <QtNetwork/QNetworkRequest>
-#include <QtMultimedia/QMediaContent>
 #include <QtGui/QFontDatabase>
 
 GamepadForm::GamepadForm()
@@ -95,10 +94,10 @@ void GamepadForm::setVideoController()
 	mUi->verticalLayout->addWidget(videoWidget);
 	mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
 
-	player = new QMediaPlayer(videoWidget, QMediaPlayer::StreamPlayback);
+	player = new QMediaPlayer(videoWidget);
 
 	connect(player, &QMediaPlayer::mediaStatusChanged, this, &GamepadForm::handleMediaStatusChanged);
-	connect(player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this, &GamepadForm::handleMediaPlayerError);
+	connect(player, &QMediaPlayer::errorOccurred, this, &GamepadForm::handleMediaPlayerError);
 
 	player->setVideoOutput(videoWidget);
 
@@ -173,7 +172,7 @@ void GamepadForm::restartVideoStream()
 		// QNetworkRequest nr = QNetworkRequest(url);
 		// nr.setPriority(QNetworkRequest::LowPriority);
 		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
-		player->setMedia(QUrl(url));
+		player->setSource(QUrl(url));
 	}
 }
 
@@ -405,10 +404,11 @@ void GamepadForm::setLabels()
 
 void GamepadForm::setImageControl()
 {
-	probe = new QVideoProbe(this);
-	connect(probe, &QVideoProbe::videoFrameProbed, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
+	// Possible solution is to use QVideoSink instead
+	sink = new QVideoSink(this);
+	connect(sink, &QVideoSink::videoFrameChanged, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
 	isFrameNecessary = false;
-	probe->setSource(player);
+	player->setVideoSink(sink);
 	clipboard = QApplication::clipboard();
 }
 
@@ -468,22 +468,18 @@ void GamepadForm::saveImageToClipboard(QVideoFrame buffer)
 	if (isFrameNecessary) {
 		isFrameNecessary = false;
 		QVideoFrame frame(buffer);
-		frame.map(QAbstractVideoBuffer::ReadOnly);
+		frame.map(QVideoFrame::ReadOnly);
 
-		QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
+		QImage::Format imageFormat = QVideoFrameFormat::imageFormatFromPixelFormat(frame.pixelFormat());
 		QImage img;
 		// check whether videoframe can be transformed to qimage by qt
 		if (imageFormat != QImage::Format_Invalid) {
-			img = QImage(frame.bits(),
-						 frame.width(),
-						 frame.height(),
-						 // frame.bytesPerLine(),
-						 imageFormat);
+			img = frame.toImage();
 		} else {
 			int width = frame.width();
 			int height = frame.height();
 			int size = height * width;
-			const uchar *data = frame.bits();
+			const uchar *data = frame.bits(0);
 
 			img = QImage(width, height, QImage::Format_RGB32);
 			/// converting from yuv420 to rgb32

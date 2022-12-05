@@ -64,7 +64,7 @@ void ConnectionManager::reconnectToHost()
 	QTimer::singleShot(timeout, &loop, &QEventLoop::quit);
 	connect(mSocket, &QTcpSocket::connected, &loop, &QEventLoop::quit);
 	connect(mSocket
-			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error)
+			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::errorOccurred)
 			, &loop
 			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
 	mSocket->setProxy(QNetworkProxy::NoProxy);

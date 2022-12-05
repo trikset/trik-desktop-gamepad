@@ -20,6 +20,7 @@
 
 #include <QMediaPlayer>
 #include <QVideoWidget>
+#include <QActionGroup>
 
 #include <QWidget>
 #include <QMenuBar>
@@ -30,7 +31,8 @@
 #include <QMovie>
 #include <QThread>
 
-#include <QVideoProbe>
+#include <QVideoSink>
+#include <QVideoFrame>
 #include <QClipboard>
 
 #include "connectForm.h"
@@ -198,7 +200,7 @@ private:
 	QMovie movie;
 
 	QClipboard *clipboard { nullptr }; //Doesn't have ownership
-	QVideoProbe *probe { nullptr }; // TODO [Doesn't have | Has] ownership
+	QVideoSink *sink { nullptr }; // TODO [Doesn't have | Has] ownership
 	bool isFrameNecessary {};
 	QSettings mSettings;
 };
