@@ -24,7 +24,7 @@ QMAKE_CXXFLAGS += -Wno-error=deprecated-declarations
 # Suppressing warnings in Qt system headers files
 QMAKE_CXXFLAGS += -isystem "$$[QT_INSTALL_HEADERS]"
 # QMAKE_CXXFLAGS += -isystem "$(QTDIR)/include/QtMultimediaWidgets"
-
+!lessThan(QT_MAJOR_VERSION, 6):DEFINES += TRIK_USE_QT6
 TARGET = gamepad
 TEMPLATE = app
 
