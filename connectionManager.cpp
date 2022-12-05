@@ -63,10 +63,17 @@ void ConnectionManager::reconnectToHost()
 	QEventLoop loop;
 	QTimer::singleShot(timeout, &loop, &QEventLoop::quit);
 	connect(mSocket, &QTcpSocket::connected, &loop, &QEventLoop::quit);
+#ifdef TRIK_USE_QT6
+	connect(mSocket
+			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::errorOccurred)
+			, &loop
+			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
+#else
 	connect(mSocket
 			, static_cast<void(QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error)
 			, &loop
 			, [&loop](QAbstractSocket::SocketError) { loop.quit(); });
+#endif
 	mSocket->setProxy(QNetworkProxy::NoProxy);
 	const auto &gamepadIp = mSettings->value("gamepadIp").toString();
 	auto gamepadPort = static_cast<quint16>(mSettings->value("gamepadPort").toUInt());
