@@ -405,7 +405,7 @@ void GamepadForm::setLabels()
 void GamepadForm::setImageControl()
 {
 	// Possible solution is to use QVideoSink instead
-	sink = new QVideoSink(this);
+	sink = videoWidget->videoSink();
 	connect(sink, &QVideoSink::videoFrameChanged, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
 	isFrameNecessary = false;
 	player->setVideoSink(sink);
