@@ -36,17 +36,8 @@ jobs:
         shell: bash
 
     steps:
-      - name: Install Qt 5.12.12 
-        if: matrix.qt-version == '5.12.12' 
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: ${{ matrix.qt-version }}
-          host: ${{ matrix.os-name }}
-          arch: ${{ startsWith(matrix.os-name, 'win') && format('win32_mingw{0}', matrix.mingw-short-version) || ''}}
-          tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,7.3.0,qt.tools.win32_mingw{0}0', matrix.mingw-short-version) || '' }}
-
-      - name: Install Qt 5.12.2
-        if: matrix.qt-version == '5.12.2'
+      - name: Install Qt 5
+        if: matrix.qt-version != '6.2.*'
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ matrix.qt-version }}
