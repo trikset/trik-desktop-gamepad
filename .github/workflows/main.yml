@@ -44,7 +44,7 @@ jobs:
           arch: ${{ startsWith(matrix.os-name, 'win') && format('win32_mingw{0}', matrix.mingw-short-version) || ''}}
           tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,7.3.0,qt.tools.win32_mingw{0}0', matrix.mingw-short-version) || '' }}
           modules: 'qtmultimedia' 
-          aqtversion: '==2.1.*'
+          aqtversion: '==2.0.0'
 
       - name: Update PATH
         if: ${{ startsWith(matrix.os-name, 'win') }}
