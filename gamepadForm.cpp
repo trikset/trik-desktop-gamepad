@@ -25,6 +25,11 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtGui/QFontDatabase>
 
+#ifdef TRIK_USE_QT6
+#else
+	#include <QtMultimedia/QMediaContent>
+#endif
+
 GamepadForm::GamepadForm()
 	: mUi(new Ui::GamepadForm())
 	, strategy(Strategy::getStrategy(Strategies::standartStrategy,this))
@@ -94,10 +99,18 @@ void GamepadForm::setVideoController()
 	mUi->verticalLayout->addWidget(videoWidget);
 	mUi->verticalLayout->setAlignment(videoWidget, Qt::AlignCenter);
 
+#ifdef TRIK_USE_QT6
 	player = new QMediaPlayer(videoWidget);
+#else
+	player = new QMediaPlayer(videoWidget, QMediaPlayer::StreamPlayback);
+#endif
 
 	connect(player, &QMediaPlayer::mediaStatusChanged, this, &GamepadForm::handleMediaStatusChanged);
+#ifdef TRIK_USE_QT6
 	connect(player, &QMediaPlayer::errorOccurred, this, &GamepadForm::handleMediaPlayerError);
+#else
+	connect(player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this, &GamepadForm::handleMediaPlayerError);
+#endif
 
 	player->setVideoOutput(videoWidget);
 
@@ -172,7 +185,11 @@ void GamepadForm::restartVideoStream()
 		// QNetworkRequest nr = QNetworkRequest(url);
 		// nr.setPriority(QNetworkRequest::LowPriority);
 		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
+#ifdef TRIK_USE_QT6
 		player->setSource(QUrl(url));
+#else
+		player->setMedia(QUrl(url));
+#endif
 	}
 }
 
@@ -404,11 +421,16 @@ void GamepadForm::setLabels()
 
 void GamepadForm::setImageControl()
 {
-	// Possible solution is to use QVideoSink instead
+#ifdef TRIK_USE_QT6
 	sink = videoWidget->videoSink();
 	connect(sink, &QVideoSink::videoFrameChanged, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
-	isFrameNecessary = false;
 	player->setVideoSink(sink);
+#else
+	probe = new QVideoProbe(this);
+	connect(probe, &QVideoProbe::videoFrameProbed, this, &GamepadForm::saveImageToClipboard, Qt::QueuedConnection);
+	probe->setSource(player);
+#endif
+	isFrameNecessary = false;
 	clipboard = QApplication::clipboard();
 }
 
@@ -468,18 +490,34 @@ void GamepadForm::saveImageToClipboard(QVideoFrame buffer)
 	if (isFrameNecessary) {
 		isFrameNecessary = false;
 		QVideoFrame frame(buffer);
+#ifdef TRIK_USE_QT6
 		frame.map(QVideoFrame::ReadOnly);
-
 		QImage::Format imageFormat = QVideoFrameFormat::imageFormatFromPixelFormat(frame.pixelFormat());
+#else
+		frame.map(QAbstractVideoBuffer::ReadOnly);
+		QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
+#endif
 		QImage img;
 		// check whether videoframe can be transformed to qimage by qt
 		if (imageFormat != QImage::Format_Invalid) {
+#ifdef TRIK_USE_QT6
 			img = frame.toImage();
+#else
+			img = QImage(frame.bits(),
+						 frame.width(),
+						 frame.height(),
+						 // frame.bytesPerLine(),
+						 imageFormat);
+#endif
 		} else {
 			int width = frame.width();
 			int height = frame.height();
 			int size = height * width;
+#ifdef TRIK_USE_QT6
 			const uchar *data = frame.bits(0);
+#else
+			const uchar *data = frame.bits();
+#endif
 
 			img = QImage(width, height, QImage::Format_RGB32);
 			/// converting from yuv420 to rgb32
