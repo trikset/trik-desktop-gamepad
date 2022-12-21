@@ -43,7 +43,7 @@ jobs:
           host: ${{ matrix.os-name }}
           arch: ${{ startsWith(matrix.os-name, 'win') && format('win32_mingw{0}', matrix.mingw-short-version) || ''}}
           tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,7.3.0,qt.tools.win32_mingw{0}0', matrix.mingw-short-version) || '' }}
-	  modules: qt6-multimedia-dev
+          modules: 'qt6-multimedia-dev'
 
       - name: Update PATH
         if: ${{ startsWith(matrix.os-name, 'win') }}
