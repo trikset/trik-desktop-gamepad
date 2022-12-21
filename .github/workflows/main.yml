@@ -26,18 +26,29 @@ jobs:
           - os: macos-latest
             os-name: mac
             qt-version: '5.15.2'
+
+          - os: ubuntu-latest
+            os-name: linux
+            qt-version: '6.2.*'
+            modules: 'qtmultimedia'
+
     defaults:
       run:
         shell: bash
 
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
           version: ${{ matrix.qt-version }}
           host: ${{ matrix.os-name }}
           arch: ${{ startsWith(matrix.os-name, 'win') && format('win32_mingw{0}', matrix.mingw-short-version) || ''}}
-          tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,7.3.0,qt.tools.win32_mingw{0}0', matrix.mingw-short-version) || '' }}
+          tools: ${{ startsWith(matrix.os-name, 'win') && format('tools_mingw,qt.tools.win32_mingw{0}0', matrix.mingw-short-version) || '' }}
+          modules: ${{ matrix.modules }}
+
+      - name: Install dependencies 
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-plugins-base
 
       - name: Update PATH
         if: ${{ startsWith(matrix.os-name, 'win') }}
