@@ -56,6 +56,10 @@ jobs:
           modules: 'qtmultimedia'
           aqtversion: '==2.1.*'
 
+      - name: Install dependencies 
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y gstreamer1.0-plugins-base
+
       - name: Update PATH
         if: ${{ startsWith(matrix.os-name, 'win') }}
         run: |
