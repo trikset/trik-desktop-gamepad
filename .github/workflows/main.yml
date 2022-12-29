@@ -58,8 +58,7 @@ jobs:
 
       - name: Install dependencies 
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y gstreamer1.0-plugins-base
-        run: sudo apt-get install gstreamer1.0-plugins-bad gstreamer1.0-libav -y
+        run: sudo apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-plugins-base
 
       - name: Update PATH
         if: ${{ startsWith(matrix.os-name, 'win') }}
