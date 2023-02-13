@@ -3,10 +3,10 @@ updates:
 - package-ecosystem: gitsubmodule
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
     time: "23:59"
-    timezone: Europe/Moscow
-  open-pull-requests-limit: 99
+    timezone: Europe/London
+  open-pull-requests-limit: 3
   reviewers:
   - iakov
   assignees:
