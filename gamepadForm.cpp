@@ -109,7 +109,8 @@ void GamepadForm::setVideoController()
 #ifdef TRIK_USE_QT6
 	connect(player, &QMediaPlayer::errorOccurred, this, &GamepadForm::handleMediaPlayerError);
 #else
-	connect(player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this, &GamepadForm::handleMediaPlayerError);
+	connect(player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error)
+			, this, &GamepadForm::handleMediaPlayerError);
 #endif
 
 	player->setVideoOutput(videoWidget);

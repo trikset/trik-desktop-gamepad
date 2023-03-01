@@ -21,13 +21,6 @@
 #include "accelerateStrategy.h"
 
 // defining static variable
-
-Strategy::Strategy(QObject *parent)
-	: QObject(parent)
-{
-
-}
-
 void Strategy::reset()
 {
 	mPressedKeys.clear();
