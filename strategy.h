@@ -33,10 +33,8 @@ enum class Strategies {
 class Strategy : public QObject
 {
 	Q_OBJECT
-
+	Q_DISABLE_COPY(Strategy)
 public:
-	explicit Strategy(QObject *parent);
-
 	/// method that encapsulates logic for generating commands
 	virtual void processEvent(QEvent *event) = 0;
 	/// method that do all keys not pressed
@@ -49,8 +47,8 @@ signals:
 	/// signal with generated command
 	void commandPrepared(const QString &command);
 
-
 protected:
+	explicit Strategy(QObject *parent = nullptr): QObject(parent) {}
 	QSet<int> mPressedKeys;
 };
 

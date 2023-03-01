@@ -24,6 +24,7 @@
 class StandardStrategy : public Strategy
 {
 public:
+	/// Create new object for this strategy
 	explicit StandardStrategy(QObject *parent = nullptr);
 	/// method that generates commands
 	void processEvent(QEvent *event) final;

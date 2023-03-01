@@ -32,6 +32,7 @@ class ConnectionManager : public QObject
 	Q_DISABLE_COPY(ConnectionManager)
 
 public:
+	/// Create new ConnectionManager for given settings
 	explicit ConnectionManager(QSettings *settings, QObject *parent = nullptr);
 	~ConnectionManager();
 
@@ -39,7 +40,10 @@ public:
 	void init();
 
 	/// set camera and gamepad connection parameters
-	void setCameraAndGamepad(const QString &cameraIp, const QString &cameraPort, const QString &gamepadIp, quint16 gamepadPort);
+	void setCameraAndGamepad(const QString &cameraIp
+							 , const QString &cameraPort
+							 , const QString &gamepadIp
+							 , quint16 gamepadPort);
 
 	/// checks connection
 	bool isConnected() const;
