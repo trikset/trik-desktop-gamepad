@@ -1,0 +1,12 @@
+function(ADD_TRANSLATIONS_RESOURCE res_file)
+    set(QM_FILES ${ARGN})
+    set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
+
+    file(WRITE ${RES_FILE} "<!DOCTYPE RCC><RCC version=\"1.0\">\n <qresource prefix=\"/\">\n")
+    foreach(LANG ${QM_FILES})
+      get_filename_component(FILENAME ${LANG} NAME)
+      file(APPEND ${RES_FILE} "  <file alias=\"i18n/${FILENAME}\">${FILENAME}</file>\n")
+    endforeach()
+    file(APPEND ${RES_FILE} " </qresource>\n</RCC>\n")
+    set(${res_file} ${RES_FILE} PARENT_SCOPE)
+endfunction()
