@@ -14,5 +14,5 @@
 
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-include (SingleApplication/singleapplication.pri)
+include (singleapplication/singleapplication.pri)
 QMAKE_CXXFLAGS -= -Wold-style-cast

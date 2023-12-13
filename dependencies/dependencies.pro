@@ -15,4 +15,4 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-	SingleApplication/singleapplication.pri
+	singleapplication/singleapplication.pri
