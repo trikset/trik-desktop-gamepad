@@ -3,35 +3,35 @@ CONFIG += c++14
 DEFINES += QT_NO_ACCESSIBILITY
 
 SOURCES += \
-	$$PWD/main.cpp \
-	$$PWD/gamepadForm.cpp \
-	$$PWD/connectForm.cpp \
-	$$PWD/connectionManager.cpp \
-	$$PWD/standardStrategy.cpp \
-	$$PWD/accelerateStrategy.cpp \
-	$$PWD/strategy.cpp
+	$$PWD/src/main.cpp \
+	$$PWD/src/gamepadForm.cpp \
+	$$PWD/src/connectForm.cpp \
+	$$PWD/src/connectionManager.cpp \
+	$$PWD/src/standardStrategy.cpp \
+	$$PWD/src/accelerateStrategy.cpp \
+	$$PWD/src/strategy.cpp
 
 TRANSLATIONS += \
-	$$PWD/languages/trikDesktopGamepad_ru.ts \
-	$$PWD/languages/trikDesktopGamepad_en.ts \
-	$$PWD/languages/trikDesktopGamepad_fr.ts \
-	$$PWD/languages/trikDesktopGamepad_de.ts
+	$$PWD/share/translations/trikDesktopGamepad_ru.ts \
+	$$PWD/share/translations/trikDesktopGamepad_en.ts \
+	$$PWD/share/translations/trikDesktopGamepad_fr.ts \
+	$$PWD/share/translations/trikDesktopGamepad_de.ts
 
 HEADERS += \
-	$$PWD/gamepadForm.h \
-	$$PWD/connectForm.h \
-	$$PWD/connectionManager.h \
-	$$PWD/standardStrategy.h \
-	$$PWD/accelerateStrategy.h \
-	$$PWD/strategy.h
+	$$PWD/src/gamepadForm.h \
+	$$PWD/src/connectForm.h \
+	$$PWD/src/connectionManager.h \
+	$$PWD/src/standardStrategy.h \
+	$$PWD/src/accelerateStrategy.h \
+	$$PWD/src/strategy.h
 
 FORMS += \
-	$$PWD/gamepadForm.ui \
-	$$PWD/connectForm.ui
+	$$PWD/src/gamepadForm.ui \
+	$$PWD/src/connectForm.ui
 
 RESOURCES += \
-	$$PWD/images.qrc \
-	$$PWD/fonts.qrc
+	$$PWD/share/images.qrc \
+	$$PWD/share/fonts.qrc
 
 # Single Application implementation
-include(thirdparty/singleApplication.pro)
+include(dependencies/singleapplication.pro)

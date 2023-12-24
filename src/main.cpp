@@ -32,7 +32,7 @@
  * "pad 1 0 -100\n", excluding quotes.
  * */
 
-#include "thirdparty/SingleApplication/singleapplication.h"
+#include "../dependencies/singleapplication/singleapplication.h"
 
 #include "gamepadForm.h"
 
