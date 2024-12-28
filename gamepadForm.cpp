@@ -53,15 +53,16 @@ GamepadForm::GamepadForm()
 
 GamepadForm::~GamepadForm()
 {
-	delete mUi;
+	thread.quit();
+	thread.wait();
 
-	// To prevent strange stack overflow crash on exit on Linux
-	delete videoWidget;
+	delete player;
+	delete mUi;
 }
 
 void GamepadForm::startControllerFromSysArgs(const QStringList &args)
 {
-	const auto &gamepadIp = args.at(1);	
+	const auto &gamepadIp = args.at(1);
 	const auto &gamepadPort = args.size() < 3 ? "4444" : args.at(2);
 	const auto &cameraPort = args.size() < 4 ? "8080" : args.at(3);
 	const auto &cameraIp = args.size() < 5 ? gamepadIp : args.at(4);
@@ -70,13 +71,6 @@ void GamepadForm::startControllerFromSysArgs(const QStringList &args)
 	mSettings.setValue("gamepadIp", gamepadIp);
 	mSettings.setValue("gamepadPort", gamepadPort);
 	Q_EMIT newConnectionParameters();
-}
-
-void GamepadForm::closeEvent(QCloseEvent *event)
-{
-	thread.quit();
-	thread.wait();
-	QWidget::closeEvent(event);
 }
 
 void GamepadForm::setUpGamepadForm()
@@ -470,7 +464,7 @@ void GamepadForm::sendCommand(const QString &command)
 }
 
 void GamepadForm::changeMode(Strategies type)
-{	
+{
 	auto oldStratedy = strategy;
 	strategy = Strategy::getStrategy(type, this);
 	connect(strategy, &Strategy::commandPrepared, this, &GamepadForm::sendCommand);
@@ -532,9 +526,9 @@ void GamepadForm::saveImageToClipboard(QVideoFrame buffer)
 					int g = y - int(0.39465 * (u - 128)) - int(0.58060 * (v - 128));
 					int b = y + int(2.03211 * (u - 128));
 
-					r = r < 0 ? 0 : r > 255 ? 255 : r;
-					g = g < 0 ? 0 : g > 255 ? 255 : g;
-					b = b < 0 ? 0 : b > 255 ? 255 : b;
+					r = qBound(0, r, 255);
+					g = qBound(0, g, 255);
+					b = qBound(0, b, 255);
 
 					img.setPixel(j, i, qRgb(r, g, b));
 				}
@@ -551,7 +545,7 @@ void GamepadForm::requestImage()
 }
 
 void GamepadForm::openConnectDialog()
-{	
+{
 	mMyNewConnectForm = new ConnectForm(connectionManager, &mSettings, this);
 	connect(mMyNewConnectForm, &ConnectForm::newConnectionParameters, this, &GamepadForm::newConnectionParameters);
 	mMyNewConnectForm->show();

@@ -61,9 +61,8 @@ public:
 	~GamepadForm() override;
 	/// method that sets up connection manager and connect to host
 	void startControllerFromSysArgs(const QStringList &args);
-	virtual void closeEvent(QCloseEvent *event) override;
 
-public slots:
+public Q_SLOTS:
 
 	/// Slot for opening connect dialog
 	void openConnectDialog();
@@ -74,7 +73,7 @@ public slots:
 	/// Slot for about menu item
 	void about();
 
-private slots:
+private Q_SLOTS:
 
 	/// Slots for pad buttons (Up, Down, Left, Right) and "magic" buttons, triggered when button is pressed.
 	void handleButtonPress(QWidget*);
@@ -126,7 +125,7 @@ private slots:
 	void saveImageToClipboard(QVideoFrame buffer);
 	void requestImage();
 
-signals:
+Q_SIGNALS:
 	/// signal to send command
 	void commandReceived(QString);
 	/// signal to disconnect from host
