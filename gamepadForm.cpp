@@ -176,7 +176,8 @@ void GamepadForm::restartVideoStream()
 	const auto &cPort = mSettings.value("cameraPort").toString();
 	const auto status = player->mediaStatus();
 	if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::EndOfMedia || status == QMediaPlayer::InvalidMedia) {
-		const QString url = "http://" + cIp + ":" + cPort + "/?action=stream&filename=noname.jpg";
+		// "Initially, there was a &filename=noname.jpg parameter that interfered with the DirectShow backend?
+		const QString url = "http://" + cIp + ":" + cPort + "/?action=stream";
 		// QNetworkRequest nr = QNetworkRequest(url);
 		// nr.setPriority(QNetworkRequest::LowPriority);
 		// nr.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
