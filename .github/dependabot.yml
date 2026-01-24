@@ -11,3 +11,14 @@ updates:
   - iakov
   assignees:
   - iakov
+- package-ecosystem: "github-actions"
+  directory: "/" # Location of the workflow files (.github/workflows are checked by default)
+  schedule:
+    interval: monthly
+    time: "23:59"
+    timezone: Europe/London
+  open-pull-requests-limit: 3
+  reviewers:
+  - iakov
+  assignees:
+  - iakov
