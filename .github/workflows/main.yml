@@ -56,7 +56,7 @@ jobs:
              set -xue
              cygpath -w /usr/bin >> $GITHUB_PATH
              cygpath -w "${IQTA_TOOLS}/mingw${{matrix.mingw-short-version}}0_32/bin" >> $GITHUB_PATH
-             cygpath -w "${Qt5_Dir}/bin" >> $GITHUB_PATH
+             cygpath -w "${QT_ROOT_DIR}/bin" >> $GITHUB_PATH
 
       - name: Check available tools
         run: |
